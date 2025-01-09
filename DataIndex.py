@@ -44,7 +44,7 @@ class DataIndex:
                                    with_cache=False)
 
     def query(self, query, k=3):
-        return self.client.query(query, k)
+        return self.client.query(query, k=k)
 
 
 def main():
@@ -66,8 +66,10 @@ def main():
     time.sleep(60)
     
     def f():
-        print("Waking up!")
-        pprint((d.query("What is AI?")))
+        with open("output.txt", 'w') as file:
+            pprint(d.query("What is AI?", k=5), stream=file)
+
+        
 
     x = threading.Thread(target=f)
     x.start()
