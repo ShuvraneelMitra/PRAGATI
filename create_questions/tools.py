@@ -5,6 +5,9 @@ import copy
 from helper import invoke_llm
 
 def create_researchers(state:QuestionState) -> QuestionState:
+    """
+    Create a list of reviewers for the given conference, each with a specialisation
+    """
     messages = state['messages']
     num_reviewers = state['num_reviewers']
     conference = state['conference']
@@ -57,6 +60,9 @@ def create_researchers(state:QuestionState) -> QuestionState:
     return state
 
 def get_questionnaire(state:QuestionState) -> QuestionState:
+    """
+    Generate a list of questions for each reviewer
+    """
     messages = state['messages']
     num_reviewers = state['num_reviewers']
     conference = state['conference']
@@ -97,6 +103,9 @@ def get_questionnaire(state:QuestionState) -> QuestionState:
     return state
 
 def get_questions_for_reviewer(messages,reviewer,conference,topic):
+    """
+    Generate a list of questions for a given reviewer
+    """
     reviewer_specialisation = reviewer['specialisation']
 
     questions_prompt = f"""
