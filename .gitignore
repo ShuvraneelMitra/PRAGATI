@@ -5,3 +5,5 @@ venv/
 #files
 credentials.json
 .env
+test.py
+kdsh-2025.log
