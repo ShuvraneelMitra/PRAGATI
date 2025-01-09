@@ -1,14 +1,25 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
-class Reviewer(BaseModel):
-    name: str = Field(description="Name of the reviewer")
-    specialisation: str = Field(description="Specialisation of the reviewer")
-    questions: List[str] = Field(description="Questions asked by the reviewer")
-
-class QuestionState(BaseModel):
+class AnswerState(BaseModel):
     messages: List[str]
-    reviewers: List[Reviewer]
+    paper: str
+    topic: str
+    questions: List[str]
+    conference: str
+    conference_description: str
+    answers: List[str]
 
+class Queries(BaseModel):
+    original_query: str
+    sub_queries: List[str]
 
+class IntermediateAnswerState(BaseModel):
+    messages: List[str]
+    paper: str
+    topic: str
+    questions: List[Queries]
+    conference: str
+    conference_description: str
+    answers: List[str]
 
