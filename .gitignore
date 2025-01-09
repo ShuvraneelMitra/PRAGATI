@@ -4,5 +4,5 @@ venv/
 
 #files
 credentials.json
-.env
+env
 P002.pdf
