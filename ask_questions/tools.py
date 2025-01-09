@@ -1,9 +1,11 @@
-from create_questions.schemas import Reviewer, QuestionState
-from schemas import AnswerState, IntermediateAnswerState, Queries
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+from typing import List
 import copy
 
 from create_questions.helper import invoke_llm
+from create_questions.schemas import Reviewer, QuestionState
+from schemas import AnswerState, IntermediateAnswerState, Queries, QAPair
 
 ## Idea:
 ### 1. We assume that the LLM would not be able to directly answer a reasoning based Yes/No question. Hence the question would be broken into sub-queries.
@@ -14,26 +16,92 @@ from create_questions.helper import invoke_llm
 ## The transition from QuestionState to AnswerState would be done by an intermediate `compile_questions` node.
 ## This is because we would not require information about individual reviewers after generation of questions.
 
-def generate_sub_queries(question:str) -> list:
+def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
     """
-    Generate sub-queries for the given question
+    Generate sub-queries for each question in the state
     """
-    return []
-
-def retrieve_references(state:AnswerState) -> IntermediateAnswerState:
     messages = state['messages']
     paper = state['paper']
     topic = state['topic']
     questions = state['questions']
     conference = state['conference']
 
-    updated_state = copy.deeptcopy(state)
+    updated_state = copy.deepcopy(state)
+
+    def generate_sub_queries_by_question(question:str) -> List[QAPair]:
+        """
+        Generate sub-queries for a given question
+        """
+        sub_queries = []
+        return sub_queries
 
     questions_updated = []
     for question in questions:
-        sub_queries = generate_sub_queries(question)
+        sub_queries = generate_sub_queries_by_question(question)
         question_updated = Queries(original_query=question, sub_queries=sub_queries)
         questions_updated.append(question_updated)
+
+    updated_state['questions'] = questions_updated
+    return updated_state
+
+def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerState:
+    """
+    Retrieve references for each sub-query in the state
+    """
+    messages = state['messages']
+    paper = state['paper']
+    topic = state['topic']
+    questions = state['questions']
+    conference = state['conference']
+
+    updated_state = copy.deepcopy(state)
+
+    questions_updated = []
+    for question in questions:
+        pass
+
+    return updated_state
+
+def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState:
+    """
+    Answer sub-queries for each question in the state
+    """
+    messages = state['messages']
+    paper = state['paper']
+    topic = state['topic']
+    questions = state['questions']
+    conference = state['conference']
+
+    updated_state = copy.deepcopy(state)
+
+    questions_updated = []
+    for question in questions:
+        pass
+
+    return updated_state
+
+def summarise_results(state:IntermediateAnswerState) -> AnswerState:
+    """
+    Summarise the results of the sub-queries into a final Yes/No answer
+    """
+    messages = state['messages']
+    paper = state['paper']
+    topic = state['topic']
+    questions = state['questions']
+    conference = state['conference']
+
+    updated_state = copy.deepcopy(state)
+
+    questions_updated = []
+    for question in questions:
+        pass
+
+    return updated_state
+
+
+
+
+    
 
     
 
