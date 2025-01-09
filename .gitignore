@@ -1,3 +1,9 @@
+#directories
 kdsh-2025/
+venv/
+
+#files
 credentials.json
 .env
+test.py
+kdsh-2025.log
