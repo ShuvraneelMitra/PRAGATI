@@ -1,3 +1,7 @@
+#directories
 kdsh-2025/
+venv/
+
+#files
 credentials.json
 .env
