@@ -155,7 +155,7 @@ class SectionParser(pw.UDF):
 # Example usage:
 if __name__ == "__main__":
     parser = SectionParser(mode="paged", num_sections=6)
-    with open("example.pdf", "rb") as f:
+    with open(r"P002.pdf", "rb") as f:
         pdf_contents = f.read()
     result = parser.__wrapped__(pdf_contents)
     for text, metadata in result:
