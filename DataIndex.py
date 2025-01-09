@@ -43,8 +43,8 @@ class DataIndex:
                                    threaded=True,
                                    with_cache=False)
 
-    def query(self, query):
-        return self.client.query(query)
+    def query(self, query, k=3):
+        return self.client.query(query, k)
 
 
 def main():
