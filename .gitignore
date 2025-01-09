@@ -1,6 +1,7 @@
 #directories
 kdsh-2025/
 venv/
+__pycache__/
 
 #files
 credentials.json
