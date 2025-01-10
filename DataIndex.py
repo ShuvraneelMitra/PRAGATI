@@ -53,6 +53,7 @@ def main():
     all parameters will be changed in the eventual implementation
     """
 
+    pw.run()
     embedder = embedders.SentenceTransformerEmbedder(model="intfloat/e5-large-v2")
     text_splitter = TokenCountSplitter()
 
@@ -73,8 +74,6 @@ def main():
 
     x = threading.Thread(target=f)
     x.start()
-
-    pw.run()
 
 if __name__ == "__main__":
     main()
