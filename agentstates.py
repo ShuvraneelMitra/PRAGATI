@@ -1,6 +1,18 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+from utils.schemas import TokenTracker, Reviewer, Queries, QAPair
+
+class QuestionState(BaseModel):
+    messages: List[str]
+    paper: str ## up for decision
+    topic: str
+    num_reviewers: int
+    reviewers: List[Reviewer]
+    conference: str
+    conference_description: str
+    token_usage: TokenTracker
+
 class AnswerState(BaseModel):
     messages: List[str] = Field(None, description="List of messages related to the answer state")
     paper: str = Field(None, description="Paper related to the answer state")
@@ -9,15 +21,7 @@ class AnswerState(BaseModel):
     conference: str = Field(None, description="Conference related to the answer state")
     conference_description: str = Field(None, description="Description of the conference")
     answer: str = Field(None, description="Final 'YES' or 'NO' answer to the question")
-
-class QAPair(BaseModel):
-    query: str = Field(None, description="Query string")
-    answer: str = Field(None, description="Answer string")
-    references: List[str] = Field(None, description="List of references related to the query and answer")
-
-class Queries(BaseModel):
-    original_query: str = Field(None, description="Original query string")
-    sub_qas: List[QAPair] = Field(None, description="List of question-answer pairs related to the original query")
+    token_usage: TokenTracker = Field(None, description="Token usage for the answer state")
 
 class IntermediateAnswerState(BaseModel):
     messages: List[str] = Field(None, description="List of messages related to the intermediate answer state")
@@ -26,4 +30,5 @@ class IntermediateAnswerState(BaseModel):
     questions: List[Queries] = Field(None, description="List of queries related to the intermediate answer state")
     conference: str = Field(None, description="Conference related to the intermediate answer state")
     conference_description: str = Field(None, description="Description of the conference")
+    token_usage: TokenTracker = Field(None, description="Token usage for the intermediate answer state")
 
