@@ -1,3 +1,4 @@
 2025-01-10 12:03:42,890 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
 2025-01-10 12:11:12,707 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
 2025-01-10 12:11:15,442 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-10 21:12:00,575 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
