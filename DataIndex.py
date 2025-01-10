@@ -53,7 +53,6 @@ def main():
     all parameters will be changed in the eventual implementation
     """
 
-    pw.run()
     embedder = embedders.SentenceTransformerEmbedder(model="intfloat/e5-large-v2")
     text_splitter = TokenCountSplitter()
 
@@ -64,7 +63,7 @@ def main():
     d = DataIndex(data_sources, embedder, text_splitter)
     d.run()
 
-    time.sleep(60)
+    time.sleep(90)
     
     def f():
         with open("output.txt", 'w') as file:
