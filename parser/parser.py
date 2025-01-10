@@ -27,15 +27,15 @@ class PDFTextExtractor:
         """Extracts and tags text as header, paragraph, or subscript based on font size."""
         if self.paragraph_size is None:
             raise ValueError("Font analysis must be performed before tagging text.")
-        lund = []
+        text_list = []
         current_header = None
         for page in self.doc:
             blocks = page.get_text("dict")["blocks"]
-            # lund = []
+            # text_list = []
             for block in blocks:
                 if "lines" in block:
                     for line in block["lines"]:
-                        # lund = []
+                        # text_list = []
                         for span in line["spans"]:
                             font_size = span["size"]
                             text = span["text"].strip()
@@ -45,13 +45,13 @@ class PDFTextExtractor:
                                 if re.match(r'^\d+$', text): 
                                     continue
                                 if text.lower() not in self.tagged_text:  # Add new header
-                                    sentence = ' '.join(lund)
-                                    print(lund)
+                                    sentence = ' '.join(text_list)
+                                    print(text_list)
                                     try:
                                         self.tagged_text[current_header].append(sentence)
                                     except KeyError:
-                                        print("Kaunsi color ki chaddi pehni hai")
-                                    lund = []
+                                        print("KeyError as first header")
+                                    text_list = []
                                     current_header = text
                                     self.tagged_text[current_header] = []
 
@@ -61,8 +61,8 @@ class PDFTextExtractor:
                                     if subs:
                                         self.tagged_text[current_header].append({"subscript": text})
                                     else:
-                                        lund.append(text)
-                                        # print(lund)
+                                        text_list.append(text)
+                                        # print(text_list)
                                         # self.tagged_text[current_header].append(text)
                                         # self.tagged_text[current_header].append(" ")
                             else:
@@ -73,7 +73,7 @@ class PDFTextExtractor:
                                     else:
                                         # self.tagged_text[current_header].append(text)
                                         # self.tagged_text[current_header].append(" ")
-                                        lund.append(text)
+                                        text_list.append(text)
                     
                             # self.tagged_text[current_header] = " ".join(self.tagged_text[current_header])
 
