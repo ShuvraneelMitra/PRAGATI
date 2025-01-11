@@ -6,4 +6,7 @@ __pycache__/
 #files
 credentials.json
 .env
-.log
+test.py
+kdsh-2025.log
+output.txt
+gdrive-credentials.json
