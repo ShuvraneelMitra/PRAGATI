@@ -7,7 +7,7 @@ import threading
 from pprint import pprint
 from dotenv import load_dotenv
 
-from custom_parser import CustomParse
+from utils.custom_parser import CustomParse
 
 import pathway as pw
 from pathway.xpacks.llm.vector_store import VectorStoreClient, VectorStoreServer
