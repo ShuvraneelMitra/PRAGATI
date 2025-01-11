@@ -22,8 +22,8 @@ from pydantic import BaseModel
 
 import pathway as pw
 from pathway.internals import udfs
-# from pathway.internals.config import _check_entitlements
-# from pathway.optional_import import optional_imports
+from pathway.internals.config import _check_entitlements
+from pathway.optional_import import optional_imports
 from pathway.xpacks.llm import llms, prompts
 # from pathway.xpacks.llm._parser_utils import (
 #     img_to_b64,
@@ -56,8 +56,8 @@ class CustomParse(pw.UDF):
         post_processors: list[Callable] | None = None,
         **unstructured_kwargs: Any,
     ):
-        # with optional_imports("xpack-llm-docs"):
-        #     import unstructured.partition.auto
+        with optional_imports("xpack-llm-docs"):
+            import unstructured.partition.auto
 
         super().__init__()
         _valid_modes = {"single", "elements", "paged"}

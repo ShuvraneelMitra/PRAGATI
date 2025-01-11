@@ -1,4 +1,4 @@
-pathway
+pathway==0.16.3
 langgraph
 pydantic
 pathway[xpack-llm]
