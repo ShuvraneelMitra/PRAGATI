@@ -43,8 +43,8 @@ class DataIndex:
                                    threaded=True,
                                    with_cache=False)
 
-    def query(self, query):
-        return self.client.query(query)
+    def query(self, query, k=3):
+        return self.client.query(query, k=k)
 
 
 def main():
@@ -63,11 +63,13 @@ def main():
     d = DataIndex(data_sources, embedder, text_splitter)
     d.run()
 
-    time.sleep(60)
+    time.sleep(90)
     
     def f():
-        print("Waking up!")
-        pprint((d.query("What is AI?")))
+        with open("output.txt", 'w') as file:
+            pprint(d.query("What is AI?", k=5), stream=file)
+
+        
 
     x = threading.Thread(target=f)
     x.start()

@@ -25,16 +25,16 @@ from pathway.internals import udfs
 from pathway.internals.config import _check_entitlements
 from pathway.optional_import import optional_imports
 from pathway.xpacks.llm import llms, prompts
-# from pathway.xpacks.llm._parser_utils import (
-#     img_to_b64,
-#     maybe_downscale,
-#     parse,
-#     parse_image_details,
-# )
-# from pathway.xpacks.llm.constants import DEFAULT_VISION_MODEL
+from pathway.xpacks.llm._parser_utils import (
+    img_to_b64,
+    maybe_downscale,
+    parse,
+    parse_image_details,
+)
+from pathway.xpacks.llm.constants import DEFAULT_VISION_MODEL
 
-# if TYPE_CHECKING:
-#     from openparse.processing import IngestionPipeline
+if TYPE_CHECKING:
+    from openparse.processing import IngestionPipeline
 
 class CustomParse(pw.UDF):
     
