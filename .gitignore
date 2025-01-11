@@ -1,8 +1,14 @@
 #directories
 kdsh-2025/
 venv/
+parser/__pycache__
+utils/__pycache__
+KDSH_2025_Dataset
 
 #files
 credentials.json
-env
+.env
 P002.pdf
+guidelines.py
+guidelines.csv
+seydd.json
