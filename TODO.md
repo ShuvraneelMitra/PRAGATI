@@ -8,4 +8,4 @@
 - Get some semblance of independence between Task 1 and Task 2:
     Fact checker + some generic questions for checking publishability
 - Learn FASTAPI
-- 
+- Extensively go through Nabarup's drive and update conference-specific prompts to include any special rules in the conference's 'rulebook'
