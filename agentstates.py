@@ -3,16 +3,16 @@ from typing import List, Optional
 
 from utils.schemas import TokenTracker, Reviewer, Queries, QAPair, Paper
 
-## QuestionState, AnswerState and IntermediateAnswerState are defined on paper basis
+## QuestionState, AnswerState and IntermediateAnswerState are defined on paper-level basis
 
 class QuestionState(BaseModel):
     messages: List[str] = Field(None, description="List of messages related to the question state")
-    paper: Paper ##object id of the paper
-    num_reviewers: int
-    reviewers: List[Reviewer]
-    conference: str
-    conference_description: str
-    token_usage: TokenTracker
+    paper: Paper = Field(None, description="Paper related to the question state")
+    num_reviewers: int = Field(None, description="Number of reviewers to be created")
+    reviewers: List[Reviewer] = Field(None, description="List of reviewers")
+    conference: str = Field(None, description="Conference related to the question state")
+    conference_description: str = Field(None, description="Description of the conference")
+    token_usage: TokenTracker = Field(None, description="Token usage for the question state")
 
 class AnswerState(BaseModel):
     messages: List[str] = Field(None, description="List of messages related to the answer state")

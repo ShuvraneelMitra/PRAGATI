@@ -2,12 +2,13 @@ import copy
 from typing import List
 import os
 import pprint
+import logging 
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import START, END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 
-from utils.schemas import Reviewer, Queries, QAPair
+from utils.schemas import Reviewer, Queries, QAPair, Paper
 from utils.chat import invoke_llm_langchain
 from utils.helper import print_reviewers
 from agentstates import QuestionState
@@ -21,14 +22,13 @@ def create_researchers(state:QuestionState) -> QuestionState:
     """
     Create a list of reviewers for the given conference, each with a specialisation
     """
-    messages = state['messages']
-    num_reviewers = state['num_reviewers']
-    conference = state['conference']
-    conference_description = state['conference_description']
-    topic = state['topic']
+    messages = state.messages
+    num_reviewers = state.num_reviewers
+    conference = state.conference
+    conference_description = state.conference_description
 
     researcher_creation_messages = []
-
+    load_dotenv()   
     def search_conference(conference: str) -> str:
         """
         Search for the description of the conference. Uses Web Search for the same
@@ -58,17 +58,18 @@ def create_researchers(state:QuestionState) -> QuestionState:
 
     researcher_creation_messages.append(HumanMessage(content=researcher_creation_prompt))
 
-    response, input_tokens, output_tokens = invoke_llm_langchain(researcher_creation_messages, api_key=api_key)
+    messages, input_tokens, output_tokens = invoke_llm_langchain(researcher_creation_messages, api_key=api_key)
+    response = messages[-1].content
 
     reviewers = eval(response.replace("\n", "").replace("```json", "").replace("```", ""))
+    reviewers = [Reviewer(**reviewer) for reviewer in reviewers]
 
-    messages.append(HumanMessage(content=researcher_creation_prompt))
-    messages.append(AIMessage(content=response))
+    # pprint.pprint(reviewers)
 
     for i in range(num_reviewers):
-        reviewers['id'] = i+1
+        reviewers[i].id = i+1
 
-    state['reviewers'] = reviewers
+    state.reviewers = reviewers
 
     return state
 
@@ -76,12 +77,12 @@ def get_questionnaire(state:QuestionState) -> QuestionState:
     """
     Generate a list of questions for each reviewer
     """
-    messages = state['messages']
-    num_reviewers = state['num_reviewers']
-    conference = state['conference']
-    conference_description = state['conference_description']
-    topic = state['topic']
-    reviewers = state['reviewers']
+    messages = state.messages
+    num_reviewers = state.num_reviewers
+    conference = state.conference
+    conference_description = state.conference_description
+    reviewers = state.reviewers
+    topic = state.paper.title
 
     questions_system_prompt = f"""
     There is a research paper being reviewed for publication in a conference. You are a helpful assistant tasked with creating a list of questions for the reviewers to ask.
@@ -110,7 +111,7 @@ def get_questionnaire(state:QuestionState) -> QuestionState:
     ## replace this part with parallel processing
     for reviewer in reviewers:
         questions = get_questions_for_reviewer(questions_messages,reviewer,conference,topic)
-        reviewer['questions'] = questions
+        reviewer.questions = questions
     
     
     return state
@@ -119,7 +120,7 @@ def get_questions_for_reviewer(messages,reviewer,conference,topic):
     """
     Generate a list of questions for a given reviewer
     """
-    reviewer_specialisation = reviewer['specialisation']
+    reviewer_specialisation = reviewer.specialisation
 
     questions_prompt = f"""
     Now you need to generate a list of questions for the reviewer with specialisation `{reviewer_specialisation}`. The conference is `{conference}` and the topic of the paper is `{topic}`.
@@ -133,24 +134,32 @@ def get_questions_for_reviewer(messages,reviewer,conference,topic):
     """
     messages.append(HumanMessage(content=questions_prompt))
 
-    response, input_tokens, output_tokens = invoke_llm_langchain(messages, api_key=api_key)
+    messages, input_tokens, output_tokens = invoke_llm_langchain(messages, api_key=api_key)
+    response = messages[-1].content
+
+    # print(response)
+    # print()
 
     questions = eval(response.replace("\n", "").replace("```python", "").replace("```", ""))
 
     return questions
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, 
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+                    filename='kdsh-2025.log')
+    logging.captureWarnings(True)
+
+    paper = Paper(object_id=os.getenv("TEMP_PAPER_OBJ_ID"), title="Sample Paper", filename="sample_paper.pdf")
     initial_state_dict = {
         "messages": [],
-        "paper": os.get_env("TEMP_PAPER_OBJ_ID"),
+        "paper": paper,
         "num_reviewers": 3,
         "reviewers": [],
         "conference": "NeurIPS",
-        "conference_description": "The NeurIPS (Conference on Neural Information Processing Systems) is a leading annual conference in machine learning and artificial intelligence, featuring cutting-edge research in neural computation, deep learning, and related fields. It attracts researchers, practitioners, and industry leaders from around the world.",
-        "token_usage": None
+        "conference_description": "The NeurIPS (Conference on Neural Information Processing Systems) is a leading annual conference in machine learning and artificial intelligence, featuring cutting-edge research in neural computation, deep learning, and related fields. It attracts researchers, practitioners, and industry leaders from around the world."
     }
     initial_state = QuestionState(**initial_state_dict)
-    load_dotenv()
 
     compiler = StateGraph(QuestionState)
     memory = MemorySaver()
@@ -174,10 +183,15 @@ if __name__ == "__main__":
 
     for event in graph.stream(initial_state, thread):
         for key, value in event.items():
-            pprint.pprint("Output from node: ", key)
+            print("Output from node: ", end=' ')
+            pprint.pprint(key)
             pprint.pprint("-------------------------")
-            print_reviewers(value.reviewers)
+            # pprint.pprint(value['reviewers'])
+            print_reviewers(value['reviewers'])
             final_state = value
+
+    logging.info("Final State:")
+    logging.info(final_state)
 
     pprint.pprint("Final State:")
     pprint.pprint(final_state)

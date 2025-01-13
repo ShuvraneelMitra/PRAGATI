@@ -1,7 +1,11 @@
 import copy
+import os
 from typing import List
+import pprint 
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+from dotenv import load_dotenv
 
 from utils.schemas import Reviewer, Queries, QAPair, Paper
 from utils.chat import invoke_llm_langchain
@@ -17,43 +21,82 @@ from agentstates import QuestionState, AnswerState, IntermediateAnswerState
 ## The transition from QuestionState to AnswerState would be done by an intermediate `compile_questions` node.
 ## This is because we would not require information about individual reviewers after generation of questions.
 
+load_dotenv()
+
+api_key = os.getenv("GROQ_API_KEY")
+
 def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
     """
     Generate sub-queries for each question in the state
     """
-    messages = state['messages']
-    paper = state['paper']
-    topic = state['topic']
-    questions = state['questions']
-    conference = state['conference']
+    messages = state.messages
+    paper = state.paper
+    questions = state.questions
+    conference = state.conference
+    conference_description = state.conference_description
 
-    updated_state = copy.deepcopy(state)
+    updated_state = IntermediateAnswerState(messages=messages, 
+                                            paper=paper, 
+                                            conference=conference,
+                                            conference_description=conference_description,)
 
-    def generate_sub_queries_by_question(question:str) -> List[QAPair]:
+    def generate_sub_queries_by_question(messages, question:str) -> List[QAPair]:
         """
         Generate sub-queries for a given question
         """
         sub_queries = []
-        return sub_queries
+        sub_query_gen_prompt = f"""
+        You are provided with a boolean Yes/No question. You need to generate sub-queries based on the given question.
+        These sub-queries will be uses to answer the larger question in a more detailed manner.
+        Following is the question you need to generate sub-queries for:
+
+        <Question>
+        {question}
+        </Question>
+
+        Generate your answer in the form of a PYTHON list of strings, enclosed within `[]`.
+        Each question number should be unique and in order. All questions must be a Python string, enclosed in `""` (double quotes).
+        Do not make any syntax error.
+        """
+
+        messages.append(HumanMessage(content=sub_query_gen_prompt))
+        messages, input_tokens, output_tokens = invoke_llm_langchain(messages, api_key=api_key)
+        sub_queries = messages[-1].content
+        sub_queries = eval(sub_queries.replace("\n", "").replace("```json", "").replace("```python", "").replace("```", ""))
+        print(question)
+        pprint.pprint(sub_queries)
+        print()
+        sub_qas = []
+        for ques in sub_queries:
+            sub_qa = QAPair(query=ques)
+            sub_qas.append(sub_qa)
+
+        return sub_qas
 
     questions_updated = []
     for question in questions:
-        sub_queries = generate_sub_queries_by_question(question)
-        question_updated = Queries(original_query=question, sub_queries=sub_queries)
+        sub_query_gen_system_message = f"""
+        You shall be provided with multiple boolean Yes/No questions. You will be required to generate sub-queries based on the given questions.
+        The sub-queries must be unique and must be able to fetch enough information to answer the given question.
+        The sub-queries should contain all questions which are relevant to the reasoning pathway to answer the given question, that is, based on the given sub-queries and their answers, one should be able to form the complete reasoning pathway to formulate the answer to the main query.
+        Follow any instruction given henceforth strictly while generating the sub-queries.
+        """
+        sub_query_gen_messages = [SystemMessage(content=sub_query_gen_system_message)]
+        sub_queries = generate_sub_queries_by_question(sub_query_gen_messages, question)
+        question_updated = Queries(original_query=question, sub_qas=sub_queries)
         questions_updated.append(question_updated)
 
-    updated_state['questions'] = questions_updated
+    updated_state.questions = questions_updated
     return updated_state
 
 def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerState:
     """
     Retrieve references for each sub-query in the state
     """
-    messages = state['messages']
-    paper = state['paper']
-    topic = state['topic']
-    questions = state['questions']
-    conference = state['conference']
+    messages = state.messages
+    paper = state.paper
+    questions = state.questions
+    conference = state.conference
 
     def compile_references(references) -> str:
         """
@@ -63,7 +106,7 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
         for i, reference in enumerate(references):
             reference_ = f"""
             <Document {i+1}>
-            {reference['text']}
+            {reference.text}
             </Document {i+1}>
             """
             compiled_references += f"\n{reference_}\n"
@@ -72,30 +115,29 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
     updated_state = copy.deepcopy(state)
 
     retriever = FileRetriever(
-        object_id=paper['object_id'],
+        object_id=paper.object_id,
         credentials_file="credentials.json",
         embedder_model="intfloat/e5-large-v2"
     )
 
     for question in questions:
         # question is a Queries object 
-        for sub_qa in question['sub_qas']:
+        for sub_qa in question.sub_qas:
             # sub_qa is a QAPair object
-            references = retriever.retrieve_data(query=sub_qa, k=3, timeout=20)
-            sub_qa['references'] = references ## Update this in <Document> format
+            references = retriever.retrieve_data(query=sub_qa.query, k=3, timeout=20)
+            sub_qa.references = compile_references(references) ## Update this in <Document> format
 
-    updated_state['questions'] = questions
+    updated_state.questions = questions
     return updated_state
 
 def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState:
     """
     Answer sub-queries for each question in the state
     """
-    messages = state['messages']
-    paper = state['paper']
-    topic = state['topic']
-    questions = state['questions']
-    conference = state['conference']
+    messages = state.messages
+    paper = state.paper
+    questions = state.questions
+    conference = state.conference
 
     updated_state = copy.deepcopy(state)
 
@@ -111,7 +153,7 @@ def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState
 
     Following is the query needed to be answered:
     <Query>
-    `{query}`
+    {query}
     </Query>
 
     You are also provided with the larger question that this sub-query is a part of for your reference:
@@ -133,32 +175,35 @@ def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState
 
     for question in questions:
         # question is a Queries object 
-        original_query = question['original_query']
-        for sub_qa in question['sub_qas']:
+        original_query = question.original_query
+        for sub_qa in question.sub_qas:
             # sub_qa is a QAPair object
             answering_messages = [SystemMessage(content=answer_system_message)]
-            references = sub_qa['references']
-            query = sub_qa['query']
+            references = sub_qa.references
+            query = sub_qa.query
             answering_message = answer_prompt_template.format(references=references, query=query, original_query=original_query)
             answering_messages.append(HumanMessage(content=answering_message))
-            answering_messages, input_tokens, output_tokens = invoke_llm_langchain(answering_messages)
-            sub_qa['answer'] = answering_messages[-1].content
+            answering_messages, input_tokens, output_tokens = invoke_llm_langchain(answering_messages, api_key=api_key)
+            sub_qa.answer = answering_messages[-1].content
 
-    updated_state['questions'] = questions
+    updated_state.questions = questions
     return updated_state
 
 def summarise_results(state:IntermediateAnswerState) -> AnswerState:
     """
     Summarise the results of the sub-queries into a final Yes/No answer
     """
-    messages = state['messages']
-    paper = state['paper']
-    topic = state['topic']
-    questions = state['questions']
-    conference = state['conference']
-    conference_description = state['conference_description']
+    messages = state.messages
+    paper = state.paper
+    questions = state.questions
+    conference = state.conference
+    conference_description = state.conference_description
 
-    updated_state = copy.deepcopy(state)
+    updated_state = AnswerState(messages=messages,
+                                paper=paper,
+                                conference=conference,
+                                conference_description=conference_description,
+                                reviewers=state.reviewers)
 
     ## Summarise the results of the sub-queries into a final Yes/No answer
     ## For each question, compile the QAPair objects into a single string
@@ -198,21 +243,21 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
         """
         Merge the query and answer into a single string
         """
-        return f"\nQ: {qa_pair['query']} \nA:{qa_pair['answer']}\n"
+        return f"\nQ: {qa_pair.query} \nA:{qa_pair.answer}\n"
     
     questions_updated, answers = [], []
     for question in questions:
         # question is a Queries object 
         compiled_qas = ""
-        questions_updated.append(question['original_query'])
-        for sub_qa in question['sub_qas']:
+        questions_updated.append(question.original_query)
+        for sub_qa in question.sub_qas:
             # sub_qa is a QAPair object
             compiled_qas += merge_qa_pair(sub_qa)
         summarising_messages = [SystemMessage(content=summary_system_message)]
-        summarising_message = summary_template.format(compiled_qas=compiled_qas, question=question['original_query'])
+        summarising_message = summary_template.format(compiled_qas=compiled_qas, question=question.original_query)
         summarising_messages.append(HumanMessage(content=summarising_message))
 
-        summarising_messages, input_tokens, output_tokens = invoke_llm_langchain(summarising_messages)
+        summarising_messages, input_tokens, output_tokens = invoke_llm_langchain(summarising_messages, api_key=api_key)
         final_answer = summarising_messages[-1].content
         if "yes" in final_answer.lower():
             final_answer = "YES"
@@ -220,23 +265,21 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
             final_answer = "NO"
         answers.append(final_answer)
 
-    updated_state['answers'] = answers
-    updated_state['questions'] = questions_updated
+    updated_state.answers = answers
+    updated_state.questions = questions_updated
     count_yes = sum(1 for ans in answers if ans == "YES")
     count_no = len(answers) - count_yes
 
     if count_yes >= count_no:
-        updated_state['publishable'] = True
+        updated_state.publishable = True
     else:
-        updated_state['publishable'] = False
+        updated_state.publishable = False
 
     return updated_state
 
 if __name__ == "__main__":
 
-    ## Test the functions
-
-    state = QuestionState(
+    state = AnswerState(
         messages=[],
         paper=Paper(object_id="11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0", title="Sample Paper", filename="sample_paper.pdf"),
         topic="Sample Topic",
