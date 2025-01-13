@@ -333,3 +333,285 @@
 2025-01-13 10:26:36,850 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736744196, "remote": "127.0.0.1", "session_id": "uuid-f52a46b8-812c-450d-b033-d2757395bc86", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.298"}
 2025-01-13 10:26:36,851 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:10:26:36 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
 2025-01-13 10:26:41,607 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 21:17:46,625 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 21:18:05,485 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 21:18:05,569 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/internals/parse_graph.py:249: UserWarning: There are operators in the computation graph that haven't been used. Use pathway.run() (or similar) to run the computation involving these nodes.
+  warnings.warn(
+
+2025-01-13 21:50:21,151 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:51:43,584 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:51:45,118 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:54:25,581 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:54:26,808 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:54:28,753 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:54:31,103 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 21:54:36,559 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 21:54:36,620 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/internals/parse_graph.py:249: UserWarning: There are operators in the computation graph that haven't been used. Use pathway.run() (or similar) to run the computation involving these nodes.
+  warnings.warn(
+
+2025-01-13 21:56:11,568 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:56:13,509 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:56:15,148 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:56:17,152 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 21:56:22,155 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 21:56:22,223 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 21:56:22,427 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 21:56:22,440 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:56:22,478 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 21:56:22,499 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:56:22,510 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:56:22,512 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:56:22,520 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:56:22,520 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:56:22,520 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:56:22,520 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:56:23,455 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/io/gdrive/__init__.py:191: UserWarning: cannot fetch metadata of file with id 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0, reason: File not found: 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0.
+  warnings.warn(
+
+2025-01-13 21:58:02,158 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:58:03,899 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:58:05,535 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 21:58:07,724 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 21:58:13,370 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 21:58:13,437 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 21:58:13,639 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 21:58:13,641 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:13,678 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 21:58:13,694 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:13,710 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:13,712 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:13,715 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:13,715 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:13,715 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:13,715 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:14,583 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/io/gdrive/__init__.py:191: UserWarning: cannot fetch metadata of file with id 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0, reason: File not found: 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0.
+  warnings.warn(
+
+2025-01-13 21:58:33,624 - root - INFO - {"_type": "request_payload", "session_id": "uuid-478e1eda-8d06-4dbf-b2a0-701b47072b7f", "payload": {"query": "1. Is the paper's language clear and concise?", "k": 3}}
+2025-01-13 21:58:33,643 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (399 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:34,659 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736785713, "remote": "127.0.0.1", "session_id": "uuid-478e1eda-8d06-4dbf-b2a0-701b47072b7f", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "66"}], "status": 200, "time_elapsed": "1.035"}
+2025-01-13 21:58:34,660 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:21:58:33 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 21:58:34,882 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 21:58:34,914 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,915 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 21:58:34,925 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,940 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,941 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,943 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,944 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 21:58:34,957 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:34,959 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:38,693 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:54,841 - root - INFO - {"_type": "request_payload", "session_id": "uuid-beb9e675-ca60-41ee-8dc1-65a66ef8afb2", "payload": {"query": "2. Are the paper's arguments well-organized and logical?", "k": 3}}
+2025-01-13 21:58:54,843 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (323 minibatch(es)) have been sent to the engine
+2025-01-13 21:58:55,646 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736785734, "remote": "127.0.0.1", "session_id": "uuid-beb9e675-ca60-41ee-8dc1-65a66ef8afb2", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "77"}], "status": 200, "time_elapsed": "0.805"}
+2025-01-13 21:58:55,646 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:21:58:54 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 21:58:55,876 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 21:58:55,877 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,911 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 21:58:55,923 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,936 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,937 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,939 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,939 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 21:58:55,948 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,950 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,951 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,952 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 21:58:55,973 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:55,975 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 21:58:59,893 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 21:59:15,816 - root - INFO - {"_type": "request_payload", "session_id": "uuid-30b1c5a8-f11d-456a-b245-c27711b298dd", "payload": {"query": "3. Does the paper provide sufficient evidence to support its claims?", "k": 3}}
+2025-01-13 22:00:18,144 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:00:21,064 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:00:23,161 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:00:25,178 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 22:00:30,880 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 22:00:30,931 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 22:00:31,125 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:00:31,128 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:31,173 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:00:31,190 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:31,205 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:31,207 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:31,210 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:00:31,210 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:00:31,210 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:00:31,210 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:00:32,140 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/io/gdrive/__init__.py:191: UserWarning: cannot fetch metadata of file with id 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0, reason: File not found: 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0.
+  warnings.warn(
+
+2025-01-13 22:00:51,102 - root - INFO - {"_type": "request_payload", "session_id": "uuid-5239b543-40cf-456a-8c97-6f36ba712eea", "payload": {"query": "1. Is the paper's introduction clear and concise?", "k": 3}}
+2025-01-13 22:00:51,139 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (399 minibatch(es)) have been sent to the engine
+2025-01-13 22:00:52,132 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736785851, "remote": "127.0.0.1", "session_id": "uuid-5239b543-40cf-456a-8c97-6f36ba712eea", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "70"}], "status": 200, "time_elapsed": "1.030"}
+2025-01-13 22:00:52,133 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:00:51 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:00:52,363 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:00:52,366 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,403 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:00:52,414 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,424 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,426 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,428 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,429 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:00:52,443 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:52,446 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:00:56,139 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 22:01:12,321 - root - INFO - {"_type": "request_payload", "session_id": "uuid-8e328b7c-b502-4d01-bfee-d3ef6ff9a389", "payload": {"query": "2. Are the research objectives and methodology well-defined?", "k": 3}}
+2025-01-13 22:01:12,339 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (324 minibatch(es)) have been sent to the engine
+2025-01-13 22:01:13,136 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736785872, "remote": "127.0.0.1", "session_id": "uuid-8e328b7c-b502-4d01-bfee-d3ef6ff9a389", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "81"}], "status": 200, "time_elapsed": "0.816"}
+2025-01-13 22:01:13,136 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:01:12 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:01:13,392 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:01:13,393 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,426 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:01:13,444 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,458 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,461 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,462 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,462 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:01:13,472 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,474 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,475 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,477 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:01:13,492 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:13,495 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:01:17,339 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 22:01:33,321 - root - INFO - {"_type": "request_payload", "session_id": "uuid-4412c98e-2c24-403c-8b17-54d7689ac59e", "payload": {"query": "3. Is the literature review relevant and up-to-date?", "k": 3}}
+2025-01-13 22:03:50,043 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:03:50 +0530] "GET / HTTP/1.1" 404 175 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-13 22:03:50,087 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:03:50 +0530] "GET /favicon.ico HTTP/1.1" 404 175 "http://127.0.0.1:8745/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+2025-01-13 22:05:43,471 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:05:45,214 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:05:47,054 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:05:48,964 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 22:05:54,217 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 22:05:54,271 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 22:05:54,473 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:05:54,475 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:05:54,513 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:05:54,523 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:05:54,535 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:05:54,537 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:05:54,541 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:05:54,541 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:05:54,541 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:05:54,541 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:05:55,488 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/io/gdrive/__init__.py:191: UserWarning: cannot fetch metadata of file with id 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0, reason: File not found: 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0.
+  warnings.warn(
+
+2025-01-13 22:06:14,448 - root - INFO - {"_type": "request_payload", "session_id": "uuid-94f64ba7-c56e-4994-bc6b-281eedf93865", "payload": {"query": "1. Is the paper's grammar and punctuation correct?", "k": 3}}
+2025-01-13 22:06:14,473 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (399 minibatch(es)) have been sent to the engine
+2025-01-13 22:06:15,480 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736786174, "remote": "127.0.0.1", "session_id": "uuid-94f64ba7-c56e-4994-bc6b-281eedf93865", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "71"}], "status": 200, "time_elapsed": "1.032"}
+2025-01-13 22:06:15,480 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:06:14 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:06:15,710 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:06:15,711 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,750 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:06:15,758 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,768 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,770 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,771 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,773 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:06:15,785 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:15,787 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:19,473 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 22:06:35,669 - root - INFO - {"_type": "request_payload", "session_id": "uuid-2e824fa4-7b71-4420-a64d-e772b9ac144b", "payload": {"query": "2. Is the paper's structure and organization logical and easy to follow?", "k": 3}}
+2025-01-13 22:06:35,673 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (324 minibatch(es)) have been sent to the engine
+2025-01-13 22:06:36,480 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736786195, "remote": "127.0.0.1", "session_id": "uuid-2e824fa4-7b71-4420-a64d-e772b9ac144b", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "93"}], "status": 200, "time_elapsed": "0.811"}
+2025-01-13 22:06:36,480 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:06:35 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:06:36,732 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:06:36,735 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,784 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:06:36,793 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,803 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,804 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,807 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,807 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:06:36,823 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,825 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,826 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,827 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:06:36,842 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:36,844 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:06:40,673 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 22:06:56,659 - root - INFO - {"_type": "request_payload", "session_id": "uuid-268dd7b6-3c30-479b-8652-aa04d1256a90", "payload": {"query": "3. Are the paper's arguments and claims well-supported by evidence and examples?", "k": 3}}
+2025-01-13 22:08:41,853 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:08:43,593 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:08:44,821 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-13 22:08:46,740 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 22:09:01,372 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 22:09:01,433 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 22:09:01,628 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:09:01,628 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:01,661 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:09:01,672 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:01,693 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:01,694 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:01,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:01,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:01,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:01,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:02,587 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/io/gdrive/__init__.py:191: UserWarning: cannot fetch metadata of file with id 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0, reason: File not found: 11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0.
+  warnings.warn(
+
+2025-01-13 22:09:21,601 - root - INFO - {"_type": "request_payload", "session_id": "uuid-2a79d11b-2b3e-4593-8345-a2958f7f3d4c", "payload": {"query": "1. Is the paper free of grammatical errors?", "k": 3}}
+2025-01-13 22:09:21,621 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (399 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:22,634 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736786361, "remote": "127.0.0.1", "session_id": "uuid-2a79d11b-2b3e-4593-8345-a2958f7f3d4c", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "64"}], "status": 200, "time_elapsed": "1.033"}
+2025-01-13 22:09:22,640 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:09:21 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:09:22,859 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:09:22,860 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,891 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:09:22,901 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,912 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,913 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,915 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,917 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:09:22,930 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:22,932 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:26,671 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:42,818 - root - INFO - {"_type": "request_payload", "session_id": "uuid-e8a80fa0-7481-4dea-9fb8-e4eab202e6d9", "payload": {"query": "2. Is the paper well-structured and easy to follow?", "k": 3}}
+2025-01-13 22:09:42,821 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (323 minibatch(es)) have been sent to the engine
+2025-01-13 22:09:43,635 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736786382, "remote": "127.0.0.1", "session_id": "uuid-e8a80fa0-7481-4dea-9fb8-e4eab202e6d9", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "72"}], "status": 200, "time_elapsed": "0.816"}
+2025-01-13 22:09:43,643 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:22:09:42 +0530] "POST /v1/retrieve HTTP/1.1" 200 161 "-" "python-requests/2.32.3"
+2025-01-13 22:09:43,908 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 22:09:43,910 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,945 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 22:09:43,954 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,964 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,967 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,969 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,969 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:09:43,980 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,982 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,985 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:43,986 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: OSError: [Errno 98] error while attempting to bind on address ('127.0.0.1', 8745): address already in use
+2025-01-13 22:09:44,005 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:44,008 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 22:09:47,871 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 22:10:03,840 - root - INFO - {"_type": "request_payload", "session_id": "uuid-2028c4d7-28f1-44a7-bed9-6a971be43fda", "payload": {"query": "3. Are the arguments and claims in the paper well-supported by evidence?", "k": 3}}

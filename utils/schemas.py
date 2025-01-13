@@ -7,10 +7,9 @@ class TokenTracker(BaseModel):
     net_tokens: int = Field(None, description="Number of tokens")
 
 class Reviewer(BaseModel):
-    id: int = Field(description="ID of the reviewer")
-    specialisation: str = Field(description="Specialisation of the reviewer")
-    questions: List[str] = Field(description="Questions asked by the reviewer")
-
+    id: int = Field(None, description="ID of the reviewer")
+    specialisation: str = Field(None, description="Specialisation of the reviewer")
+    questions: List[str] = Field(None, description="Questions asked by the reviewer")
 
 class QAPair(BaseModel):
     query: str = Field(None, description="Query string")

@@ -7,7 +7,7 @@ import threading
 import pprint
 from dotenv import load_dotenv
 
-from custom_parser import CustomParse
+from .custom_parser import CustomParse
 
 import pathway as pw
 from pathway.xpacks.llm.vector_store import VectorStoreClient, VectorStoreServer
@@ -47,33 +47,6 @@ class DataIndex:
         return self.client.query(query, k=k)
 
 
-def main():
-    """
-    This is just a demo of how to use the DataIndex class, 
-    all parameters will be changed in the eventual implementation
-    """
-
-    embedder = embedders.SentenceTransformerEmbedder(model="intfloat/e5-large-v2")
-    text_splitter = TokenCountSplitter()
-
-    data_sources = [pw.io.gdrive.read(object_id=os.getenv("NIPS_OBJECT_ID"), 
-                                    service_user_credentials_file="credentials.json"
-                                    )]
-
-    d = DataIndex(data_sources, embedder, text_splitter)
-    d.run()
-
-    time.sleep(90)
-    
-    def f():
-        with open("output.txt", 'w') as file:
-            pprint(d.query("What is AI?", k=5), stream=file)
-
-        
-
-    x = threading.Thread(target=f)
-    x.start()
-
 
 class FileRetriever:
     def __init__(self, object_id, credentials_file="credentials.json", embedder_model="intfloat/e5-large-v2"):
@@ -92,7 +65,7 @@ class FileRetriever:
     def start_server(self):
         self.index.run()
 
-    def retrieve_data(self, query, timeout=60):
+    def retrieve_data(self, query, k, timeout=90):
         """
         Returns data using the same streaming principle from DataIndex.
         """
@@ -101,7 +74,7 @@ class FileRetriever:
         # Wait to ensure server is ready
         time.sleep(timeout)
         # Query data
-        return self.index.query(query)
+        return self.index.query(query, k=k)
     
 # Usage
 if __name__ == "__main__":
