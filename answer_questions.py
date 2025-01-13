@@ -4,12 +4,14 @@ from typing import List
 import pprint 
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
 
 from utils.schemas import Reviewer, Queries, QAPair, Paper
 from utils.chat import invoke_llm_langchain
 from utils.retriever import FileRetriever
+from utils.helper import kill_process_on_port
 from agentstates import QuestionState, AnswerState, IntermediateAnswerState
 
 ## Idea:
@@ -54,6 +56,7 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
         {question}
         </Question>
 
+        Each question must be on the content of the paper and not its structure. For eg, avoid questions like "Is the paper well-structured?".
         Generate your answer in the form of a PYTHON list of strings, enclosed within `[]`.
         Each question number should be unique and in order. All questions must be a Python string, enclosed in `""` (double quotes).
         Do not make any syntax error.
@@ -79,7 +82,9 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
         You shall be provided with multiple boolean Yes/No questions. You will be required to generate sub-queries based on the given questions.
         The sub-queries must be unique and must be able to fetch enough information to answer the given question.
         The sub-queries should contain all questions which are relevant to the reasoning pathway to answer the given question, that is, based on the given sub-queries and their answers, one should be able to form the complete reasoning pathway to formulate the answer to the main query.
+        Each query must be a question about the content of the paper and not its structure.
         Follow any instruction given henceforth strictly while generating the sub-queries.
+        The questions must be 'What' questions rather than 'Does' or 'Does not' questions. For eg, "What are the strengths of architecture of the model?" rather than "Does the model have a good architecture?".
         """
         sub_query_gen_messages = [SystemMessage(content=sub_query_gen_system_message)]
         sub_queries = generate_sub_queries_by_question(sub_query_gen_messages, question)
@@ -106,25 +111,21 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
         for i, reference in enumerate(references):
             reference_ = f"""
             <Document {i+1}>
-            {reference.text}
+            {reference['text']}
             </Document {i+1}>
             """
             compiled_references += f"\n{reference_}\n"
         return compiled_references
 
     updated_state = copy.deepcopy(state)
-
-    retriever = FileRetriever(
-        object_id=paper.object_id,
-        credentials_file="credentials.json",
-        embedder_model="intfloat/e5-large-v2"
-    )
-
+    retriever = FileRetriever(object_id=paper.object_id)
+    retriever.start_server()
     for question in questions:
         # question is a Queries object 
         for sub_qa in question.sub_qas:
             # sub_qa is a QAPair object
-            references = retriever.retrieve_data(query=sub_qa.query, k=3, timeout=20)
+            references = retriever.retrieve_data(query=sub_qa.query, k=3)
+            # print(references)
             sub_qa.references = compile_references(references) ## Update this in <Document> format
 
     updated_state.questions = questions
@@ -148,12 +149,12 @@ def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState
 
     You have been provided with the following references:
     <References>
-    \t{references}
+        {references}
     </References>
 
     Following is the query needed to be answered:
     <Query>
-    {query}
+        {query}
     </Query>
 
     You are also provided with the larger question that this sub-query is a part of for your reference:
@@ -202,8 +203,7 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
     updated_state = AnswerState(messages=messages,
                                 paper=paper,
                                 conference=conference,
-                                conference_description=conference_description,
-                                reviewers=state.reviewers)
+                                conference_description=conference_description)
 
     ## Summarise the results of the sub-queries into a final Yes/No answer
     ## For each question, compile the QAPair objects into a single string
@@ -214,7 +214,7 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
     You need to refer to these sub-queries and their answers, compile their info and generate the final `YES`/`NO` answer.
 
     <SubQueries>
-    {compiled_qas}
+        {compiled_qas}
     </SubQueries>
 
     The question to be answered is:
@@ -229,7 +229,7 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
     The question is used to determine publishability of the paper in the conference `{conference}`. Following is a brief description of the conference:
 
     <ConferenceDescription>
-    {conference_description}
+        {conference_description}
     </ConferenceDescription>
 
     Generate your final answer based on the following instructions
@@ -281,26 +281,22 @@ if __name__ == "__main__":
 
     state = AnswerState(
         messages=[],
-        paper=Paper(object_id="11m_cx50ZGVUP_oAiR7_qzXC_7jStGluX0", title="Sample Paper", filename="sample_paper.pdf"),
-        topic="Sample Topic",
-        questions=["Is the paper well-written?", "Is the paper well-researched?", "Is the paper well-structured?"],
+        paper=Paper(object_id="1T0Dudr2h8M_IM8OHJ1EZEuRBzIlNn6ON", title="Sample Paper", filename="sample_paper.pdf"),
+        questions=["Does the paper propose a novel deep learning architecture that improves upon existing methods?"],
         conference="Sample Conference",
         conference_description="This is a sample conference description",
-        reviewers=[
-            Reviewer(id=1, specialisation="Sample Specialisation 1", questions=["Is the paper well-written?"]),
-            Reviewer(id=2, specialisation="Sample Specialisation 2", questions=["Is the paper well-researched?"]),
-            Reviewer(id=3, specialisation="Sample Specialisation 3", questions=["Is the paper well-structured?"])
-        ]
     )
 
     print("Generating sub-queries...")
     intermediate_state = generate_sub_queries(state)
+
     print("Retrieving references...")
     intermediate_state = retrieve_references(intermediate_state)
+
     print("Answering sub-queries...")
     intermediate_state = answer_sub_queries(intermediate_state)
+
     print("Summarising results...")
     final_state = summarise_results(intermediate_state)
 
     print("Final State:")
-

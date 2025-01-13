@@ -15,6 +15,7 @@ def invoke_llm_langchain(messages, model="llama-3.1-70b-versatile", temperature=
         response = llm.invoke(messages)
     except Exception as e:
         print(f"Error in invoking LLM:\n{e}")
+        return messages, [], []
 
     content = response.content
     input_tokens = response.usage_metadata["input_tokens"]

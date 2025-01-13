@@ -7,7 +7,10 @@ import threading
 import pprint
 from dotenv import load_dotenv
 
-from .custom_parser import CustomParse
+if __name__ == "__main__":
+    from custom_parser import CustomParse
+else:
+    from .custom_parser import CustomParse
 
 import pathway as pw
 from pathway.xpacks.llm.vector_store import VectorStoreClient, VectorStoreServer
@@ -65,12 +68,10 @@ class FileRetriever:
     def start_server(self):
         self.index.run()
 
-    def retrieve_data(self, query, k, timeout=90):
+    def retrieve_data(self, query, k, timeout=20):
         """
         Returns data using the same streaming principle from DataIndex.
         """
-        # Start server for streaming
-        self.start_server()
         # Wait to ensure server is ready
         time.sleep(timeout)
         # Query data
@@ -78,12 +79,13 @@ class FileRetriever:
     
 # Usage
 if __name__ == "__main__":
-    object_id = os.getenv("NIPS_OBJECT_ID")
+    object_id = "1T0Dudr2h8M_IM8OHJ1EZEuRBzIlNn6ON"
 
     def run_retriever():
         retriever = FileRetriever(object_id=object_id)
-        query = "What is the best way to train a neural network?"
-        response = retriever.retrieve_data(query)
+        query = "What are the key contributions of the proposed deep learning architecture?"
+        retriever.start_server()
+        response = retriever.retrieve_data(query, k=3)
         pprint.pprint(response)
 
     thread = threading.Thread(target=run_retriever)
