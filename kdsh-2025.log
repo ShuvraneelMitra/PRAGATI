@@ -93,3 +93,243 @@
 2025-01-11 20:08:16,134 - pathway_engine.connectors - ERROR - There had been an error processing the row read result: TimeoutError: The read operation timed out
 2025-01-11 20:08:16,136 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (52981 minibatch(es)) have been sent to the engine
 2025-01-11 20:08:16,136 - pathway_engine.connectors.monitoring - WARNING - PythonReader-0: Closing the data source
+2025-01-13 08:20:19,892 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:20:26,840 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:20:26,937 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:20:27,313 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:20:27,328 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:20:27,410 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:20:27,445 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:20:27,485 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:20:27,491 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:20:27,505 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:20:27,506 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:20:27,506 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:20:27,506 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:20:34,828 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (5 minibatch(es)) have been sent to the engine
+2025-01-13 08:20:35,786 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:20:42,007 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (3 minibatch(es)) have been sent to the engine
+2025-01-13 08:21:03,096 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (2 minibatch(es)) have been sent to the engine
+2025-01-13 08:21:27,299 - root - INFO - {"_type": "request_payload", "session_id": "uuid-f62c66d0-3f9a-4ed1-9c15-de73561ba4fd", "payload": {"query": "What is the best way to train a neural network?", "k": 3}}
+2025-01-13 08:21:27,343 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (1197 minibatch(es)) have been sent to the engine
+2025-01-13 08:21:27,633 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736736687, "remote": "127.0.0.1", "session_id": "uuid-f62c66d0-3f9a-4ed1-9c15-de73561ba4fd", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.334"}
+2025-01-13 08:21:27,634 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:08:21:27 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
+2025-01-13 08:21:32,393 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:08,389 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:25:24,814 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:25:24,876 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:25:25,262 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:25:25,264 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:25,324 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:25:25,344 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:25,379 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:25,385 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:25,396 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:25,396 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:25,396 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:25,396 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:31,264 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:31,895 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:25:50,738 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:25:56,733 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:25:56,801 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:25:57,147 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:25:57,149 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:57,215 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:25:57,231 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:57,244 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:57,246 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:25:57,249 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:57,250 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:57,250 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:25:57,250 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:03,149 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:03,804 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:26:24,969 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:42,055 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:48,149 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (15 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:57,128 - root - INFO - {"_type": "request_payload", "session_id": "uuid-321087f0-1541-4f57-b696-8203417ae00c", "payload": {"query": "What is the best way to train a neural network?", "k": 3}}
+2025-01-13 08:26:57,131 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (1198 minibatch(es)) have been sent to the engine
+2025-01-13 08:26:57,507 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736737017, "remote": "127.0.0.1", "session_id": "uuid-321087f0-1541-4f57-b696-8203417ae00c", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.379"}
+2025-01-13 08:26:57,509 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:08:26:57 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
+2025-01-13 08:27:02,131 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 08:29:32,653 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:29:38,712 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/internals/parse_graph.py:249: UserWarning: There are operators in the computation graph that haven't been used. Use pathway.run() (or similar) to run the computation involving these nodes.
+  warnings.warn(
+
+2025-01-13 08:30:39,752 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:30:59,020 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:31:03,715 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/internals/parse_graph.py:249: UserWarning: There are operators in the computation graph that haven't been used. Use pathway.run() (or similar) to run the computation involving these nodes.
+  warnings.warn(
+
+2025-01-13 08:31:56,702 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:32:01,512 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:32:01,565 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:32:04,998 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:32:05,179 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:32:05,181 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:32:05,244 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:32:05,265 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:32:05,292 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:32:05,297 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:32:05,306 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:05,307 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:05,307 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:05,307 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:11,182 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:11,827 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:32:32,607 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:47,946 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 08:32:53,182 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (13 minibatch(es)) have been sent to the engine
+2025-01-13 08:34:50,844 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:34:56,582 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:34:56,640 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:35:00,352 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:35:00,526 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:35:00,591 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:35:00,594 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:35:00,614 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:35:00,661 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:35:00,662 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:35:00,670 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:00,670 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:00,670 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:00,670 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:06,526 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:07,145 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:35:27,915 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:43,200 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 08:35:48,526 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (13 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:40,094 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:48:45,300 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 08:48:45,384 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 08:48:49,299 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 08:48:49,509 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 08:48:49,512 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:48:49,614 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 08:48:49,639 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:48:49,674 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:48:49,680 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 08:48:49,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:49,698 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:49,699 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:49,699 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:55,511 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 08:48:56,165 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 08:49:17,173 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 08:49:33,199 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 08:49:39,011 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:43,698 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 09:06:49,914 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 09:06:49,967 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 09:06:50,323 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 09:06:50,325 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:06:50,388 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 09:06:50,405 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:06:50,420 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:06:50,422 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:06:50,425 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:50,425 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:50,425 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:50,425 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:56,325 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 09:06:56,940 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 09:07:18,643 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:07:34,797 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (15 minibatch(es)) have been sent to the engine
+2025-01-13 09:07:39,825 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (13 minibatch(es)) have been sent to the engine
+2025-01-13 09:07:50,305 - root - INFO - {"_type": "request_payload", "session_id": "uuid-049113b7-3383-4640-a355-3b6152d977f5", "payload": {"query": "What is the best way to train a neural network?", "k": 3}}
+2025-01-13 09:07:50,354 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (1199 minibatch(es)) have been sent to the engine
+2025-01-13 09:07:50,654 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736739470, "remote": "127.0.0.1", "session_id": "uuid-049113b7-3383-4640-a355-3b6152d977f5", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.350"}
+2025-01-13 09:07:50,656 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:09:07:50 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
+2025-01-13 09:07:55,354 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:23,809 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 09:08:28,986 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 09:08:29,072 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 09:08:29,415 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 09:08:29,418 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:08:29,460 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 09:08:29,474 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:08:29,489 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:08:29,491 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 09:08:29,496 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:29,496 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:29,496 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:29,496 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:35,418 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 09:08:36,047 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 09:08:57,167 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 09:09:14,185 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 09:09:20,417 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (15 minibatch(es)) have been sent to the engine
+2025-01-13 09:09:29,396 - root - INFO - {"_type": "request_payload", "session_id": "uuid-f2385263-3a98-4e14-a49b-605aefca5e53", "payload": {"query": "What is the best way to train a neural network?", "k": 3}}
+2025-01-13 09:09:29,423 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (1199 minibatch(es)) have been sent to the engine
+2025-01-13 09:09:29,713 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736739569, "remote": "127.0.0.1", "session_id": "uuid-f2385263-3a98-4e14-a49b-605aefca5e53", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.317"}
+2025-01-13 09:09:29,713 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:09:09:29 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
+2025-01-13 09:09:34,423 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (100 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:30,037 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: intfloat/e5-large-v2
+2025-01-13 10:25:36,088 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/pathway/xpacks/llm/vector_store.py:218: UserWarning: `_metadata` column is not present in Table <pathway.Table schema={'data': typing.Any}>. Filtering will not work for this Table
+  warnings.warn(
+
+2025-01-13 10:25:36,145 - py.warnings - WARNING - /home/destroy0p/AgnijBiswas/Publishability-of-Research/venv/lib/python3.12/site-packages/beartype/_util/hint/pep/utilpeptest.py:311: BeartypeDecorHintPep585DeprecationWarning: PEP 484 type hint typing.Sequence[str] deprecated by PEP 585. This hint is scheduled for removal in the first Python version released after October 5th, 2025. To resolve this, import this hint from "beartype.typing" rather than "typing". For further commentary and alternatives, see also:
+    https://beartype.readthedocs.io/en/latest/api_roar/#pep-585-deprecations
+  warn(
+
+2025-01-13 10:25:36,574 - pathway_engine.engine.dataflow - INFO - Preparing Pathway computation
+2025-01-13 10:25:36,575 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 10:25:36,622 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-01-13 10:25:36,657 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 10:25:36,686 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 10:25:36,694 - pathway_engine.connectors - INFO - Enter read_snapshot method with reader Python
+2025-01-13 10:25:36,710 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:36,710 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:36,710 - pathway_engine.connectors.monitoring - INFO - PythonReader-2: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:36,710 - pathway_engine.connectors.monitoring - INFO - PythonReader-3: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:42,576 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (4 minibatch(es)) have been sent to the engine
+2025-01-13 10:25:43,184 - pikepdf._core - INFO - pikepdf C++ to Python logger bridge initialized
+2025-01-13 10:26:03,890 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (1 minibatch(es)) have been sent to the engine
+2025-01-13 10:26:20,116 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 1 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 10:26:26,076 - pathway_engine.connectors.monitoring - INFO - PythonReader-0: 0 entries (14 minibatch(es)) have been sent to the engine
+2025-01-13 10:26:36,553 - root - INFO - {"_type": "request_payload", "session_id": "uuid-f52a46b8-812c-450d-b033-d2757395bc86", "payload": {"query": "What is the best way to train a neural network?", "k": 3}}
+2025-01-13 10:26:36,557 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 1 entries (1197 minibatch(es)) have been sent to the engine
+2025-01-13 10:26:36,850 - root - INFO - {"_type": "http_access", "method": "POST", "scheme": "http", "scheme_with_forwarded": "http", "host": "127.0.0.1:8745", "route": "/v1/retrieve", "content_type": "application/json", "user_agent": "python-requests/2.32.3", "unix_timestamp": 1736744196, "remote": "127.0.0.1", "session_id": "uuid-f52a46b8-812c-450d-b033-d2757395bc86", "headers": [{"header": "Host", "value": "127.0.0.1:8745"}, {"header": "User-Agent", "value": "python-requests/2.32.3"}, {"header": "Accept-Encoding", "value": "gzip, deflate"}, {"header": "Accept", "value": "*/*"}, {"header": "Connection", "value": "keep-alive"}, {"header": "Content-Type", "value": "application/json"}, {"header": "Content-Length", "value": "68"}], "status": 200, "time_elapsed": "0.298"}
+2025-01-13 10:26:36,851 - aiohttp.access - INFO - 127.0.0.1 [13/Jan/2025:10:26:36 +0530] "POST /v1/retrieve HTTP/1.1" 200 4999 "-" "python-requests/2.32.3"
+2025-01-13 10:26:41,607 - pathway_engine.connectors.monitoring - INFO - PythonReader-1: 0 entries (101 minibatch(es)) have been sent to the engine

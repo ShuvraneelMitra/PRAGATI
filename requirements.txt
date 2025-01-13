@@ -1,5 +1,7 @@
 pathway==0.16.3
 langgraph
+langchain-groq
+langchain-core
 pydantic
 pathway[xpack-llm]
 pathway[all]

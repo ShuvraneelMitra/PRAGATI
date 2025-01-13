@@ -4,7 +4,9 @@ from pathway.xpacks.llm import embedders
 from pathway.xpacks.llm.splitters import TokenCountSplitter
 import pathway as pw
 from dotenv import load_dotenv
+import pprint
 from DataIndex import DataIndex
+import threading
 
 class FileRetriever:
     def __init__(self, object_id, credentials_file="credentials.json", embedder_model="intfloat/e5-large-v2"):
@@ -35,10 +37,16 @@ class FileRetriever:
         return self.index.query(query)
     
 # Usage
-object_id = os.getenv("NIPS_OBJECT_ID")
+if __name__ == "__main__":
+    object_id = os.getenv("NIPS_OBJECT_ID")
 
-retriever = FileRetriever(object_id=object_id)
-query = "What is the best way to train a neural network?"
-response = retriever.retrieve_data(query)
+    def run_retriever():
+        retriever = FileRetriever(object_id=object_id)
+        query = "What is the best way to train a neural network?"
+        response = retriever.retrieve_data(query)
+        pprint.pprint(response)
 
-print(response)
+    thread = threading.Thread(target=run_retriever)
+    thread.start()
+    print("Hello world")
+    thread.join()

@@ -21,5 +21,10 @@ class Queries(BaseModel):
     original_query: str = Field(None, description="Original query string")
     sub_qas: List[QAPair] = Field(None, description="List of question-answer pairs related to the original query")
 
+class Paper(BaseModel):
+    object_id: str = Field(None, description="Object ID of the paper")
+    title: str = Field(None, description="Title of the paper")
+    filename: str = Field(None, description="Filename of the paper")
+
 
 
