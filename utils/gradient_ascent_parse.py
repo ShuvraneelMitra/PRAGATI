@@ -37,19 +37,6 @@ if TYPE_CHECKING:
     from openparse.processing import IngestionPipeline
 
 class CustomParse(pw.UDF):
-    
-    """
-    All arguments can be overridden during UDF application.
-
-    Args:
-        - mode: single, elements or paged.
-          When single, each document is parsed as one long text string.
-          When elements, each document is split into unstructured's elements.
-          When paged, each pages's text is separately extracted.
-        - post_processors: list of callables that will be applied to all extracted texts.
-        - **unstructured_kwargs: extra kwargs to be passed to unstructured.io's `partition` function
-    """
-    
     def __init__(
         self,
         mode: str = "single",
@@ -86,20 +73,7 @@ class CustomParse(pw.UDF):
         return result
 
     def __wrapped__(self, contents: bytes, **kwargs) -> list[tuple[str, dict]]:
-        """
-        Parse the given document:
 
-        Args:
-            - contents: document contents
-            - **kwargs: override for defaults set in the constructor
-
-        Returns:
-            a list of pairs: text chunk and metadata
-            The metadata is obtained from Unstructured, you can check possible values
-            in the `Unstructed documentation <https://unstructured-io.github.io/unstructured/metadata.html>`
-            Note that when `mode` is set to `single` or `paged` some of these fields are
-            removed if they are specific to a single element, e.g. `category_depth`.
-        """
         import unstructured.partition.auto
 
         kwargs = {**self.kwargs, **kwargs}
@@ -152,15 +126,6 @@ class CustomParse(pw.UDF):
                         meta_dict[page_number], metadata
                     )
             docs = [(text_dict[key], meta_dict[key]) for key in text_dict.keys()]
-
-
-
-        # print('-----------------------------------------------------------------------------------------')
-
-        # print(vars(docs))
-
-        # print('----------------------------------------------------------------------------------------------')
-
         
         return docs
 
