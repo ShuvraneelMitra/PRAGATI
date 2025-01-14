@@ -6,7 +6,18 @@ __pycache__/
 #files
 credentials.json
 .env
-test.py
 kdsh-2025.log
 output.txt
 gdrive-credentials.json
+
+
+# misc
+server/.DS_Store
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+server/.env.production.local
+
+server/npm-debug.log*
+server/yarn-debug.log*
+server/yarn-error.log*
