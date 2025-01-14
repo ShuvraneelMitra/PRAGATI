@@ -53,7 +53,9 @@ def create_researchers(state:QuestionState) -> QuestionState:
     -- 'id': a unique number between 1 and {num_reviewers}
     -- 'specialisation': Area of specialisation of the reviewer. This area of specialisation should be coherent with the topics of the given conference.
 
-    There should be no extra verbiage in your answer. Only the list of JSONs should be returned.
+    There should be no extra verbiage in your answer. Only the list of JSONs should be returned. 
+
+    DO NOT return any text other than the list of JSONs.
     """
 
     researcher_creation_messages.append(HumanMessage(content=researcher_creation_prompt))
@@ -100,7 +102,7 @@ def get_questionnaire(state:QuestionState) -> QuestionState:
     -- The questions should have a binary answer (Yes/No) and should be relevant to the topic of the paper.
     -- The questions should be formed in such a way that a 'Yes' answer would indicate a positive review and a 'No' answer would indicate a negative review. That is, 'Yes' answers should indicate that the paper is good and 'No' answers should indicate that the paper is not good.
     -- The entire list if questions should effectively help the reviewers in evaluating the paper.
-    -- Keep the number of questions between 3 and 5. Do not exceed this limit.
+    -- Keep the number of questions less than 3. Do not exceed this limit.
     -- DO NOT repeat the questions. Each question should be unique and should cover a different aspect of the paper.
 
     """
