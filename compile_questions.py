@@ -11,15 +11,28 @@ def compile_questions(state:QuestionState) -> AnswerState:
     """
     Compile all questions made by all the reviewers into a single list
     """
-    updated_state = AnswerState(messages=state['messages'],
-                                paper=state['paper'],
-                                topic=state['topic'],
-                                questions=[],
-                                conference=state['conference'],
-                                conference_description=state['conference_description'],
-                                answer=None,
-                                token_usage=state['token_usage'])
-    for reviewer in state['reviewers']:
-        updated_state['questions'].extend(reviewer['questions'])
+    questions = []
+    for reviewer in state.reviewers:
+        questions.extend(reviewer.questions)
+
+    updated_state = AnswerState(messages=state.messages,
+                                paper=state.paper,
+                                questions=questions,
+                                conference=state.conference,
+                                conference_description=state.conference_description,
+                                )
+
+    return updated_state
+
+def compile2(state:AnswerState) -> AnswerState:
+    """
+    Compile all questions made by all the reviewers into a single list
+    """
+
+    updated_state = AnswerState(paper=state.paper,
+                                questions=state.questions,
+                                conference=state.conference,
+                                conference_description=state.conference_description,
+                                )
 
     return updated_state

@@ -4,7 +4,6 @@ from typing import List
 import pprint 
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
 
@@ -31,6 +30,9 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
     """
     Generate sub-queries for each question in the state
     """
+    pprint.pprint(state.__dict__)
+    if state.questions is None:
+        raise ValueError("Questions cannot be None")
     messages = state.messages
     paper = state.paper
     questions = state.questions
@@ -57,18 +59,16 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
         </Question>
 
         Each question must be on the content of the paper and not its structure. For eg, avoid questions like "Is the paper well-structured?".
-        Generate your answer in the form of a PYTHON list of strings, enclosed within `[]`.
+        Generate your answer in the form of a ONLY a PYTHON list of strings, enclosed within `[]`.
         Each question number should be unique and in order. All questions must be a Python string, enclosed in `""` (double quotes).
-        Do not make any syntax error.
+        Do not make any syntax error. Strictly keep the number of sub-queries less than 3. Generate ONLY a Python list of strings without any extra text or verbiage.
         """
 
         messages.append(HumanMessage(content=sub_query_gen_prompt))
         messages, input_tokens, output_tokens = invoke_llm_langchain(messages, api_key=api_key)
         sub_queries = messages[-1].content
         sub_queries = eval(sub_queries.replace("\n", "").replace("```json", "").replace("```python", "").replace("```", ""))
-        print(question)
-        pprint.pprint(sub_queries)
-        print()
+
         sub_qas = []
         for ques in sub_queries:
             sub_qa = QAPair(query=ques)
@@ -77,14 +77,25 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
         return sub_qas
 
     questions_updated = []
+    print(questions)
     for question in questions:
         sub_query_gen_system_message = f"""
         You shall be provided with multiple boolean Yes/No questions. You will be required to generate sub-queries based on the given questions.
+
         The sub-queries must be unique and must be able to fetch enough information to answer the given question.
+
         The sub-queries should contain all questions which are relevant to the reasoning pathway to answer the given question, that is, based on the given sub-queries and their answers, one should be able to form the complete reasoning pathway to formulate the answer to the main query.
+
         Each query must be a question about the content of the paper and not its structure.
-        Follow any instruction given henceforth strictly while generating the sub-queries.
+
         The questions must be 'What' questions rather than 'Does' or 'Does not' questions. For eg, "What are the strengths of architecture of the model?" rather than "Does the model have a good architecture?".
+
+        Keep the number of sub-queries less than 3. Do not exceed this limit.
+
+        Generate your response as ONLY a Python list of strings, without any extra text, just the list.
+
+        Follow any instruction given henceforth strictly while generating the sub-queries.
+
         """
         sub_query_gen_messages = [SystemMessage(content=sub_query_gen_system_message)]
         sub_queries = generate_sub_queries_by_question(sub_query_gen_messages, question)
@@ -124,7 +135,7 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
         # question is a Queries object 
         for sub_qa in question.sub_qas:
             # sub_qa is a QAPair object
-            references = retriever.retrieve_data(query=sub_qa.query, k=3)
+            references = retriever.retrieve_data(query=sub_qa.query, k=2)
             # print(references)
             sub_qa.references = compile_references(references) ## Update this in <Document> format
 
@@ -289,14 +300,16 @@ if __name__ == "__main__":
 
     print("Generating sub-queries...")
     intermediate_state = generate_sub_queries(state)
+    pprint.pprint(intermediate_state.__dict__)
 
     print("Retrieving references...")
     intermediate_state = retrieve_references(intermediate_state)
+    pprint.pprint(intermediate_state.__dict__)
 
     print("Answering sub-queries...")
     intermediate_state = answer_sub_queries(intermediate_state)
+    pprint.pprint(intermediate_state.__dict__)
 
     print("Summarising results...")
     final_state = summarise_results(intermediate_state)
-
-    print("Final State:")
+    pprint.pprint(final_state,__dict__)
