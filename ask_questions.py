@@ -7,11 +7,12 @@ import logging
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import START, END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.constants import Send
 
 from utils.schemas import Reviewer, Queries, QAPair, Paper
 from utils.chat import invoke_llm_langchain
 from utils.helper import print_reviewers
-from agentstates import QuestionState
+from agentstates import QuestionState, AnswerState
 
 from dotenv import load_dotenv
 
@@ -28,7 +29,7 @@ def create_researchers(state:QuestionState) -> QuestionState:
     conference_description = state.conference_description
 
     researcher_creation_messages = []
-    load_dotenv()   
+
     def search_conference(conference: str) -> str:
         """
         Search for the description of the conference. Uses Web Search for the same
@@ -50,7 +51,6 @@ def create_researchers(state:QuestionState) -> QuestionState:
     2. Each reviewer should have an area of specialisation, which must be a sub-field of the topic which is discussed in the conference. Carefully go through the conference description provided to decide the areas of specialisation of the reviewers.
 
     3. Return your answer ONLY as a list of JSONs with length {num_reviewers}. Each JSON in the list should have the following keys:
-    -- 'id': a unique number between 1 and {num_reviewers}
     -- 'specialisation': Area of specialisation of the reviewer. This area of specialisation should be coherent with the topics of the given conference.
 
     There should be no extra verbiage in your answer. Only the list of JSONs should be returned. 
@@ -66,34 +66,35 @@ def create_researchers(state:QuestionState) -> QuestionState:
     reviewers = eval(response.replace("\n", "").replace("```json", "").replace("```", ""))
     reviewers = [Reviewer(**reviewer) for reviewer in reviewers]
 
-    # pprint.pprint(reviewers)
-
-    for i in range(num_reviewers):
-        reviewers[i].id = i+1
-
     state.reviewers = reviewers
 
     return state
 
-def get_questionnaire(state:QuestionState) -> QuestionState:
-    """
-    Generate a list of questions for each reviewer
-    """
-    messages = state.messages
-    num_reviewers = state.num_reviewers
+def parallel_route(state: QuestionState):
     conference = state.conference
     conference_description = state.conference_description
-    reviewers = state.reviewers
     topic = state.paper.title
+    for reviewer in state.reviewers:
+        reviewer.conference = conference
+        reviewer.conference_description = conference_description
+        reviewer.topic = topic
+
+    return [Send("get_questions_for_reviewer", reviewer) for reviewer in state.reviewers]
+
+def get_questions_for_reviewer(reviewer: Reviewer):
+    """
+    Generate a list of questions for a given reviewer
+    """
+    reviewer_specialisation = reviewer.specialisation
 
     questions_system_prompt = f"""
     There is a research paper being reviewed for publication in a conference. You are a helpful assistant tasked with creating a list of questions for the reviewers to ask.
 
     You will be provided the specialisation of the reviewers one by one. You need to generate a list of quesions to be asked by the reviewers. 
 
-    The conference is `{conference}`. The topic of the paper is `{topic}`. The conference description is as follows:
+    The conference is `{reviewer.conference}`. The topic of the paper is `{reviewer.topic}`. The conference description is as follows:
     ```
-    {conference_description}
+    {reviewer.conference_description}
     ```
     You shall be provided the Abstract and the Conclusion of the paper. Refer to these and ensure that the questionnaire exhaustively covers all topics of the paper. 
 
@@ -106,26 +107,9 @@ def get_questionnaire(state:QuestionState) -> QuestionState:
     -- DO NOT repeat the questions. Each question should be unique and should cover a different aspect of the paper.
 
     """
-    questions_messages = [SystemMessage(content=questions_system_prompt)]
-
-    ## add abstract and conclusion as messages (HumanMessage)
-
-    ## replace this part with parallel processing
-    for reviewer in reviewers:
-        questions = get_questions_for_reviewer(questions_messages,reviewer,conference,topic)
-        reviewer.questions = questions
-    
-    
-    return state
-
-def get_questions_for_reviewer(messages,reviewer,conference,topic):
-    """
-    Generate a list of questions for a given reviewer
-    """
-    reviewer_specialisation = reviewer.specialisation
 
     questions_prompt = f"""
-    Now you need to generate a list of questions for the reviewer with specialisation `{reviewer_specialisation}`. The conference is `{conference}` and the topic of the paper is `{topic}`.
+    Now you need to generate a list of questions for the reviewer with specialisation `{reviewer_specialisation}`.
 
     Keep in mind the previously mentioned instructions while generating the questions. The questions should be coherent with the topic of the conference and the specialisation of the reviewer.
 
@@ -134,6 +118,7 @@ def get_questions_for_reviewer(messages,reviewer,conference,topic):
     Return your reponse as a Python list of strings, each string being a question. Keep proper syntax, like start with `[` and end with `]` and ensure each string in the list is in-between quotes.
     Return only the list of questions. Do not include any extra verbiage in your response.
     """
+    messages = [SystemMessage(content=questions_system_prompt)]
     messages.append(HumanMessage(content=questions_prompt))
 
     messages, input_tokens, output_tokens = invoke_llm_langchain(messages, api_key=api_key)
@@ -144,7 +129,22 @@ def get_questions_for_reviewer(messages,reviewer,conference,topic):
 
     questions = eval(response.replace("\n", "").replace("```python", "").replace("```", ""))
 
-    return questions
+    return {"questions": questions}
+
+def compile_questions(state: QuestionState) -> AnswerState:
+    """
+    Compile the questions generated for each reviewer
+    """
+
+    questions = state.questions
+    updated_state = AnswerState(messages=state.messages,
+                                paper=state.paper,
+                                questions=questions,
+                                conference=state.conference,
+                                conference_description=state.conference_description,
+                                )
+
+    return updated_state
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, 
@@ -163,17 +163,18 @@ if __name__ == "__main__":
     }
     initial_state = QuestionState(**initial_state_dict)
 
-    compiler = StateGraph(QuestionState)
+    ask_questions_builder = StateGraph(input=QuestionState, output=AnswerState)
     memory = MemorySaver()
 
-    compiler.add_node("create_researchers", create_researchers)
-    compiler.add_node("get_questionnaire", get_questionnaire)
+    ask_questions_builder.add_node("create_researchers", create_researchers)
+    ask_questions_builder.add_node("compile_questions", compile_questions)
+    ask_questions_builder.add_node("get_questions_for_reviewer", get_questions_for_reviewer)
 
-    compiler.add_edge(START, "create_researchers")
-    compiler.add_edge("create_researchers", "get_questionnaire")
-    compiler.add_edge("get_questionnaire", END)
+    ask_questions_builder.add_edge(START, "create_researchers")
+    ask_questions_builder.add_conditional_edges("create_researchers", parallel_route, ["get_questions_for_reviewer"])
+    ask_questions_builder.add_edge("get_questions_for_reviewer", "compile_questions")
 
-    graph = compiler.compile()
+    graph = ask_questions_builder.compile()
 
     thread = {
                 "configurable": 
@@ -189,7 +190,7 @@ if __name__ == "__main__":
             pprint.pprint(key)
             pprint.pprint("-------------------------")
             # pprint.pprint(value['reviewers'])
-            print_reviewers(value['reviewers'])
+            pprint.pprint(value)
             final_state = value
 
     logging.info("Final State:")

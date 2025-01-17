@@ -3,6 +3,7 @@ from typing import List
 import subprocess
 import signal
 import os
+from langchain_groq import ChatGroq
 
 def print_reviewer(reviewer: Reviewer):
     print(f"ID: {reviewer.id}")
@@ -32,3 +33,10 @@ def kill_process_on_port(port):
             print(f"Killed process {pid} on port {port}")
         else:
             print(f"Skipped killing current process {pid}")
+
+def load_model(model, temperature, max_tokens):
+    """
+    Load the LLM model with the given parameters
+    """
+    llm = ChatGroq(model=model, temperature=temperature, max_tokens=max_tokens)
+    return llm
