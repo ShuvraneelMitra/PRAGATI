@@ -30,11 +30,11 @@ from langgraph.constants import Send
 from langchain_community.tools.google_scholar import GoogleScholarQueryRun
 from langchain_community.utilities.google_scholar import GoogleScholarAPIWrapper
 
-from agentstates import Factchecker, Perspectives, Generatecheckertate, CheckingState, SearchQuery, FactCheckerState
+from agentstates import Factchecker, Perspectives, GenerateCheckerState, CheckingState, SearchQuery, FactCheckerState
 
 load_dotenv()
 
-def make_lm(model="llama-3.3-70b-versatile", temperature=0.7, max_tokens=5000):
+def make_lm(model="llama-3.1-70b-versatile", temperature=0.7, max_tokens=5000):
     """
     Invoke the LLM with the given messages and handle response safely.
     """
@@ -43,28 +43,30 @@ def make_lm(model="llama-3.3-70b-versatile", temperature=0.7, max_tokens=5000):
 
 llm = make_lm()
 
-System_instructions="""You are tasked with creating a set of AI fact checker personas. Follow these instructions carefully:
+system_instructions = """
+                    You are tasked with creating a set of AI fact checker personas. Follow these instructions carefully:
 
-1. First, review the research topic:
-{topic}
+                    1. First, review the research topic:
+                    {topic}
 
-2. Determine the most interesting themes based upon documents and / or feedback above.
-                    
-3. Pick the top {max_checker} themes.
+                    2. Determine the most interesting themes based upon documents and / or feedback above.
+                                        
+                    3. Pick the top {max_checker} themes.
 
-4. Assign one checker to each theme."""
+                    4. Assign one checker to each theme.
+                    """
 
-def create_checker(state: Generatecheckertate):
+def create_checker(state: GenerateCheckerState):
     """ Create checker """   
-    topic=state['topic']
-    max_checker=state['max_checker']
+    topic = state['topic']
+    max_checker = state['max_checker']
     structured_llm = llm.with_structured_output(Perspectives)
-    system_message = System_instructions.format(topic=topic, max_checker=max_checker)
+    system_message = system_instructions.format(topic=topic, max_checker=max_checker)
     checker = structured_llm.invoke([SystemMessage(content=system_message)]+[HumanMessage(content="Generate the set of checker.")])
     state["checker"] = checker.checker 
     return state
 
-builder = StateGraph(Generatecheckertate)
+builder = StateGraph(GenerateCheckerState)
 builder.add_node("create_checker", create_checker)
 builder.add_edge(START, "create_checker")
 builder.add_edge("create_checker",END)
@@ -84,9 +86,10 @@ search_prompt = SystemMessage(content=f"""You are going to fact check the given 
 
 def route_websearch(state: CheckingState):
     checker = state["fchecker"]
-    web = checker.web()
+    web = checker.web
     if "https://arxiv.org/" in web:
         return "Arxiv_search"
+    
     elif "https://scholar.google.com/" in web:
         return "Gscholar_search"
     
@@ -100,7 +103,6 @@ def route_search(state: CheckingState):
 
 def generate_question(state: CheckingState):
     """ Search query generation for the websearch"""
-    
     checker = state["fchecker"]
     messages = state["messages"]
 

@@ -7,7 +7,10 @@ import threading
 import pprint
 from dotenv import load_dotenv
 
-from custom_parser import CustomParse
+if __name__ == "__main__":
+    from gradient_ascent_parse import CustomParse
+else:
+    from .gradient_ascent_parse import CustomParse
 
 import pathway as pw
 from pathway.xpacks.llm.vector_store import VectorStoreClient, VectorStoreServer
@@ -21,11 +24,9 @@ logging.captureWarnings(True)
 load_dotenv()
 
 class DataIndex:
-    def __init__(self, data_sources, embeddeer_type, embedder_model="sentence-transformer", splitter_type="token-count", **credentials):
-        if embeddeer_type == "sentence-transformer":
-            self.embedder = embedders.SentenceTransformerEmbedder(model=embedder_model)
-        if splitter_type == "token-count":
-            self.splitter = TokenCountSplitter()
+    def __init__(self, data_sources, embedder, splitter,**credentials):
+        self.embedder = embedder
+        self.splitter = splitter
         self.data_sources = data_sources
         self.credentials = credentials
         self.parser = CustomParse()

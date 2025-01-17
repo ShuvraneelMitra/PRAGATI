@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Annotated
+from typing_extensions import TypedDict
 
 class TokenTracker(BaseModel):
     net_input_tokens: int = Field(None, description="Number of input tokens")
@@ -10,6 +11,12 @@ class Reviewer(BaseModel):
     id: int = Field(None, description="ID of the reviewer")
     specialisation: str = Field(None, description="Specialisation of the reviewer")
     questions: List[str] = Field(None, description="Questions asked by the reviewer")
+    conference: str = Field(None, description="Conference of the reviewer")
+    conference_description: str = Field(None, description="Description of the conference")
+    topic: str = Field(None, description="Topic of the paper being reviewed")
+
+class ReviewerProps(BaseModel):
+    specialisation: str = Field(None, description="Specialisation Field of the reviewer. This must be aligned with the conference topic")
 
 class QAPair(BaseModel):
     query: str = Field(None, description="Query string")

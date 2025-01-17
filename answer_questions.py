@@ -2,8 +2,12 @@ import copy
 import os
 from typing import List
 import pprint 
+from concurrent.futures import ThreadPoolExecutor, as_completed, wait
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langgraph.constants import Send, START, END
+from langgraph.graph import StateGraph
+from langgraph.checkpoint.memory import MemorySaver
 
 from dotenv import load_dotenv
 
@@ -11,7 +15,7 @@ from utils.schemas import Reviewer, Queries, QAPair, Paper
 from utils.chat import invoke_llm_langchain
 from utils.retriever import FileRetriever
 from utils.helper import kill_process_on_port
-from agentstates import QuestionState, AnswerState, IntermediateAnswerState
+from agentstates import QuestionState, AnswerState, IntermediateAnswerState, QueryRoutingState
 
 ## Idea:
 ### 1. We assume that the LLM would not be able to directly answer a reasoning based Yes/No question. Hence the question would be broken into sub-queries.
@@ -30,7 +34,6 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
     """
     Generate sub-queries for each question in the state
     """
-    pprint.pprint(state.__dict__)
     if state.questions is None:
         raise ValueError("Questions cannot be None")
     messages = state.messages
@@ -38,11 +41,6 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
     questions = state.questions
     conference = state.conference
     conference_description = state.conference_description
-
-    updated_state = IntermediateAnswerState(messages=messages, 
-                                            paper=paper, 
-                                            conference=conference,
-                                            conference_description=conference_description,)
 
     def generate_sub_queries_by_question(messages, question:str) -> List[QAPair]:
         """
@@ -77,32 +75,46 @@ def generate_sub_queries(state:AnswerState) -> IntermediateAnswerState:
         return sub_qas
 
     questions_updated = []
-    print(questions)
-    for question in questions:
-        sub_query_gen_system_message = f"""
-        You shall be provided with multiple boolean Yes/No questions. You will be required to generate sub-queries based on the given questions.
 
-        The sub-queries must be unique and must be able to fetch enough information to answer the given question.
+    sub_query_gen_system_message = f"""
+    You shall be provided with multiple boolean Yes/No questions. You will be required to generate sub-queries based on the given questions.
 
-        The sub-queries should contain all questions which are relevant to the reasoning pathway to answer the given question, that is, based on the given sub-queries and their answers, one should be able to form the complete reasoning pathway to formulate the answer to the main query.
+    The sub-queries must be unique and must be able to fetch enough information to answer the given question.
 
-        Each query must be a question about the content of the paper and not its structure.
+    The sub-queries should contain all questions which are relevant to the reasoning pathway to answer the given question, that is, based on the given sub-queries and their answers, one should be able to form the complete reasoning pathway to formulate the answer to the main query.
 
-        The questions must be 'What' questions rather than 'Does' or 'Does not' questions. For eg, "What are the strengths of architecture of the model?" rather than "Does the model have a good architecture?".
+    Each query must be a question about the content of the paper and not its structure.
 
-        Keep the number of sub-queries less than 3. Do not exceed this limit.
+    The questions must be 'What' questions rather than 'Does' or 'Does not' questions. For eg, "What are the strengths of architecture of the model?" rather than "Does the model have a good architecture?".
 
-        Generate your response as ONLY a Python list of strings, without any extra text, just the list.
+    Keep the number of sub-queries less than 3. Do not exceed this limit.
 
-        Follow any instruction given henceforth strictly while generating the sub-queries.
+    Generate your response as ONLY a Python list of strings, without any extra text, just the list.
 
-        """
-        sub_query_gen_messages = [SystemMessage(content=sub_query_gen_system_message)]
-        sub_queries = generate_sub_queries_by_question(sub_query_gen_messages, question)
-        question_updated = Queries(original_query=question, sub_qas=sub_queries)
-        questions_updated.append(question_updated)
+    Follow any instruction given henceforth strictly while generating the sub-queries.
 
-    updated_state.questions = questions_updated
+    """
+
+    sub_query_gen_messages = [SystemMessage(content=sub_query_gen_system_message)]
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [
+            executor.submit(generate_sub_queries_by_question, copy.deepcopy(sub_query_gen_messages), question)
+            for question in questions
+        ]
+        wait(futures)
+        questions_updated = [copy.deepcopy(future.result()) for future in as_completed(futures)]
+
+    questions_updated = [Queries(original_query=question, sub_qas=sub_qas) for question, sub_qas in zip(questions, questions_updated)]
+    # print(type(questions_updated))
+    updated_state = IntermediateAnswerState(messages=messages, 
+                                            paper=paper, 
+                                            conference=conference,
+                                            conference_description=conference_description,
+                                            queries=questions_updated)
+    # print(type(updated_state.questions[0]))
+    # pprint.pprint(updated_state)
+
     return updated_state
 
 def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerState:
@@ -111,7 +123,7 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
     """
     messages = state.messages
     paper = state.paper
-    questions = state.questions
+    questions = state.queries
     conference = state.conference
 
     def compile_references(references) -> str:
@@ -127,19 +139,23 @@ def retrieve_references(state:IntermediateAnswerState) -> IntermediateAnswerStat
             """
             compiled_references += f"\n{reference_}\n"
         return compiled_references
+    
+    def retrieve_and_compile(sub_qa: QAPair) -> None:
+        references = retriever.retrieve_data(query=sub_qa.query, k=2)
+        sub_qa.references = compile_references(references)
 
     updated_state = copy.deepcopy(state)
     retriever = FileRetriever(object_id=paper.object_id)
     retriever.start_server()
-    for question in questions:
-        # question is a Queries object 
-        for sub_qa in question.sub_qas:
-            # sub_qa is a QAPair object
-            references = retriever.retrieve_data(query=sub_qa.query, k=2)
-            # print(references)
-            sub_qa.references = compile_references(references) ## Update this in <Document> format
 
-    updated_state.questions = questions
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(retrieve_and_compile, sub_qa)
+                   for question in questions
+                   for sub_qa in question.sub_qas]
+        for _ in as_completed(futures):
+            pass  # Wait for all tasks to complete
+
+    updated_state.queries = questions
     return updated_state
 
 def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState:
@@ -148,7 +164,7 @@ def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState
     """
     messages = state.messages
     paper = state.paper
-    questions = state.questions
+    questions = state.queries
     conference = state.conference
 
     updated_state = copy.deepcopy(state)
@@ -184,26 +200,94 @@ def answer_sub_queries(state:IntermediateAnswerState) -> IntermediateAnswerState
 
     Return your response in plain text format. Do not include any additional information. Keep your answers logical and concise.
     """
+    def answer_sub_query(sub_qa: QAPair, original_query: str) -> None:
+        answering_messages = [SystemMessage(content=answer_system_message)]
+        answering_message = answer_prompt_template.format(
+            references=sub_qa.references,
+            query=sub_qa.query,
+            original_query=original_query
+        )
+        answering_messages.append(HumanMessage(content=answering_message))
+        answering_messages, _, _ = invoke_llm_langchain(answering_messages, api_key=api_key)
+        sub_qa.answer = answering_messages[-1].content
 
-    for question in questions:
-        # question is a Queries object 
-        original_query = question.original_query
-        for sub_qa in question.sub_qas:
-            # sub_qa is a QAPair object
-            answering_messages = [SystemMessage(content=answer_system_message)]
-            references = sub_qa.references
-            query = sub_qa.query
-            answering_message = answer_prompt_template.format(references=references, query=query, original_query=original_query)
-            answering_messages.append(HumanMessage(content=answering_message))
-            answering_messages, input_tokens, output_tokens = invoke_llm_langchain(answering_messages, api_key=api_key)
-            sub_qa.answer = answering_messages[-1].content
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(answer_sub_query, sub_qa, question.original_query)
+                   for question in questions
+                   for sub_qa in question.sub_qas]
+        for _ in as_completed(futures):
+            pass  # Wait for all tasks to complete
 
-    updated_state.questions = questions
+    
+
+    updated_state.queries = questions
     return updated_state
 
-def summarise_results(state:IntermediateAnswerState) -> AnswerState:
+def route_queries(state:IntermediateAnswerState):
     """
-    Summarise the results of the sub-queries into a final Yes/No answer
+    Route the queries to the appropriate node
+    """
+    return [Send("summarise_answer", QueryRoutingState(query=query, conference=state.conference, conference_description=state.conference_description)) for query in state.queries]
+
+def summarise_answer(query:QueryRoutingState):
+    """
+    Summarise the answer for each question
+    """
+    summary_template = """
+    Following are the sub-queries of the given question and their answer. 
+    You need to refer to these sub-queries and their answers, compile their info and generate the final `YES`/`NO` answer.
+    input_tokens = response.usage_metadata["input_tokens"]
+        outp
+    <SubQueries>
+        {compiled_qas}
+    </SubQueries>
+
+    The question to be answered is:
+        `{question}`
+
+    Logically decide and generate your final answer only as `YES` or `NO` without any extra verbiage. 
+    DO NOT return anything else except `YES` or `NO`.
+    """
+
+    summary_system_message = f"""
+    Following you shall be provided with a list of sub-queries and their answers. Each sub-query is a part of the given larger question.
+    The question is used to determine publishability of the paper in the conference `{query.conference}`. Following is a brief description of the conference:
+
+    <ConferenceDescription>
+        {query.conference_description}
+    </ConferenceDescription>
+
+    Generate your final answer based on the following instructions
+    1. The answer should strictly be `YES` or `NO`. Logically decide the correct answer.
+    2. You are expected to logically decide based on the sub-queries and their answers and return only `YES` or `NO`.
+    3. Return you answer in 'plain-text' format. Do not include any additional information or verbiage. 
+    4. Do not include any Markdown formatting or HTML tags in your answer.
+    """
+    def merge_qa_pair(qa_pair:QAPair) -> str:
+        """
+        Merge the query and answer into a single string
+        """
+        return f"\nQ: {qa_pair.query} \nA:{qa_pair.answer}\n"
+    
+    # compiled_qas = ""
+    # for sub_qa in query.query.sub_qas:
+    #     # sub_qa is a QAPair object
+    #     compiled_qas += merge_qa_pair(sub_qa)
+
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(merge_qa_pair, sub_qa) for sub_qa in query.query.sub_qas]
+        compiled_qas = "----".join([future.result() for future in as_completed(futures)])
+    summarising_messages = [SystemMessage(content=summary_system_message)]
+    summarising_message = summary_template.format(compiled_qas=compiled_qas, question=query.query.original_query)
+    summarising_messages.append(HumanMessage(content=summarising_message))
+    summarising_messages, _, _ = invoke_llm_langchain(summarising_messages, api_key=api_key)
+    final_answer = summarising_messages[-1].content
+
+    return {"answers": ["YES"] if "yes" in final_answer.lower() else ["NO"]}
+
+def compile_results(state:AnswerState) -> AnswerState:
+    """
+    Compile the results of the sub-queries into a final Yes/No answer
     """
     messages = state.messages
     paper = state.paper
@@ -215,69 +299,14 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
                                 paper=paper,
                                 conference=conference,
                                 conference_description=conference_description)
+    
+
 
     ## Summarise the results of the sub-queries into a final Yes/No answer
     ## For each question, compile the QAPair objects into a single string
     ## Use this string to form the final answer
 
-    summary_template = """
-    Following are the sub-queries of the given question and their answer. 
-    You need to refer to these sub-queries and their answers, compile their info and generate the final `YES`/`NO` answer.
-
-    <SubQueries>
-        {compiled_qas}
-    </SubQueries>
-
-    The question to be answered is:
-    `{question}`
-
-    Logically decide and generate your final answer only as `YES` or `NO` without any extra verbiage. 
-    DO NOT return anything else except `YES` or `NO`.
-    """
-
-    summary_system_message = f"""
-    Following you shall be provided with a list of sub-queries and their answers. Each sub-query is a part of the given larger question.
-    The question is used to determine publishability of the paper in the conference `{conference}`. Following is a brief description of the conference:
-
-    <ConferenceDescription>
-        {conference_description}
-    </ConferenceDescription>
-
-    Generate your final answer based on the following instructions
-    1. The answer should strictly be `YES` or `NO`. Logically decide the correct answer.
-    2. You are expected to logically decide based on the sub-queries and their answers and return only `YES` or `NO`.
-    3. Return you answer in 'plain-text' format. Do not include any additional information or verbiage. 
-    4. Do not include any Markdown formatting or HTML tags in your answer.
-    """
-
-    def merge_qa_pair(qa_pair:QAPair) -> str:
-        """
-        Merge the query and answer into a single string
-        """
-        return f"\nQ: {qa_pair.query} \nA:{qa_pair.answer}\n"
-    
-    questions_updated, answers = [], []
-    for question in questions:
-        # question is a Queries object 
-        compiled_qas = ""
-        questions_updated.append(question.original_query)
-        for sub_qa in question.sub_qas:
-            # sub_qa is a QAPair object
-            compiled_qas += merge_qa_pair(sub_qa)
-        summarising_messages = [SystemMessage(content=summary_system_message)]
-        summarising_message = summary_template.format(compiled_qas=compiled_qas, question=question.original_query)
-        summarising_messages.append(HumanMessage(content=summarising_message))
-
-        summarising_messages, input_tokens, output_tokens = invoke_llm_langchain(summarising_messages, api_key=api_key)
-        final_answer = summarising_messages[-1].content
-        if "yes" in final_answer.lower():
-            final_answer = "YES"
-        else:
-            final_answer = "NO"
-        answers.append(final_answer)
-
-    updated_state.answers = answers
-    updated_state.questions = questions_updated
+    answers = state.answers
     count_yes = sum(1 for ans in answers if ans == "YES")
     count_no = len(answers) - count_yes
 
@@ -287,6 +316,55 @@ def summarise_results(state:IntermediateAnswerState) -> AnswerState:
         updated_state.publishable = False
 
     return updated_state
+
+
+# def summarise_results(state:IntermediateAnswerState) -> AnswerState:
+#     """
+#     Summarise the results of the sub-queries into a final Yes/No answer
+#     """
+#     messages = state.messages
+#     paper = state.paper
+#     questions = state.questions
+#     conference = state.conference
+#     conference_description = state.conference_description
+
+#     updated_state = AnswerState(messages=messages,
+#                                 paper=paper,
+#                                 conference=conference,
+#                                 conference_description=conference_description)
+    
+
+
+#     ## Summarise the results of the sub-queries into a final Yes/No answer
+#     ## For each question, compile the QAPair objects into a single string
+#     ## Use this string to form the final answer
+
+    
+#     questions_updated, answers = [], []
+#     for question in questions:
+#         # question is a Queries object 
+#         compiled_qas = ""
+#         questions_updated.append(question.original_query)
+
+#         summarising_messages, input_tokens, output_tokens = invoke_llm_langchain(summarising_messages, api_key=api_key)
+#         final_answer = summarising_messages[-1].content
+#         if "yes" in final_answer.lower():
+#             final_answer = "YES"
+#         else:
+#             final_answer = "NO"
+#         answers.append(final_answer)
+
+#     updated_state.answers = answers
+#     updated_state.questions = questions_updated
+#     count_yes = sum(1 for ans in answers if ans == "YES")
+#     count_no = len(answers) - count_yes
+
+#     if count_yes >= count_no:
+#         updated_state.publishable = True
+#     else:
+#         updated_state.publishable = False
+
+#     return updated_state
 
 if __name__ == "__main__":
 
@@ -298,18 +376,55 @@ if __name__ == "__main__":
         conference_description="This is a sample conference description",
     )
 
-    print("Generating sub-queries...")
-    intermediate_state = generate_sub_queries(state)
-    pprint.pprint(intermediate_state.__dict__)
+    # print("Generating sub-queries...")
+    # intermediate_state = generate_sub_queries(state)
+    # pprint.pprint(intermediate_state.__dict__)
 
-    print("Retrieving references...")
-    intermediate_state = retrieve_references(intermediate_state)
-    pprint.pprint(intermediate_state.__dict__)
+    # print("Retrieving references...")
+    # intermediate_state = retrieve_references(intermediate_state)
+    # pprint.pprint(intermediate_state.__dict__)
 
-    print("Answering sub-queries...")
-    intermediate_state = answer_sub_queries(intermediate_state)
-    pprint.pprint(intermediate_state.__dict__)
+    # print("Answering sub-queries...")
+    # intermediate_state = answer_sub_queries(intermediate_state)
+    # pprint.pprint(intermediate_state.__dict__)
 
-    print("Summarising results...")
-    final_state = summarise_results(intermediate_state)
-    pprint.pprint(final_state,__dict__)
+    # print("Summarising results...")
+    # final_state = summarise_results(intermediate_state)
+    # pprint.pprint(final_state,__dict__)
+
+    answer_questions_builder = StateGraph(AnswerState)
+    memory = MemorySaver()
+
+    answer_questions_builder.add_node("generate_sub_queries", generate_sub_queries)
+    answer_questions_builder.add_node("retrieve_references", retrieve_references)
+    answer_questions_builder.add_node("answer_sub_queries", answer_sub_queries)
+    answer_questions_builder.add_node("route_queries", route_queries)
+    answer_questions_builder.add_node("summarise_answer", summarise_answer)
+    answer_questions_builder.add_node("compile_results", compile_results)
+
+    answer_questions_builder.add_edge(START, "generate_sub_queries")
+    answer_questions_builder.add_edge("generate_sub_queries", "retrieve_references")
+    answer_questions_builder.add_edge("retrieve_references", "answer_sub_queries")
+    answer_questions_builder.add_conditional_edges("answer_sub_queries", route_queries, ["summarise_answer"])
+    answer_questions_builder.add_edge("summarise_answer", "compile_results")
+
+    graph = answer_questions_builder.compile()
+
+    thread = {
+        "configurable": {
+            "thread_id": "1T0Dudr2h8M_IM8OHJ1EZEuRBzIlNn6ON"
+        },
+    }
+
+    final_state = {}
+    for event in graph.stream(state, thread):
+        for key, value in event.items():
+            print("Output from node: ", end=' ')
+            pprint.pprint(key)
+            pprint.pprint("-------------------------")
+            # pprint.pprint(value['reviewers'])
+            pprint.pprint(value)
+            final_state = value
+
+    pprint.pprint(final_state)
+
