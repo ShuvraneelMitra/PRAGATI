@@ -1,9 +1,0 @@
-@import url('https://fonts.googleapis.com/css2?family=Xanh+Mono:ital@0;1&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-    background-color: black;
-}
