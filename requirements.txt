@@ -7,7 +7,8 @@ kaleido
 pandas
 langchain
 langchain-community
-sentence-transformers
-datasets
+uvicorn
+fastapi
 python-dotenv
-rank_bm25
+gradio
+gradio-navbar
