@@ -1,18 +1,19 @@
-import gradio as gr
+import gradio
+import os
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="about")
 
 
 @app.get("/welcome")
 def read_main():
-    return {"message": "Welcome to the main FastAPI app"}
+    return {"message": "Welcome to the main FastAPI app, please go to the root of the url to get started!"}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -35,18 +36,29 @@ def analyze_paper(file):
     return publishable, suggestion
 
 
-with gr.Blocks(css="#gradio-app {margin-top: 60px;}") as ui:
-    with gr.Row():
-        with gr.Column(scale=1):
-            input_area = gr.File(label="Paper File")
-            upload_button = gr.UploadButton(
+js_func = """
+function refresh() {
+    const url = new URL(window.location);
+
+    if (url.searchParams.get('__theme') !== 'dark') {
+        url.searchParams.set('__theme', 'dark');
+        window.location.href = url.href;
+    }
+}
+"""
+
+with gradio.Blocks(js=js_func) as ui:
+    with gradio.Row():
+        with gradio.Column(scale=1):
+            input_area = gradio.File(label="Paper File")
+            upload_button = gradio.UploadButton(
                 label='Upload the paper here',
                 interactive=True,
                 file_count="single"
             )
 
-        with gr.Column(scale=2):
-            is_publishable = gr.TextArea(
+        with gradio.Column(scale=2):
+            is_publishable = gradio.TextArea(
                 lines=20,
                 max_lines=100,
                 placeholder="Is your paper publishable? Let's find out!",
@@ -54,8 +66,8 @@ with gr.Blocks(css="#gradio-app {margin-top: 60px;}") as ui:
                 label="Publication Assessment"
             )
 
-        with gr.Column(scale=1):
-            suggestions = gr.TextArea(
+        with gradio.Column(scale=1):
+            suggestions = gradio.TextArea(
                 lines=20,
                 max_lines=100,
                 placeholder="Improve your paper using custom insights",
@@ -69,4 +81,4 @@ with gr.Blocks(css="#gradio-app {margin-top: 60px;}") as ui:
         outputs=[is_publishable, suggestions]
     )
 
-app = gr.mount_gradio_app(app, ui, path="/gradio")
+app = gradio.mount_gradio_app(app, ui, path="/gradio")

@@ -9,6 +9,7 @@ langchain
 langchain-community
 uvicorn
 fastapi
+jinja2
 python-dotenv
 gradio
 gradio-navbar
