@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #ff6f61;
+            color: #fff;
+            padding: 50px 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .team {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .team h2 {
+            font-size: 2.5rem;
+            color: #ff6f61;
+            margin-bottom: 30px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .team-cards {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: #fff;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            text-decoration: none;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #777;
+            text-decoration: none;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .mission {
+            background-color: #ffecd2;
+            padding: 40px 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .mission h2 {
+            font-size: 2.5rem;
+            color: #ff6f61;
+            margin-bottom: 20px;
+            font-weight: bolder;
+        }
+
+        .mission p {
+            font-size: 1.125rem;
+            color: #333;
+            text-align: justify;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #ff6f61;
+            color: #fff;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        .footer p {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .footer p a.heart {
+            text-decoration: none;
+        }
+
+        .footer p a.heart:hover {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .team-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .mission h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>About Us: GRADIENT ASCENT</h1>
+            <p>We are a bunch of tech nerds from IIT Kharagpur, with a penchant for solving problems
+               and bringing out creative solutions to real-life problems with a dash of over-engineering!</p>
+        </header>
+
+        <section class="team">
+            <h2>Meet Our Team</h2>
+            <div class="team-cards">
+                <a href="https://www.linkedin.com/in/shuvraneelmitra/" class="card">
+                    <img src="https://iili.io/3KOjz8u.jpg" alt="Image of Shuvraneel Mitra">
+                    <h3>Shuvraneel Mitra</h3>
+                    <p>When not noodling around with Machine Learning papers, he is mostly found in the Music Room
+                        trying to learn some impossible riffs.</p>
+                </a>
+                <a href="https://www.linkedin.com/in/agnij-biswas-82a62124a/" class="card">
+                    <img src="https://iili.io/3KeSseI.png" alt="Image of Agnij Biswas">
+                    <h3>Agnij Biswas</h3>
+                    <p>Often the "saviour" for this group in many situations in the past, his love for
+                    smolagents is only paralleled by his affinity towards Sc0ut.</p>
+                </a>
+                <a href="https://www.linkedin.com/in/nabayan-saha-403525261/" class="card">
+                    <img src="https://iili.io/3KeFwlf.png" alt="Image of Nabayan Saha">
+                    <h3>Nabayan Saha</h3>
+                    <p>The perrennial pookie. Often cribs about destroying his NVIDIA Jetson Nano.</p>
+                </a>
+                <a href="https://www.linkedin.com/in/nabarup-ghosh/" class="card">
+                    <img src="https://iili.io/3KeIFea.png" alt="Image of Nabarup Ghosh">
+                    <h3>Nabarup Ghosh</h3>
+                    <p>That one overachiever in every group. Constantly swamped with multiple internships,
+                        research papers and HRs blowing up his phone.</p>
+                </a>
+            </div>
+
+        </section>
+
+        <section class="mission">
+            <h2>PRAGATIv2.0: The story</h2>
+            <p>
+                It all started with the Kharagpur Data Science Hackathon 2025, where the Problem Statement asked us to
+                create am agentic AI framework for deciphering the suitability of various research papers : IN JUST
+                TEN DAYS. Now given some previous background of the team in building agentic AI frameworks, this
+                wasn't too much of a steep challenge, but the tight timeframe definitely was. We uploaded our
+                project to GitHub in the hopes of helping people looking for similar multi-agent architectures,
+                but instead got rewarded by getting noticed by Ready Tensor, Inc. and getting an invitation via mail for
+                their Agentic AI Showcase 2025. Well, we thought, if we're going to submit this to a showcase, why not
+                prettify this a little and iron the creases in the application out? Midsems were a hurdle, as were
+                the various inter-hall competitions happening in this timeframe (IITKGP is notorious for the hall tempo
+                within its students), but as we have learnt during our stay in college, <i><b>"if you want something
+                really
+                badly, you'll always find time for it"</b></i>. So here
+                we present to you, PRAGATIv2.0.
+            </p>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; Gradient Ascent |  Developed with
+                    <a href="https://www.youtube.com/watch?v=td2O06HfhDY"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="heart">
+                        ❤️
+                    </a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
