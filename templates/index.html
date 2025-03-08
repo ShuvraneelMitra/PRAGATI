@@ -9,199 +9,199 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-light: #6c8cff;
-            --secondary: #000000;
-            --tertiary: #7209b7;
-            --accent: #4cc9f0;
-            --success: #06d6a0;
-            --warning: #f9c74f;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+    --primary: #4361ee;
+    --primary-light: #6c8cff;
+    --secondary: #000000;
+    --tertiary: #7209b7;
+    --accent: #4cc9f0;
+    --success: #06d6a0;
+    --warning: #f9c74f;
+    --dark: #2b2d42;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-image: url("https://i.postimg.cc/qR5wr9f2/grey-texture.jpg");
-            color: var(--dark);
-            line-height: 1.6;
-            overflow: hidden;
-        }
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont;
+        background-image: url("https://i.postimg.cc/qR5wr9f2/grey-texture.jpg");
+        color: var(--dark);
+        line-height: 1.6;
+        overflow: hidden;
+    }
 
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--tertiary) 100%);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 70px;
+        padding: 0 2rem;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+    }
+
+    .logo-section {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-text {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: white;
+        text-decoration: none;
+    }
+
+    .logo-version {
+        font-size: 0.75rem;
+        background: var(--secondary);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 12px;
+        margin-left: 8px;
+        font-weight: 600;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 0.8rem;
+        border-radius: 6px;
+        transition: var(--transition);
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .github-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background-color: var(--secondary);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .github-link:hover {
+        background-color: grey;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 107, 107, 0.4);
+    }
+
+    .main-content {
+        font-weight: bold;
+        margin-top: 70px;
+        height: calc(100vh - 70px);
+        position: relative;
+        padding: 20px;
+    }
+
+    .tool-header {
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--tertiary);
+    }
+
+    .iframe-container {
+        width: 100%;
+        height: calc(100vh - 130px);
+        background-color: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 2px solid rgba(108, 140, 255, 0.2);
+        position: relative;
+    }
+
+    .iframe-container::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        height: 8px;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+        border-radius: 16px 16px 0 0;
+    }
+
+    iframe {
+        padding: 25px;
+        background-color: black;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .accent-dots {
+        position: absolute;
+        z-index: -1;
+    }
+
+    .accent-dots.top-right {
+        top: 100px;
+        right: 50px;
+    }
+
+    .accent-dots.bottom-left {
+        bottom: 50px;
+        left: 50px;
+    }
+
+    .dot {
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 5px;
+    }
+
+    .dot-1 { background-color: var(--primary-light); }
+    .dot-2 { background-color: var(--secondary); }
+    .dot-3 { background-color: var(--accent); }
+    .dot-4 { background-color: var(--tertiary); }
+
+    @media (max-width: 768px) {
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--tertiary) 100%);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 70px;
-            padding: 0 2rem;
-            box-shadow: var(--shadow);
-            z-index: 1000;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
+            padding: 0 1rem;
         }
 
         .logo-text {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: white;
-            text-decoration: none;
-        }
-
-        .logo-version {
-            font-size: 0.75rem;
-            background: var(--secondary);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 12px;
-            margin-left: 8px;
-            font-weight: 600;
+            font-size: 1rem;
         }
 
         .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 0.8rem;
-            border-radius: 6px;
-            transition: var(--transition);
-        }
-
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .github-link {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--secondary);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .github-link:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.4);
-        }
-
-        .main-content {
-            font-weight: bold;
-            margin-top: 70px;
-            height: calc(100vh - 70px);
-            position: relative;
-            padding: 20px;
-        }
-
-        .tool-header {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--tertiary);
-        }
-
-        .iframe-container {
-            width: 100%;
-            height: calc(100vh - 130px);
-            background-color: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 2px solid rgba(108, 140, 255, 0.2);
-            position: relative;
-        }
-
-        .iframe-container::before {
-            content: "";
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            height: 8px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
-            border-radius: 16px 16px 0 0;
-        }
-
-        iframe {
-            padding: 25px;
-            background-color: black;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            border: none;
+            gap: 0.5rem;
         }
 
         .accent-dots {
-            position: absolute;
-            z-index: -1;
+            display: none;
         }
-
-        .accent-dots.top-right {
-            top: 100px;
-            right: 50px;
-        }
-
-        .accent-dots.bottom-left {
-            bottom: 50px;
-            left: 50px;
-        }
-
-        .dot {
-            height: 15px;
-            width: 15px;
-            border-radius: 50%;
-            display: inline-block;
-            margin: 5px;
-        }
-
-        .dot-1 { background-color: var(--primary-light); }
-        .dot-2 { background-color: var(--secondary); }
-        .dot-3 { background-color: var(--accent); }
-        .dot-4 { background-color: var(--tertiary); }
-
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0 1rem;
-            }
-
-            .logo-text {
-                font-size: 1rem;
-            }
-
-            .nav-links {
-                gap: 0.5rem;
-            }
-
-            .accent-dots {
-                display: none;
-            }
-        }
+    }
     </style>
 </head>
 <body>
