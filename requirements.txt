@@ -8,3 +8,5 @@ jinja2
 python-dotenv
 gradio
 h11
+PyPDF2
+unstructured[all-docs]

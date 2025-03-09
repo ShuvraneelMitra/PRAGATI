@@ -1,9 +1,24 @@
 import gradio
 import os
+from typing import Sequence
+from PyPDF2 import PdfReader
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+DARK_MODE = """
+function refresh() {
+    const url = new URL(window.location);
+
+    if (url.searchParams.get('__theme') !== 'dark') {
+        url.searchParams.set('__theme', 'dark');
+        window.location.href = url.href;
+    }
+}
+"""
+########################################################################################################################
 
 app = FastAPI()
 
@@ -21,14 +36,15 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-def analyze_paper(file):
+def generate_filler(file: gradio.utils.NamedString) -> [str, str]:
     if file is None:
         return "Please upload a paper to analyze.", "No suggestions available yet."
 
     filename = file.name if hasattr(file, "name") else "Unnamed file"
     file_size = file.size if hasattr(file, "size") else "Unknown size"
 
-    publishable = f"Analysis of {filename} (size: {file_size} bytes):\n\nBased on our initial assessment, your paper shows promise but needs some revisions before it's ready for publication."
+    publishable = (f"Analysis of {filename} (size: {file_size} bytes): \n\nBased on our initial assessment, "
+                   f"your paper shows promise but needs some revisions before it's ready for publication.")
 
     suggestion = ("Suggestions for improvement:\n\n1. Strengthen your literature review\n2. Clarify your methodology "
                   "section\n3. Consider adding more data visualization\n4. Expand on the limitations of your study")
@@ -36,21 +52,11 @@ def analyze_paper(file):
     return publishable, suggestion
 
 
-js_func = """
-function refresh() {
-    const url = new URL(window.location);
-
-    if (url.searchParams.get('__theme') !== 'dark') {
-        url.searchParams.set('__theme', 'dark');
-        window.location.href = url.href;
-    }
-}
-"""
-
-with gradio.Blocks(js=js_func) as ui:
+with gradio.Blocks(js=DARK_MODE) as ui:
     with gradio.Row():
         with gradio.Column(scale=1):
-            input_area = gradio.File(label="Paper File")
+            input_file = gradio.File(label="Please upload the paper",
+                                     file_types=[".pdf"])
             upload_button = gradio.UploadButton(
                 label='Upload the paper here',
                 interactive=True,
@@ -76,10 +82,20 @@ with gradio.Blocks(js=js_func) as ui:
                 label="Improvement Suggestions"
             )
 
-    upload_button.upload(
-        analyze_paper,
-        inputs=[upload_button],
-        outputs=[is_publishable, suggestions]
-    )
+
+    @gradio.on(triggers=[upload_button.upload],
+               inputs=upload_button,
+               outputs=input_file
+               )
+    def change_input(file: gradio.utils.NamedString) -> gradio.utils.NamedString:
+        return file
+
+
+    @gradio.on(triggers=[input_file.change],
+               inputs=input_file,
+               outputs=(is_publishable, suggestions)
+               )
+    def analyze_paper(file: gradio.utils.NamedString) -> [str, str]:
+        return generate_filler(file)
 
 app = gradio.mount_gradio_app(app, ui, path="/gradio")
