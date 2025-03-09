@@ -5,3 +5,4 @@ test.py
 .gradio/*
 __pycache__/*
 .vercel
+pragati.log
