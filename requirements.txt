@@ -1,13 +1,9 @@
-smolagents
-smolagents[litellm]
 matplotlib
-geopandas
-shapely
-kaleido
 pandas
 langchain
 langchain-community
-sentence-transformers
-datasets
+uvicorn
+fastapi
+jinja2
 python-dotenv
-rank_bm25
+gradio

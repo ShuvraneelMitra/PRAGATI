@@ -1,0 +1,188 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins';
+}
+
+body {
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.home-button {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background-color: #fff;
+    color: #ff6f61;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-button:hover {
+    background-color: #ff6f61;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.home-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.header {
+    background-color: #ff6f61;
+    color: #fff;
+    padding: 50px 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 1.25rem;
+    font-family: 'Quicksand';
+}
+
+.team {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.team h2 {
+    font-size: 2.5rem;
+    color: #D55A4F;
+    margin-bottom: 30px;
+    font-family: 'Quicksand';
+}
+
+.team-cards {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #fff;
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+    text-decoration: none;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #777;
+    text-decoration: none;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.mission {
+    background-color: #ffecd2;
+    padding: 40px 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.mission h2 {
+    font-size: 2.5rem;
+    color: #ff6f61;
+    margin-bottom: 20px;
+    font-weight: bolder;
+}
+
+.mission p {
+    font-size: 1.125rem;
+    color: #333;
+    text-align: justify;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #ff6f61;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.footer p {
+    font-family: 'Quicksand';
+}
+
+.footer p a.heart {
+    text-decoration: none;
+}
+
+.footer p a.heart:hover {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .team-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 80%;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+    }
+
+    .mission h2 {
+        font-size: 2rem;
+    }
+}
