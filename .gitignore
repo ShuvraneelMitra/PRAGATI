@@ -3,3 +3,5 @@ venv/*
 test.py
 .env
 .gradio/*
+__pycache__/*
+.vercel

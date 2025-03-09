@@ -54,7 +54,8 @@ with gradio.Blocks(js=js_func) as ui:
             upload_button = gradio.UploadButton(
                 label='Upload the paper here',
                 interactive=True,
-                file_count="single"
+                file_count="single",
+                file_types=[".pdf"]
             )
 
         with gradio.Column(scale=2):

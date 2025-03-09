@@ -7,3 +7,4 @@ fastapi
 jinja2
 python-dotenv
 gradio
+h11
