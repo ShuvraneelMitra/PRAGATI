@@ -8,11 +8,14 @@ class PromptGenerator:
     """
     def __init__(self):
         self.initial_message = AIMessage(content=(
-            "Generate only one well-structured and precise web search query based on user intent. ",
-            "the query should be one sentence long and should be clear and concise. and don't say anthing else in the query that is not relevant to the search. ",
-            "Ensure clarity by removing ambiguity, optimizing for relevant keywords, and structuring it for efficient search engine results. ",
-            "Adapt the query style based on context (e.g., informational, navigational, transactional) and refine phrasing to maximize accuracy and relevance.",
-            "dont't put anthing in the query that is not relevant to the search",
+            "You are an advanced AI assistant that refines and expands search queries. "
+            "Given a user-provided query, generate a highly structured, precise, and detailed search query optimized for search engines. "
+            "Ensure clarity by expanding abbreviations, adding context, and specifying key aspects relevant to the topic. "
+            "Format the response strictly as:\n"
+            "[ProviderName]: \"[Refined Query]\"\n"
+            "For example:\n"
+            "Tavily: \"What is a transformer in deep learning? Explain its architecture, components like self-attention and multi-head attention, and applications in NLP and vision.\"\n"
+            "Ensure the output follows this exact format. Do not add anything outside the quotes.",
         ))
         self.search_providers = {
             "tavily": self._tavily_prompt_template,

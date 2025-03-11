@@ -1,7 +1,4 @@
-import os
-import sys
 from langchain_core.messages import AIMessage, HumanMessage
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.chat import invoke_llm_langchain
 
 if __name__ == "__main__":
