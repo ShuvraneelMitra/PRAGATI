@@ -20,6 +20,8 @@ function refresh() {
     }
 }
 """
+
+
 ########################################################################################################################
 
 @app.get("/welcome")
@@ -33,13 +35,26 @@ async def read_root(request: Request):
 
 
 def generate_filler(file: gradio.utils.NamedString) -> [str, str]:
+    """
+    Generates a generic filler text while we wait for the
+    agentic architecture to be shipped to production
+    Args:
+        file: a gradio.utils.NamedString instance which is received
+              when an upload is made to the upload area of the UI.
+
+    Returns:
+        publishable: a static explanation of why the uploaded paper
+                     may be publishable
+        suggestion: a static list of generic advice for any research paper
+    """
     if file is None:
         return "Please upload a paper to analyze.", "No suggestions available yet."
 
     filename = file.name if hasattr(file, "name") else "Unnamed file"
     file_size = file.size if hasattr(file, "size") else "Unknown size"
 
-    publishable = f"Analysis of {filename} (size: {file_size} bytes):\n\nBased on our initial assessment, your paper shows promise but needs some revisions before it's ready for publication."
+    publishable = (f"Analysis of {filename} (size: {file_size} bytes): \n\nBased on our initial assessment, your paper "
+                   f"shows promise but needs some revisions before it's ready for publication.")
 
     suggestion = ("Suggestions for improvement:\n\n1. Strengthen your literature review\n2. Clarify your methodology "
                   "section\n3. Consider adding more data visualization\n4. Expand on the limitations of your study")
@@ -81,6 +96,7 @@ with gradio.Blocks(js=js_func) as ui:
                           outputs=input_file)
     def update_upload_area(file: gradio.utils.NamedString) -> gradio.utils.NamedString:
         return file
+
 
     @input_file.change(inputs=input_file,
                        outputs=[is_publishable, suggestions])

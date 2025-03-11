@@ -1,0 +1,23 @@
+QuestionAnswering:
+  generate_reviewers: |
+    You are a helpful assistant. You need to give a list of {num_reviewers} reviewers, 
+    with proper characters as will be provided for the popular scientific conference `{conference}`.
+
+    Following is a brief description of the conference:
+    {conference_description}
+
+    Follow the given instructions carefully:
+    1. Each reviewer must be a distinguished researcher in the topic of the given conference.
+
+    2. Each reviewer should have an area of specialisation, which must be a sub-field of the topic 
+       which is discussed in the conference. Carefully go through the conference description provided 
+       to decide the areas of specialisation of the reviewers.
+
+    3. Return your answer ONLY as a list of JSONs with length {num_reviewers}. Each JSON in the list 
+       should have the following keys:
+       -- 'specialisation': Area of specialisation of the reviewer. This area of specialisation 
+          should be coherent with the topics of the given conference.
+
+    There should be no extra verbiage in your answer. Only the list of JSONs should be returned.
+
+    DO NOT return any text other than the list of JSONs.
