@@ -1,22 +1,29 @@
+import yaml
 from typing import Dict, List, Any
 from chat import invoke_llm_langchain
+import os
 from langchain_core.messages import AIMessage, HumanMessage
 
 class PromptGenerator:
     """
     A class that generates structured prompts for various search engines like Tavily, arXiv, etc.
     """
-    def __init__(self):
-        self.initial_message = AIMessage(content=(
-            "You are an advanced AI assistant that refines and expands search queries. "
-            "Given a user-provided query, generate a highly structured, precise, and detailed search query optimized for search engines. "
-            "Ensure clarity by expanding abbreviations, adding context, and specifying key aspects relevant to the topic. "
-            "Format the response strictly as:\n"
-            "[ProviderName]: \"[Refined Query]\"\n"
-            "For example:\n"
-            "Tavily: \"What is a transformer in deep learning? Explain its architecture, components like self-attention and multi-head attention, and applications in NLP and vision.\"\n"
-            "Ensure the output follows this exact format. Do not add anything outside the quotes.",
-        ))
+    def __init__(self, config_path: str = "config_web.yaml", prompts_path: str = "prompts.yaml"):
+        
+        config_path = os.path.join(os.path.dirname(__file__), "config_web.yaml")
+        if os.path.exists(config_path):
+            with open(config_path, "r") as file:
+                self.config = yaml.safe_load(file)
+        else:
+            raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        
+        prompts_path = os.path.join(os.path.dirname(__file__), "prompts.yaml")
+
+        with open(prompts_path, "r") as file:
+            self.prompts = yaml.safe_load(file)["web_prompts"]
+
+        self.initial_message = AIMessage(content=self.prompts["initial_message"])
+
         self.search_providers = {
             "tavily": self._tavily_prompt_template,
             "arxiv": self._arxiv_prompt_template,
@@ -30,20 +37,33 @@ class PromptGenerator:
         provider = provider.lower()
         if provider not in self.search_providers:
             raise ValueError(f"Unsupported search provider: {provider}. "
-                             f"Supported providers: {list(self.search_providers.keys())}")
+                            f"Supported providers: {list(self.search_providers.keys())}")
 
         latest_message = HumanMessage(content=f"I want to get a search query for the topic: {query} "
-                                              f"which is searched on {provider}")
+                                            f"which is searched on {provider}")
         
         structured_query, _, _ = invoke_llm_langchain([self.initial_message, latest_message])
 
+        # Ensure exclude_domains and include_domains are always passed
+        if provider == "tavily":
+            kwargs.setdefault("include_domains", [])
+            kwargs.setdefault("exclude_domains", [])
+        elif provider == "arxiv":
+            kwargs.setdefault("categories", [])
+            kwargs.setdefault("sort_by", "relevance")
+            kwargs.setdefault("sort_order", "descending")
+        elif provider == "scholar":
+            kwargs.setdefault("year_start", None)
+            kwargs.setdefault("year_end", None)
+            kwargs.setdefault("include_citations", False)
+            
         formatted_prompt = self.search_providers[provider](structured_query[-1], **kwargs)
 
         return f"{provider.capitalize()} Prompt: {formatted_prompt}"
 
-    def _tavily_prompt_template(self, query: str, search_depth: str = "moderate", 
-                                max_results: int = 5, include_domains: List[str] = None,
-                                exclude_domains: List[str] = None) -> Dict[str, Any]:
+    def _tavily_prompt_template(self, query: str, search_depth: str, 
+                                max_results: int, include_domains: List[str], 
+                                exclude_domains: List[str]) -> Dict[str, Any]:
         """Generate a prompt structure for Tavily search"""
         prompt = {
             "query": query,
@@ -56,10 +76,9 @@ class PromptGenerator:
             prompt["exclude_domains"] = exclude_domains
         return prompt
 
-    def _arxiv_prompt_template(self, query: str, max_results: int = 5, 
-                               categories: List[str] = None, 
-                               sort_by: str = "relevance", 
-                               sort_order: str = "descending") -> Dict[str, Any]:
+    def _arxiv_prompt_template(self, query: str, max_results: int, 
+                               categories: List[str], sort_by: str,
+                               sort_order: str) -> Dict[str, Any]:
         """Generate a prompt structure for arXiv search"""
         prompt = {
             "query": query,
@@ -71,9 +90,9 @@ class PromptGenerator:
             prompt["categories"] = categories
         return prompt
 
-    def _scholar_prompt_template(self, query: str, max_results: int = 5,
-                                 year_start: int = None, year_end: int = None,
-                                 include_citations: bool = False) -> Dict[str, Any]:
+    def _scholar_prompt_template(self, query: str, max_results: int,
+                                 year_start: int, year_end: int,
+                                 include_citations: bool) -> Dict[str, Any]:
         """Generate a prompt structure for Google Scholar search"""
         prompt = {
             "query": query,
