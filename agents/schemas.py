@@ -12,7 +12,6 @@ class Reviewer(BaseModel):
     id: int = Field(None, description="ID of the reviewer")
     specialisation: str = Field(None, description="Specialisation of the reviewer")
     questions: List[str] = Field(None, description="Questions asked by the reviewer")
-    topic: str = Field(None, description="Topic of the paper being reviewed")
 
 
 class QAPair(BaseModel):

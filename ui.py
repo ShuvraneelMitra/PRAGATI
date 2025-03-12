@@ -10,7 +10,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="about")
 
-js_func = """
+JS_FUNC = """
 function refresh() {
     const url = new URL(window.location);
 
@@ -62,7 +62,7 @@ def generate_filler(file: gradio.utils.NamedString) -> [str, str]:
     return publishable, suggestion
 
 
-with gradio.Blocks(js=js_func) as ui:
+with gradio.Blocks(js=JS_FUNC) as ui:
     with gradio.Row():
         with gradio.Column(scale=1):
             input_file = gradio.File(label="Paper File")
