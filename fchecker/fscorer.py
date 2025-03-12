@@ -21,7 +21,6 @@ class LikertScorer:
 if __name__ == "__main__":
     scorer = LikertScorer()
     text = "sun rises in the west and it's very far from earth"
-    fact = "sun rises in the east\n the distance of sun from earth is 148.63 million km"
-    
+    fact = '''The Sun, the Moon, the planets, and the stars all rise in the east and set in the west. And that's because Earth spins -- toward the east.'''
     score = scorer.score_text(text, fact)
     print("Likert Score:", score)

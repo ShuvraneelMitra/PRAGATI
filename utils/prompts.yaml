@@ -30,5 +30,5 @@ scorer_prompts:
     3 - Partially Correct  
     4 - Mostly Correct  
     5 - Completely Correct  
-    
-    Provide only the score as output.
+  
+    Provide only the score as output. 
