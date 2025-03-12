@@ -7,3 +7,4 @@ __pycache__/*
 .vercel
 utils/__pycache__/*
 agents/__pycache__/*
+fchecker/__pycache__/*  

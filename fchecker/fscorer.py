@@ -1,30 +1,19 @@
+import os
+import yaml
 from langchain_core.messages import AIMessage, HumanMessage
 from utils.chat import invoke_llm_langchain
 
 class LikertScorer:
     def __init__(self):
-        pass
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir) 
+        prompts_path = os.path.join(project_root, "utils", "prompts.yaml")
+        with open(prompts_path, "r") as file:
+            self.prompts = yaml.safe_load(file)["scorer_prompts"]
 
     def score_text(self, text, fact):
-        messages = [
-            HumanMessage(content=f"""
-            You are a fact-checking AI. Given the following text and fact, evaluate the correctness of the text on a Likert scale (1 to 5):
-            
-            Text: "{text}"
-            
-            Fact: "{fact}"
-            
-            Likert Scale:
-            1 - Completely Incorrect
-            2 - Mostly Incorrect
-            3 - Partially Correct
-            4 - Mostly Correct
-            5 - Completely Correct
-            
-            Provide only the score as output.
-            """)
-        ]
-        
+        initial_message = self.prompts["initial_message"].format(text=text, fact=fact) 
+        messages = [HumanMessage(content=initial_message)]
         response, _, _ = invoke_llm_langchain(messages)
         return response[-1].content.strip()
 
