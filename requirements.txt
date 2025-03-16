@@ -9,3 +9,4 @@ python-dotenv
 gradio
 h11
 arxiv
+google-search-results
