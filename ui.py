@@ -24,9 +24,12 @@ function refresh() {
 
 ########################################################################################################################
 
+
 @app.get("/welcome")
 def read_main():
-    return {"message": "Welcome to the main FastAPI app, please go to the root of the url to get started!"}
+    return {
+        "message": "Welcome to the main FastAPI app, please go to the root of the url to get started!"
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -53,11 +56,15 @@ def generate_filler(file: gradio.utils.NamedString) -> [str, str]:
     filename = file.name if hasattr(file, "name") else "Unnamed file"
     file_size = file.size if hasattr(file, "size") else "Unknown size"
 
-    publishable = (f"Analysis of {filename} (size: {file_size} bytes): \n\nBased on our initial assessment, your paper "
-                   f"shows promise but needs some revisions before it's ready for publication.")
+    publishable = (
+        f"Analysis of {filename} (size: {file_size} bytes): \n\nBased on our initial assessment, your paper "
+        f"shows promise but needs some revisions before it's ready for publication."
+    )
 
-    suggestion = ("Suggestions for improvement:\n\n1. Strengthen your literature review\n2. Clarify your methodology "
-                  "section\n3. Consider adding more data visualization\n4. Expand on the limitations of your study")
+    suggestion = (
+        "Suggestions for improvement:\n\n1. Strengthen your literature review\n2. Clarify your methodology "
+        "section\n3. Consider adding more data visualization\n4. Expand on the limitations of your study"
+    )
 
     return publishable, suggestion
 
@@ -67,10 +74,10 @@ with gradio.Blocks(js=JS_FUNC) as ui:
         with gradio.Column(scale=1):
             input_file = gradio.File(label="Paper File")
             upload_button = gradio.UploadButton(
-                label='Upload the paper here',
+                label="Upload the paper here",
                 interactive=True,
                 file_count="single",
-                file_types=[".pdf"]
+                file_types=[".pdf"],
             )
 
         with gradio.Column(scale=2):
@@ -79,7 +86,7 @@ with gradio.Blocks(js=JS_FUNC) as ui:
                 max_lines=100,
                 placeholder="Is your paper publishable? Let's find out!",
                 autoscroll=True,
-                label="Publication Assessment"
+                label="Publication Assessment",
             )
 
         with gradio.Column(scale=1):
@@ -88,19 +95,16 @@ with gradio.Blocks(js=JS_FUNC) as ui:
                 max_lines=100,
                 placeholder="Improve your paper using custom insights",
                 autoscroll=True,
-                label="Improvement Suggestions"
+                label="Improvement Suggestions",
             )
 
-
-    @upload_button.upload(inputs=upload_button,
-                          outputs=input_file)
+    @upload_button.upload(inputs=upload_button, outputs=input_file)
     def update_upload_area(file: gradio.utils.NamedString) -> gradio.utils.NamedString:
         return file
 
-
-    @input_file.change(inputs=input_file,
-                       outputs=[is_publishable, suggestions])
+    @input_file.change(inputs=input_file, outputs=[is_publishable, suggestions])
     def analyse_paper(file: gradio.utils.NamedString) -> [str, str]:
         return generate_filler(file)
+
 
 app = gradio.mount_gradio_app(app, ui, path="/gradio")

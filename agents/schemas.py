@@ -17,12 +17,16 @@ class Reviewer(BaseModel):
 class QAPair(BaseModel):
     query: str = Field(None, description="Query string")
     answer: str = Field(None, description="Answer string")
-    references: List[str] = Field(None, description="List of references related to the query and answer")
+    references: List[str] = Field(
+        None, description="List of references related to the query and answer"
+    )
 
 
 class Queries(BaseModel):
     original_query: str = Field(None, description="Original query string")
-    sub_qas: List[QAPair] = Field(None, description="List of question-answer pairs related to the original query")
+    sub_qas: List[QAPair] = Field(
+        None, description="List of question-answer pairs related to the original query"
+    )
 
 
 class Paper(BaseModel):

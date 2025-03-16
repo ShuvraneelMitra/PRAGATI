@@ -11,3 +11,5 @@ gradio
 h11
 langgraph
 pyyaml
+black
+
