@@ -9,8 +9,8 @@ from utils.prompt import PromptGenerator
 from fchecker.webs import TavilySearchTool, ArixvSearchTool, GoogleScholarSearchTool
 from fchecker.fscorer import LikertScorer
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from schemas import FRPair
-from states import TokenTracker, FactCheckerState
+from agents.schemas import FRPair
+from agents.states import TokenTracker, FactCheckerState
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 

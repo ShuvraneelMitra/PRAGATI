@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Annotated, Sequence
 from operator import add
-from schemas import TokenTracker, FRPair
+from agents.schemas import TokenTracker, FRPair
 
 class FactCheckerState(BaseModel):
     input_text: str = Field(None, description="Original text chunk to be fact-checked")

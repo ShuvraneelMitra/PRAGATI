@@ -10,3 +10,4 @@ gradio
 h11
 arxiv
 google-search-results
+langgraph

@@ -1,6 +1,6 @@
 import yaml
 from typing import Dict, List, Any
-from chat import invoke_llm_langchain
+from utils.chat import invoke_llm_langchain
 import os
 from langchain_core.messages import AIMessage, HumanMessage
 
