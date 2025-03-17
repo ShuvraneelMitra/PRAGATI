@@ -15,7 +15,7 @@ class LikertScorer:
         initial_message = self.prompts["initial_message"].format(text=text, fact=fact) 
         messages = [HumanMessage(content=initial_message)]
         response, _, _ = invoke_llm_langchain(messages)
-        return response[-1].content.strip()
+        return int(response[-1].content.strip())
 
 # Example usage
 if __name__ == "__main__":

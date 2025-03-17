@@ -2,6 +2,7 @@ import yaml
 from typing import Dict, List, Any
 from utils.chat import invoke_llm_langchain
 import os
+import json
 from langchain_core.messages import AIMessage, HumanMessage
 
 class PromptGenerator:
@@ -58,8 +59,15 @@ class PromptGenerator:
             kwargs.setdefault("include_citations", False)
             
         formatted_prompt = self.search_providers[provider](structured_query[-1], **kwargs)
-
-        return f"{provider.capitalize()} Prompt: {formatted_prompt}"
+        # Parse the returned query string as JSON if it is in JSON format
+        try:
+            if isinstance(formatted_prompt['query'], str):
+                # Try to parse as JSON if the query is a JSON string
+                json_query = json.loads(formatted_prompt['query'])
+                formatted_prompt['query'] = json_query
+        except json.JSONDecodeError:
+            pass
+        return formatted_prompt['query'].content[9:-1]
 
     def _tavily_prompt_template(self, query: str, search_depth: str, 
                                 max_results: int, include_domains: List[str], 

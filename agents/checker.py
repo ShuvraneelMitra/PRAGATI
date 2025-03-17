@@ -5,10 +5,10 @@ import json
 import sys
 import os
 import logging
+from PIL import Image
 from utils.prompt import PromptGenerator
 from fchecker.webs import TavilySearchTool, ArixvSearchTool, GoogleScholarSearchTool
 from fchecker.fscorer import LikertScorer
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agents.schemas import FRPair
 from agents.states import TokenTracker, FactCheckerState
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -18,45 +18,51 @@ def generate_search_query(claim: str) -> str:
     """Generate a search query from a claim"""
     try:
         prompt_gen = PromptGenerator()
-        prompt = f"Convert this claim to a search query: {claim}"
-        query = prompt_gen.generate(prompt)
+        query = prompt_gen.generate_prompt(
+            "tavily", 
+            claim,
+            search_depth="normal",
+            max_results=5
+        )
         return query.strip()
     except Exception as e:
         logger.error(f"Error generating search query: {e}")
-        return claim  # Fallback to using the claim directly as a query
+        return claim 
 
-def web_search(query: str) -> List[Dict[str, Any]]:
-    """Search the web using multiple tools and return results"""
+def academic_search(query: str) -> List[Dict[str, Any]]:
+    """Focus search on academic sources like ArXiv and Google Scholar"""
     results = []
-    search_tools = [
-        TavilySearchTool(),
-        ArixvSearchTool(),
-        GoogleScholarSearchTool()
-    ]
-    
-    for tool in search_tools:
+    for tool in [ArixvSearchTool(), GoogleScholarSearchTool()]:
         try:
             tool_results = tool.search(query)
             if tool_results:
-                # Add source information to each result
                 for result in tool_results:
                     result["source"] = tool.__class__.__name__
                 results.extend(tool_results)
         except Exception as e:
             logger.warning(f"Error with {tool.__class__.__name__}: {e}")
-            continue
     
-    # Sort results by potential relevance if there's a ranking field
-    if results and "ranking" in results[0]:
-        results.sort(key=lambda x: x.get("ranking", 0), reverse=True)
-    
-    return results[:5]  # Limit to top 5 results
+    return results[:5]  
+
+def general_search(query: str) -> List[Dict[str, Any]]:
+    """Use only general web search for broad topics"""
+    try:
+        tool = TavilySearchTool()
+        tool_msg = tool.invoke_tool(query)
+        results = json.loads(tool_msg.content)
+        if results:
+            for result in results:
+                if isinstance(result, dict):
+                    result["source"] = tool.__class__.__name__
+            return results[:5]  # Return top 5 results
+        return []
+    except (Exception, json.JSONDecodeError) as e:
+        logger.warning(f"Error with {tool.__class__.__name__}: {e}")
+        return []
 
 def score_fact(claim: str, references: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Score the claim against references"""
     scorer = LikertScorer()
-    
-    # Extract relevant content from references with source attribution
     reference_texts = []
     for ref in references:
         content = ""
@@ -70,23 +76,17 @@ def score_fact(claim: str, references: List[Dict[str, Any]]) -> Dict[str, Any]:
             url = ref.get("url", "")
             reference_texts.append(f"Source ({source}): {content} [URL: {url}]")
     
-    # Combine references into a single text
     combined_references = "\n\n".join(reference_texts)
     
     if not combined_references:
         return {
-            "score": 0,
-            "explanation": "No relevant information found",
-            "confidence": 0
+            "score": 0
         }
     
     # Score the claim
-    result = scorer.score(claim, combined_references)
+    result = scorer.score_text(claim, combined_references)
     return {
-        "score": result.score,
-        "explanation": result.explanation,
-        "confidence": result.confidence,
-        "reference_count": len(reference_texts)
+        "score": result
     }
 
 def parse_claims(state: FactCheckerState) -> FactCheckerState:
@@ -133,8 +133,18 @@ def search_web(state: FactCheckerState) -> FactCheckerState:
     
     current_pair = state.pairs[state.current_index]
     try:
+        if not current_pair.search_query:
+            state.errors = "Missing search query"
+            return state
+            
         logger.info(f"Searching for: {current_pair.search_query}")
-        search_results = web_search(current_pair.search_query)
+        
+        # Use the appropriate search function based on claim content
+        if any(term in current_pair.claim.lower() for term in ["research", "study", "scientific", "paper"]):
+            search_results = academic_search(current_pair.search_query)
+        else:
+            search_results = general_search(current_pair.search_query)
+            
         current_pair.search_results = search_results
         state.pairs[state.current_index] = current_pair
         logger.info(f"Found {len(search_results)} results")
@@ -158,7 +168,10 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
         )
         current_pair.verification = verification
         state.pairs[state.current_index] = current_pair
-        logger.info(f"Verification complete: Score={verification.get('score')}, Confidence={verification.get('confidence')}")
+        if(verification.get('score', 'N/A') == 0):
+            logger.info(f"Claim is Unverified")
+        else:
+            logger.info(f"Verification complete: Score={verification.get('score')}")
     except Exception as e:
         state.errors = f"Error in verification: {str(e)}"
         logger.error(f"Error in verify_claim: {e}")
@@ -181,9 +194,8 @@ def should_continue(state: FactCheckerState) -> str:
 
 def create_fact_checker_graph() -> StateGraph:
     """Create the fact checker workflow graph"""
+    #defining the nodes
     workflow = StateGraph(FactCheckerState)
-    
-    # Define the nodes
     workflow.add_node("parse_claims", parse_claims)
     workflow.add_node("generate_query", generate_query)
     workflow.add_node("search_web", search_web)
@@ -194,10 +206,21 @@ def create_fact_checker_graph() -> StateGraph:
     workflow.add_edge("parse_claims", "generate_query")
     workflow.add_edge("generate_query", "search_web")
     workflow.add_edge("search_web", "verify_claim")
-    workflow.add_edge("verify_claim", should_continue)
+    workflow.add_edge("verify_claim", END)
     
     # Compile the graph
-    return workflow.compile()
+    compiled_graph = workflow.compile()
+    try:
+        output_dir = "assets"
+        os.makedirs(output_dir, exist_ok=True)
+        # Save the graph visualization
+        output_path = os.path.join(output_dir, "fact_checker_graph.png")
+        workflow.draw(output_file=output_path)
+        logger.info(f"Graph visualization saved to {output_path}")
+    except Exception as e:
+        logger.warning(f"Could not save graph visualization: {e}")
+    
+    return compiled_graph
 
 def fact_check(text: str) -> List[FRPair]:
     """Run the fact checking process on a text input"""
@@ -219,9 +242,10 @@ def format_results(pairs: List[FRPair]) -> str:
         result = f"Claim {i+1}: {pair.claim}\n"
         if hasattr(pair, "verification") and pair.verification:
             v = pair.verification
-            result += f"Score: {v.get('score', 'N/A')}/5\n"
-            result += f"Confidence: {v.get('confidence', 'N/A')}\n"
-            result += f"Explanation: {v.get('explanation', 'No explanation provided')}\n"
+            if(v.get('score', 'N/A') == 0):
+                result += "Claim is Unverified\n"
+            else:
+                result += f"Score: {v.get('score', 'N/A')}/5\n"
         else:
             result += "Verification failed\n"
         results.append(result)
