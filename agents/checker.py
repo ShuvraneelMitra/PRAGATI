@@ -232,7 +232,7 @@ def fact_check(text: str) -> List[FRPair]:
     final_state = checker.invoke({"inputs": text})
     
     if final_state.errors:
-        logger.error(f"Fact checking completed with errors: {final_state.errors}")
+        logger.error(f"Fact checking  completed with errors: {final_state.errors}")
     else:
         logger.info(f"Fact checking completed successfully for {len(final_state.pairs)} claims")
     
