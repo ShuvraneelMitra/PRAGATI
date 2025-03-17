@@ -14,13 +14,13 @@ class LikertScorer:
     def score_text(self, text, fact):
         initial_message = self.prompts["initial_message"].format(text=text, fact=fact) 
         messages = [HumanMessage(content=initial_message)]
-        response, _, _ = invoke_llm_langchain(messages)
-        return int(response[-1].content.strip())
+        response, i, o = invoke_llm_langchain(messages)
+        return int(response[-1].content.strip()), int(i+o)  
 
 # Example usage
 if __name__ == "__main__":
     scorer = LikertScorer()
     text = "sun rises in the west and it's very far from earth"
     fact = '''The Sun, the Moon, the planets, and the stars all rise in the east and set in the west. And that's because Earth spins -- toward the east.'''
-    score = scorer.score_text(text, fact)
+    score, _ = scorer.score_text(text, fact)
     print("Likert Score:", score)

@@ -34,7 +34,7 @@ def academic_search(query: str) -> List[Dict[str, Any]]:
     results = []
     for tool in [ArixvSearchTool(), GoogleScholarSearchTool()]:
         try:
-            tool_results = tool.search(query)
+            tool_results = tool.invoke_tool(query)
             if tool_results:
                 for result in tool_results:
                     result["source"] = tool.__class__.__name__
@@ -84,9 +84,10 @@ def score_fact(claim: str, references: List[Dict[str, Any]]) -> Dict[str, Any]:
         }
     
     # Score the claim
-    result = scorer.score_text(claim, combined_references)
+    result, token = scorer.score_text(claim, combined_references)
     return {
-        "score": result
+        "score": result,
+        "token": token
     }
 
 def parse_claims(state: FactCheckerState) -> FactCheckerState:
@@ -168,6 +169,7 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
         )
         current_pair.verification = verification
         state.pairs[state.current_index] = current_pair
+        state.token_usage += verification.get("token", 0)
         if(verification.get('score', 'N/A') == 0):
             logger.info(f"Claim is Unverified")
         else:
@@ -176,6 +178,7 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
         state.errors = f"Error in verification: {str(e)}"
         logger.error(f"Error in verify_claim: {e}")
     
+    print(state)
     return state
 
 def should_continue(state: FactCheckerState) -> str:
