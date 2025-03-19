@@ -10,7 +10,7 @@ from utils.prompt import PromptGenerator
 from fchecker.webs import TavilySearchTool, ArixvSearchTool, GoogleScholarSearchTool
 from fchecker.fscorer import LikertScorer
 from agents.schemas import FRPair
-from agents.states import TokenTracker, FactCheckerState
+from agents.states import FactCheckerState
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -102,11 +102,12 @@ def parse_claims(state: FactCheckerState) -> FactCheckerState:
         
         # Initialize pairs with claims
         state.pairs = [FRPair(claim=claim) for claim in claims]
+        state.no_claims = len(state.pairs)
         logger.info(f"Parsed {len(state.pairs)} claims from input")
     except Exception as e:
         state.errors = f"Error parsing claims: {str(e)}"
         logger.error(f"Error in parse_claims: {e}")
-    
+
     return state
 
 def generate_query(state: FactCheckerState) -> FactCheckerState:
@@ -119,12 +120,12 @@ def generate_query(state: FactCheckerState) -> FactCheckerState:
         logger.info(f"Generating query for claim: {current_pair.claim}")
         query = generate_search_query(current_pair.claim)
         current_pair.search_query = query
-        state.pairs[state.current_index] = current_pair
+        # state.pairs[state.current_index] = current_pair
         logger.info(f"Generated query: {query}")
     except Exception as e:
         state.errors = f"Error generating query: {str(e)}"
         logger.error(f"Error in generate_query: {e}")
-    
+
     return state
 
 def search_web(state: FactCheckerState) -> FactCheckerState:
@@ -152,7 +153,7 @@ def search_web(state: FactCheckerState) -> FactCheckerState:
     except Exception as e:
         state.errors = f"Error in web search: {str(e)}"
         logger.error(f"Error in search_web: {e}")
-    
+
     return state
 
 def verify_claim(state: FactCheckerState) -> FactCheckerState:
@@ -169,7 +170,10 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
         )
         current_pair.verification = verification
         state.pairs[state.current_index] = current_pair
-        state.token_usage += verification.get("token", 0)
+        # if not isinstance(state.token_usage, int):
+        #     state.token_usage = 0
+        # state.token_usage += verification.get("token", 0)
+        # print("tokens used:",verification.get("token", 0))
         if(verification.get('score', 'N/A') == 0):
             logger.info(f"Claim is Unverified")
         else:
@@ -178,7 +182,16 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
         state.errors = f"Error in verification: {str(e)}"
         logger.error(f"Error in verify_claim: {e}")
     
-    print(state)
+    state.total_score += verification.get('score', 0)
+    state.current_index += 1
+    if state.current_index < state.no_claims:
+        state.average_score = state.total_score / state.current_index
+    else:
+        state.average_score = state.total_score / state.no_claims
+        if state.average_score > 3:
+            state.is_factual = True
+        else:
+            state.is_factual = False
     return state
 
 def should_continue(state: FactCheckerState) -> str:
@@ -186,13 +199,13 @@ def should_continue(state: FactCheckerState) -> str:
     if state.errors:
         logger.error(f"Ending workflow due to error: {state.errors}")
         return END
-    
-    state.current_index += 1
-    if state.current_index >= len(state.pairs):
+    if state.current_index >= state.no_claims:
         logger.info("All claims processed, ending workflow")
+        logger.info(f"Average score: {state.average_score}")
+        logger.info(f"Is factual: {state.is_factual}")
         return END
     
-    logger.info(f"Moving to next claim ({state.current_index+1}/{len(state.pairs)})")
+    logger.info(f"Moving to next claim ({state.current_index+1}/{state.no_claims})")
     return "generate_query"
 
 def create_fact_checker_graph() -> StateGraph:
@@ -209,8 +222,7 @@ def create_fact_checker_graph() -> StateGraph:
     workflow.add_edge("parse_claims", "generate_query")
     workflow.add_edge("generate_query", "search_web")
     workflow.add_edge("search_web", "verify_claim")
-    workflow.add_edge("verify_claim", END)
-    
+    workflow.add_conditional_edges("verify_claim", should_continue) 
     # Compile the graph
     compiled_graph = workflow.compile()
     try:
@@ -231,12 +243,7 @@ def fact_check(text: str) -> List[FRPair]:
     checker = create_fact_checker_graph()
     final_state = checker.invoke({"inputs": text})
     
-    if final_state.errors:
-        logger.error(f"Fact checking  completed with errors: {final_state.errors}")
-    else:
-        logger.info(f"Fact checking completed successfully for {len(final_state.pairs)} claims")
-    
-    return final_state.pairs
+    return final_state["pairs"]
 
 def format_results(pairs: List[FRPair]) -> str:
     """Format the fact checking results into a readable string"""
@@ -257,10 +264,5 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    sample_text = "The Earth is flat.\nWater boils at 100 degrees Celsius at sea level."
+    sample_text = "The Great Wall of China is visible from space with the naked eye.\nGoldfish have a memory span of only three seconds.\nBananas are berries, but strawberries are not.\nHumans have more than five senses, including balance and temperature.\nSharks must keep swimming to stay alive."
     results = fact_check(sample_text)
-    
-    for i, pair in enumerate(results):
-        print(f"Claim {i+1}: {pair.claim}")
-        print(f"Verification: {json.dumps(pair.verification, indent=2)}")
-        print("-" * 50)
