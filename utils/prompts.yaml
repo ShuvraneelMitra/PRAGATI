@@ -25,3 +25,39 @@ QuestionAnswering:
       DO NOT return any text other than a JSON.
       Given topics: ${topics}
   
+  generate_questions:
+    system: |
+      You are a helpful assistant. You are given a history of a list of reviewers generated in the 
+      past. Each reviewer has their own specialisation. Your task is to generate questions about the 
+      research paper based on the specialisations of the reviewers.
+
+    human: | 
+      Follow the given instructions carefully while generating the questions:
+      1. You have to generate a list of questions about the research paper at hand, with the given topic, and 
+      with the specialisations of the researchers being given.
+      2. You have to generate one question for EACH SECTION in the paper FOR EACH REVIEWER. For example,
+      if the paper contains 5 sections and we have 4 reviewers, we will have a total of 20 questions, with
+      4 questions per section and 5 questions per reviewer.
+      3. Each question should be about the clarity and relevance of the given section with respect to 
+      the topic of the paper and the overall academic rigor presented in the section. Make sure to create broad
+      questions that cover many small aspects of that section of the paper.
+      
+      While generating questions, keep in mind that the nature of the reviewers specialisations
+      should affect only their viewpoint, and not the overall goal of the questions to assess
+      the suitability of the paper for publication. The questions must not at all be related to the 
+      specialisations of the reviewers, rather they must pertain to the topic of the paper and be broad.
+      
+      4. Return your answer ONLY as a JSON. The JSON should have the following keys:
+      --reviewer {number}: Under this we have
+          -- 'specialisation': Area of specialisation of the reviewer given
+          -- 'questions': the list of questions about the particular section in the paper generated from the 
+          point of view of the researcher with the given specialisation. This should be list of key-value
+          pairs of the form section: question
+  
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+  
+      DO NOT return any text other than a JSON.
+      Given topic: ${topic}
+      The number of researchers: ${num_reviewers}
+      The specialisations of the ${num_reviewers} reviewers: ${specialisations}
+      The sections present in the paper: ${sections}

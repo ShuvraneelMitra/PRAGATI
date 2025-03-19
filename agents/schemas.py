@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Sequence
 
 
 class TokenTracker(BaseModel):
@@ -31,4 +31,10 @@ class Queries(BaseModel):
 
 class Paper(BaseModel):
     title: str = Field(None, description="Title of the paper")
+    topic: str = Field(None, description="Topic of the paper")
     filename: str = Field(None, description="Filename of the paper")
+    sections: Sequence[str] = Field(
+        None,
+        description="A list of the sections present in the paper such as Abstract, "
+        "Introduction etc.",
+    )
