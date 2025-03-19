@@ -1,10 +1,3 @@
-# pylint: disable=all
-
-""" 
-pip install PyMuPDF Pillow numpy transformers torch pix2tex pandas pytesseract 
-PyMuPDF-1.25.3 entmax-1.3 munch-4.0.0 pix2tex-0.1.4 timm-0.5.4 x-transformers-0.15.0
-"""
-
 import fitz  # PyMuPDF
 from PIL import Image
 import numpy as np
@@ -319,8 +312,8 @@ class ResearchPaperParser:
 if __name__ == "__main__":
     # Example usage
     # pdf_path = "/kaggle/input/research-paper-sets/A Comprehensive Survey of Retrieval-Augmented Generation (RAG) Evolution Current Landscape and Future Directions.pdf"
-    pdf_path = "/kaggle/input/research-paper-sets/Chain-of-Retrieval Augmented Generation.pdf"
-    parser = ResearchPaperParser(pdf_path, output_dir="/kaggle/working/output")
+    pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
+    parser = ResearchPaperParser(pdf_path, output_dir="./output")
     try:
         results = parser.process_document()
         parser.save_results(results)

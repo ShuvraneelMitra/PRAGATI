@@ -1,0 +1,82 @@
+Pages processed: 39
+Tables found: 19
+Equations found: 37
+Embedded images extracted: 0
+
+Detected Equations:
+Page 0:
+  - \frac{\stackrel{\vec{\tau}}}{\vdots}{\frac{\stackrel{\vec{\tau}}{}}{\frac{\vec{\tau}}{\mit}}}{\frac{}{\vec{\tau}}} (Position: [0, 0, 1224, 1584])
+Page 1:
+  - \frac{\hat{\mathbf{t}}_{\frac{1}{2}}}{\frac{\hat{\mathbf{t}}}{\hat{\mathbf{s}}}} (Position: [0, 0, 1224, 1584])
+Page 2:
+  - \textstyle{\frac{\pi\pi\varepsilon}{\hbar\delta x}} (Position: [0, 0, 1224, 1584])
+Page 3:
+  - \frac{\hat{\vec{\mathrm{\boldmath~\bar{s}~}}}}{\hat{\vec{s}~}} (Position: [0, 0, 1224, 1584])
+Page 4:
+  - \scriptstyle{\frac{\pi_{n}^{\pm}\pm\frac{n-n-n}{n+n-n}}{n}}{\frac{}{n-n-n}}{\frac{}{n}} (Position: [0, 0, 1224, 1584])
+Page 5:
+  - \frac{\frac{\gamma}{5}}{\frac{\gamma}{\bar{\varepsilon}}}{\bar{\mathbf{s}}} (Position: [0, 0, 1224, 1584])
+Page 6:
+  - \frac{\frac{\pi}{5}}{\frac{\pi}{\epsilon}}{\frac{\pi}{\epsilon}} (Position: [0, 0, 1224, 1584])
+Page 7:
+  - \frac{\frac{\nu}{\epsilon}}{\epsilon} (Position: [0, 0, 1224, 1584])
+Page 8:
+  - \frac{\stackrel{\leftarrow}{\epsilon}}{\bar{\epsilon}} (Position: [0, 0, 1224, 1584])
+Page 9:
+  - \frac{\stackrel{\leftrightarrow}{\equiv}}{\frac{\mathfrak{a}}{\mathfrak{a}}} (Position: [0, 0, 1224, 1584])
+Page 10:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 11:
+  - \frac{\frac{5-\frac{\infty}{6-n}}-\frac{\infty}{\sqrt{\frac{n-n-n}{\sin\ln}}}}{\frac{\cos}{\theta}}{\Delta}{\mathrm{cdotp}}}\\ {\frac{\sin\theta}{\sin\theta}{\theta}{\bigg.}{\bigg.}{\bigg.}} (Position: [0, 0, 1224, 1584])
+Page 12:
+  - \frac{\overline{{{\mathbb{E}}}}}{\frac{\pi}{\frac{\pi}{\mathrm{s}}}} (Position: [0, 0, 1224, 1584])
+Page 13:
+  - \frac{\tilde{\Gamma}}{\tilde{\Gamma}}{\tilde{\Gamma}} (Position: [0, 0, 1224, 1584])
+Page 14:
+  - \scriptstyle{\frac{\pi-\hbar\pi}{\sin\alpha=\hbar\pi}}_{n\equiv n\atop n\equiv\pm n\equiv n\neq\infty}_{n\atop n\pm n\atop n\pm n\equiv n\atop n\atop n\quad{\frac{\pi-\hbar\pi}{k\pm\hbar\neq n}}} (Position: [0, 0, 1224, 1584])
+Page 15:
+Page 16:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 17:
+  - \left\lbrack{\begin{array}{c}{{}}\\ {{\frac{}{\epsilon}}}\\ {{}}\\ {{\frac{\bar{\epsilon}}{\bar{\vert}}}}\end{array}}\right\lbrack\begin{array}{c}{{}}\\ {{}}\\ {{}}\\ {{\frac{\bar{\epsilon}}{\bar{\bar{\vert}}}}}\end{array}\right. (Position: [0, 0, 1224, 1584])
+Page 18:
+  - \frac{\tilde{\mathbf{r}}}{\hat{\mathbf{s}}} (Position: [0, 0, 1224, 1584])
+Page 19:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 20:
+  - \frac{\overline{{\overline{{\hbar}}}}}{\overline{{\mathsf{E}}}} (Position: [0, 0, 1224, 1584])
+Page 21:
+  - \frac{{\mathrm{nele}}{\frac{\pi n}{\sin}}}{\frac{\pi n}{\sin}} (Position: [0, 0, 1224, 1584])
+Page 22:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 23:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 24:
+  - \frac{\Gamma}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 25:
+  - \scriptstyle\left|\begin{array}{l}{{\hat{\theta}}}\\ {{\frac{\pi-\hbar\pi}{\hbar\hbar\hbar\hbar\hbar\theta}}}\\ {{\frac{\pi+\hbar\pi}{\hbar\hbar\hbar\hbar\hbar\hbar\theta}}}\end{array}\right|}\quad (Position: [0, 0, 1224, 1584])
+Page 26:
+  - \frac{\hat{\Sigma}}{\hat{\Sigma}}{\hat{\Sigma}} (Position: [0, 0, 1224, 1584])
+Page 27:
+Page 28:
+  - \frac{\frac{\pi}{s}}{\frac{\pi}{s}}{\frac{\pi}{s}}{\frac{\pi}{s}} (Position: [0, 0, 1224, 1584])
+Page 29:
+  - \frac{\tau}{\mathrm{{s}}}{\bar{\tau}} (Position: [0, 0, 1224, 1584])
+Page 30:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 31:
+  - \frac{\frac{\pi}{\pi}}{\pi} (Position: [0, 0, 1224, 1584])
+Page 32:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 33:
+  - \frac{\pi}{\mathrm{\frac{~\pi}{~\hbar}~}} (Position: [0, 0, 1224, 1584])
+Page 34:
+  - \frac{\overline{{\pi}}}{\frac{\pi}{\epsilon}}{\frac{\pi}{\epsilon}} (Position: [0, 0, 1224, 1584])
+Page 35:
+  - \frac{\frac{\pi}{\pi}}{\frac{\pi}{\pi}} (Position: [0, 0, 1224, 1584])
+Page 36:
+  - \frac{\frac{\pi}{x}}{\frac{x}{x}} (Position: [0, 0, 1224, 1584])
+Page 37:
+  - \frac{\mathrm{rs}}{\mathrm{s}} (Position: [0, 0, 1224, 1584])
+Page 38:
+  - \frac{\hat{\vec{\mathrm{r}}}}{\hat{\vec{s}}} (Position: [0, 0, 1224, 1584])
