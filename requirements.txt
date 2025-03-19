@@ -7,6 +7,10 @@ jinja2
 python-dotenv
 gradio
 h11
+arxiv
+google-search-results
+langgraph
+pillow
 geopandas                          
 numpy                              
 pandas                             
@@ -30,4 +34,4 @@ torchsummary
 torchtune                          
 torchvision                        
 transformers                       
-x-transformers                     
+x-transformers
