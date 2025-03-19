@@ -10,6 +10,19 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="about")
 
+js_func = """
+function refresh() {
+    const url = new URL(window.location);
+
+    if (url.searchParams.get('__theme') !== 'dark') {
+        url.searchParams.set('__theme', 'dark');
+        window.location.href = url.href;
+    }
+}
+"""
+
+
+########################################################################################################################
 
 @app.get("/welcome")
 def read_main():
@@ -21,7 +34,7 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-def analyze_paper(file):
+def generate_filler(file: gradio.utils.NamedString) -> [str, str]:
     if file is None:
         return "Please upload a paper to analyze.", "No suggestions available yet."
 
@@ -36,21 +49,10 @@ def analyze_paper(file):
     return publishable, suggestion
 
 
-js_func = """
-function refresh() {
-    const url = new URL(window.location);
-
-    if (url.searchParams.get('__theme') !== 'dark') {
-        url.searchParams.set('__theme', 'dark');
-        window.location.href = url.href;
-    }
-}
-"""
-
 with gradio.Blocks(js=js_func) as ui:
     with gradio.Row():
         with gradio.Column(scale=1):
-            input_area = gradio.File(label="Paper File")
+            input_file = gradio.File(label="Paper File")
             upload_button = gradio.UploadButton(
                 label='Upload the paper here',
                 interactive=True,
@@ -76,10 +78,15 @@ with gradio.Blocks(js=js_func) as ui:
                 label="Improvement Suggestions"
             )
 
-    upload_button.upload(
-        analyze_paper,
-        inputs=[upload_button],
-        outputs=[is_publishable, suggestions]
-    )
+
+    @upload_button.upload(inputs=upload_button,
+                          outputs=input_file)
+    def update_upload_area(file: gradio.utils.NamedString) -> gradio.utils.NamedString:
+        return file
+
+    @input_file.change(inputs=input_file,
+                       outputs=[is_publishable, suggestions])
+    def analyse_paper(file: gradio.utils.NamedString) -> [str, str]:
+        return generate_filler(file)
 
 app = gradio.mount_gradio_app(app, ui, path="/gradio")

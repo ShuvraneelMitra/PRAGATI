@@ -6,8 +6,8 @@ This is the version 2.0 of PRAGATI. To find the earlier work, please visit branc
 1. Clone the repository on to your local machine: `git clone https://github.com/ShuvraneelMitra/PRAGATI.git`
 2. Navigate into the `PRAGATI` folder: `cd PRAGATI`
 3. Create a virtual environment in your directory: `python -m venv venv`
-4. Now activate the virtual environment using `source venv/bin/activate` for Linux or `.\venv\Scripts\activate.
-   ps1` for Windows
+4. Now activate the virtual environment using `source venv/bin/activate` for Linux or (either `.\venv\Scripts\activate.
+   ps1` or `.\venv\Scripts\activate.bat` for Windows
 5. Install `pip-tools`: `pip install pip-tools`
 6. Sync with the `requirements.txt` file inside your `venv`: `pip-sync requirements.txt`. This will install all the 
    relevant packages inside your virtual environment.
