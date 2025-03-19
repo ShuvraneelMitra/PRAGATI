@@ -176,7 +176,9 @@ def generate_subqueries(state: QuestionState, num_subqueries: int) -> QuestionSt
         num_subqueries: the number of subqueries to be generated per broad question
     Returns: a set of subqueries
     """
-    pass
+    for single_query in state.queries:
+
+
 
 
 # graph_builder = StateGraph()
