@@ -8,6 +8,7 @@ import logging
 from PIL import Image
 from utils.prompt import PromptGenerator
 from fchecker.webs import TavilySearchTool, ArixvSearchTool, GoogleScholarSearchTool
+from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeStyles
 from fchecker.fscorer import LikertScorer
 from agents.schemas import FRPair
 from agents.states import FactCheckerState
@@ -228,9 +229,18 @@ def create_fact_checker_graph() -> StateGraph:
     try:
         output_dir = "assets"
         os.makedirs(output_dir, exist_ok=True)
-        # Save the graph visualization
         output_path = os.path.join(output_dir, "fact_checker_graph.png")
-        workflow.draw(output_file=output_path)
+        graph_image = compiled_graph.get_graph().draw_mermaid_png(
+            curve_style=CurveStyle.LINEAR,
+            node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),
+            wrap_label_n_words=9,
+            output_file_path=None,
+            draw_method=MermaidDrawMethod.PYPPETEER,
+            background_color="white",
+            padding=10
+        )
+        with open(output_path, "wb") as f:
+            f.write(graph_image)  
         logger.info(f"Graph visualization saved to {output_path}")
     except Exception as e:
         logger.warning(f"Could not save graph visualization: {e}")

@@ -11,6 +11,8 @@ arxiv
 google-search-results
 langgraph
 pillow
+langchain_groq
+pyppeteer
 geopandas                          
 numpy                              
 pandas                             
