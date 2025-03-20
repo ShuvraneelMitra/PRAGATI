@@ -6,14 +6,14 @@ from operator import add
 
 from agents.schemas import TokenTracker, QAPair, Reviewer, Paper
 
+
 class SingleQuery(BaseModel):
     question: str = Field(None, description="Single query to be asked")
     sub_queries: Sequence[QAPair] = Field(
         None, description="Sequence of sub queries related to the single query"
     )
     answer: str = Field(None, description="Yes/No Answer to the single query")
-    model_config = ConfigDict(arbitrary_types_allowed=True,
-                              validate_assignment=True)
+    model_config = ConfigDict(arbitrary_types_allowed=True, validate_assignment=True)
 
 
 class QuestionState(BaseModel):
@@ -22,7 +22,9 @@ class QuestionState(BaseModel):
     )
     paper: Paper = Field(None, description="Paper related to the question state")
     num_reviewers: int = Field(4, description="Number of reviewers to be selected")
-    num_subqueries: int = Field(3, description="Number of subqueries per broad question")
+    num_subqueries: int = Field(
+        3, description="Number of subqueries per broad question"
+    )
     reviewers: Sequence[Reviewer] = Field(
         None, description="Sequence of reviewers selected"
     )

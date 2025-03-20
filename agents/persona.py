@@ -146,7 +146,10 @@ def generate_questions(state: QuestionState) -> QuestionState:
     for reviewer in json_questions.keys():
         list_questions.append(list(json_questions[reviewer]["questions"].values()))
 
-    state.queries = [[SingleQuery() for _ in range(len(state.paper.sections))] for _ in range(state.num_reviewers)]
+    state.queries = [
+        [SingleQuery() for _ in range(len(state.paper.sections))]
+        for _ in range(state.num_reviewers)
+    ]
     for i, reviewer in enumerate(state.queries):
         for j, single_query in enumerate(reviewer):
             single_query.question = list_questions[i][j]
@@ -185,16 +188,20 @@ def generate_subqueries(state: QuestionState) -> QuestionState:
         for j, single_query in enumerate(reviewer):
 
             messages = [
-                ("system", prompts["QuestionAnswering"]["generate_subqueries"]["system"]),
+                (
+                    "system",
+                    prompts["QuestionAnswering"]["generate_subqueries"]["system"],
+                ),
                 (
                     "human",
                     tmpl_to_prompt(
                         prompts["QuestionAnswering"]["generate_subqueries"]["human"],
-                        {"topics": state.paper.topic,
-                         "num_subqueries": f"{state.num_subqueries}",
-                         "query": single_query.question,
-                         "specialisation": state.reviewers[i].specialisation
-                         },
+                        {
+                            "topics": state.paper.topic,
+                            "num_subqueries": f"{state.num_subqueries}",
+                            "query": single_query.question,
+                            "specialisation": state.reviewers[i].specialisation,
+                        },
                     ),
                 ),
             ]
@@ -204,28 +211,30 @@ def generate_subqueries(state: QuestionState) -> QuestionState:
             try:
                 subq_json = json.loads(response.content)
             except json.decoder.JSONDecodeError as json_error:
-                print(f"JSON Decode Error: {json_error}\n Thrown because the LLM output is {response.content}")
+                print(
+                    f"JSON Decode Error: {json_error}\n Thrown because the LLM output is {response.content}"
+                )
                 return dict()
 
-            state.queries[i][j].sub_queries = [QAPair(query=q) for q in subq_json["sub-queries"]]
+            state.queries[i][j].sub_queries = [
+                QAPair(query=q) for q in subq_json["sub-queries"]
+            ]
             ai_messages.append(response)
 
-            state.token_usage.net_input_tokens += response.response_metadata["token_usage"][
-                "prompt_tokens"
-            ]
-            state.token_usage.net_output_tokens += response.response_metadata["token_usage"][
-                "completion_tokens"
-            ]
+            state.token_usage.net_input_tokens += response.response_metadata[
+                "token_usage"
+            ]["prompt_tokens"]
+            state.token_usage.net_output_tokens += response.response_metadata[
+                "token_usage"
+            ]["completion_tokens"]
             state.token_usage.net_tokens = (
-                    state.token_usage.net_output_tokens + state.token_usage.net_input_tokens
+                state.token_usage.net_output_tokens + state.token_usage.net_input_tokens
             )
 
     messages += ai_messages
 
-    return dict(messages=messages,
-                token_usage=state.token_usage,
-                queries=state.queries
-                )
+    return dict(messages=messages, token_usage=state.token_usage, queries=state.queries)
+
 
 # print(generate_subqueries(QuestionState(**ex), 3))
 
@@ -240,13 +249,13 @@ graph_builder.add_edge("generate_subqueries", END)
 graph = graph_builder.compile()
 
 graph_image = graph.get_graph().draw_mermaid_png(
-            curve_style=CurveStyle.LINEAR,
-            node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),
-            wrap_label_n_words=9,
-            output_file_path=None,
-            draw_method=MermaidDrawMethod.PYPPETEER,
-            background_color="white",
-            padding=10
+    curve_style=CurveStyle.LINEAR,
+    node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),
+    wrap_label_n_words=9,
+    output_file_path=None,
+    draw_method=MermaidDrawMethod.PYPPETEER,
+    background_color="white",
+    padding=10,
 )
 
 if not os.path.exists("../assets"):
@@ -255,20 +264,20 @@ with open("../assets/generate_subqueries.png", "wb") as f:
     f.write(graph_image)
 
 show_img = input("Show generated graph? Y/n ")
-if(show_img.lower() == "y"):
+if show_img.lower() == "y":
     img = Image.open("../assets/generate_subqueries.png")
     img.show()
 
 ex = {
     "messages": [],
-    "paper": Paper(topic="Large Language Models",
-                   sections=["Introduction", "Methodology", "Conclusion"]),
+    "paper": Paper(
+        topic="Large Language Models",
+        sections=["Introduction", "Methodology", "Conclusion"],
+    ),
     "num_reviewers": 4,
-    "token_usage": TokenTracker(net_input_tokens=0,
-                                net_output_tokens=0,
-                                net_tokens=0),
+    "token_usage": TokenTracker(net_input_tokens=0, net_output_tokens=0, net_tokens=0),
     "reviewers": [],
-    "queries": []
+    "queries": [],
 }
 
 final_state = graph.invoke(QuestionState(**ex))

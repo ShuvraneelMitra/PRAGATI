@@ -21,6 +21,7 @@ class QAPair(BaseModel):
         None, description="List of references related to the query and answer"
     )
 
+
 class Paper(BaseModel):
     title: str = Field(None, description="Title of the paper")
     topic: str = Field(None, description="Topic of the paper")
