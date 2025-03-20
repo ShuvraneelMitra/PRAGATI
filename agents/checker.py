@@ -2,7 +2,6 @@ from typing import Dict, List, Any, Optional
 from langgraph.graph import StateGraph, START, END
 from pydantic import BaseModel, Field
 import json
-import sys
 import os
 import logging
 from PIL import Image
@@ -274,5 +273,5 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    sample_text = "The Great Wall of China is visible from space with the naked eye.\nGoldfish have a memory span of only three seconds.\nBananas are berries, but strawberries are not.\nHumans have more than five senses, including balance and temperature.\nSharks must keep swimming to stay alive."
+    sample_text = "The Sun rises in the west and it's very far from Earth."
     results = fact_check(sample_text)
