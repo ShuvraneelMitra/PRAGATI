@@ -61,3 +61,26 @@ QuestionAnswering:
       The number of researchers: ${num_reviewers}
       The specialisations of the ${num_reviewers} reviewers: ${specialisations}
       The sections present in the paper: ${sections}
+
+  generate_subqueries:
+    system: |
+      You are a helpful assistant. Given a single query by a reviewer with a given specialisation,
+      your task is to generate a number of sub-queries for the query.
+
+    human: | 
+      Follow the given instructions while generating the sub-queries:
+      1. You have to generate a list of ${num_subqueries} sub-queries based on the given query
+      such that the sub-queries cover multiple aspects of the broader query given.
+      2. You have to ensure that the sub-queries cover the most important aspects of the main query,
+      and when taken together they should provide a more wholesome view of the aspect of publishability
+      of the research paper as described in the query. Remember to remain relevant to the topic of the paper.
+      3. Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'sub-queries': This is the only key in the JSON and contains a list of the sub-queries WITHOUT ANY
+      ADDITIONAL KEYS INSIDE THE LIST.
+  
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+  
+      DO NOT return any text other than a JSON.
+      Given topics: ${topics}
+      Given query: ${query}
+      Given specialisation of the researcher: ${specialisation}

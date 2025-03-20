@@ -21,14 +21,6 @@ class QAPair(BaseModel):
         None, description="List of references related to the query and answer"
     )
 
-
-class Queries(BaseModel):
-    original_query: str = Field(None, description="Original query string")
-    sub_qas: List[QAPair] = Field(
-        None, description="List of question-answer pairs related to the original query"
-    )
-
-
 class Paper(BaseModel):
     title: str = Field(None, description="Title of the paper")
     topic: str = Field(None, description="Topic of the paper")

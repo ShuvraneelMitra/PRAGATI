@@ -1,6 +1,7 @@
 venv/*
 .idea/*
 test.py
+test.ipynb
 .env
 .gradio/*
 __pycache__/*
