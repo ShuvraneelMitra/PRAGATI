@@ -199,41 +199,41 @@ class ResearchPaperParser:
             logger.error(f"Error extracting table content: {str(e)}")
             return "", ""
 
-def detect_and_convert_math(self, image: Image.Image) -> List[Tuple[str, List[int]]]:
+    def detect_and_convert_math(self, image: Image.Image) -> List[Tuple[str, List[int]]]:
 
-    try:
-        latex_code = self.latex_ocr(image)
-        equations = [(latex_code, [0, 0, image.width, image.height])]
-        return equations
-    except Exception as e:
-        logger.error(f"Error in math detection: {str(e)}")
-        return []
+        try:
+            latex_code = self.latex_ocr(image)
+            equations = [(latex_code, [0, 0, image.width, image.height])]
+            return equations
+        except Exception as e:
+            logger.error(f"Error in math detection: {str(e)}")
+            return []
 
-def extract_images(self, page_num: int) -> List[str]:
+    def extract_images(self, page_num: int) -> List[str]:
 
-    if not self.document:
-        self.load_pdf()
+        if not self.document:
+            self.load_pdf()
 
-    try:
-        page = self.document[page_num]
-        image_list = page.get_images(full=True)
-        extracted_images = []
+        try:
+            page = self.document[page_num]
+            image_list = page.get_images(full=True)
+            extracted_images = []
 
-        for img_index, img in enumerate(image_list):
-            xref = img[0]
-            base_image = self.document.extract_image(xref)
-            image_bytes = base_image["image"]
-            image_ext = base_image["ext"]
-            image_path = os.path.join(self.output_dir, f"page_{page_num}_img_{img_index}.{image_ext}")
+            for img_index, img in enumerate(image_list):
+                xref = img[0]
+                base_image = self.document.extract_image(xref)
+                image_bytes = base_image["image"]
+                image_ext = base_image["ext"]
+                image_path = os.path.join(self.output_dir, f"page_{page_num}_img_{img_index}.{image_ext}")
 
-            with open(image_path, "wb") as img_file:
-                img_file.write(image_bytes)
-            extracted_images.append(image_path)
+                with open(image_path, "wb") as img_file:
+                    img_file.write(image_bytes)
+                extracted_images.append(image_path)
 
-        return extracted_images
-    except Exception as e:
-        logger.error(f"Error extracting images from page {page_num}: {str(e)}")
-        return []
+            return extracted_images
+        except Exception as e:
+            logger.error(f"Error extracting images from page {page_num}: {str(e)}")
+            return []
 
     def process_document(self) -> Dict:
 
