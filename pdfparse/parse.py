@@ -1,10 +1,3 @@
-# pylint: disable=all
-
-""" 
-pip install PyMuPDF Pillow numpy transformers torch pix2tex pandas pytesseract 
-PyMuPDF-1.25.3 entmax-1.3 munch-4.0.0 pix2tex-0.1.4 timm-0.5.4 x-transformers-0.15.0
-"""
-
 import fitz  # PyMuPDF
 from PIL import Image
 import numpy as np
@@ -19,15 +12,12 @@ from pathlib import Path
 import zipfile
 import pytesseract
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class ResearchPaperParser:
-    """A class to parse research papers from PDF, handling multi-column layouts."""
-
-    def __init__(self, df, output_dir: str = "/kaggle/working/output"):
-        """Initialize the parser with PDF path from df (string or DataFrame) and output directory."""
+    def __init__(self, df, output_dir: str, save:bool = False):
         if isinstance(df, str):
             self.pdf_path = df
         elif isinstance(df, pd.DataFrame):
@@ -39,21 +29,17 @@ class ResearchPaperParser:
         
         self.output_dir = output_dir
         self.document = None
-        
-        # Initialize Table Transformer
+
         self.table_processor = DetrImageProcessor()
         self.table_model = TableTransformerForObjectDetection.from_pretrained(
             "microsoft/table-transformer-detection"
         )
-        
-        # Initialize Pix2Tex for LaTeX OCR
+
         self.latex_ocr = LatexOCR()
-        
-        # Create output directory
-        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+        if save:
+            Path(self.output_dir).mkdir(parents=True, exist_ok=True)
 
     def load_pdf(self) -> None:
-        """Load the PDF document."""
         try:
             self.document = fitz.open(self.pdf_path)
             logger.info(f"Loaded PDF with {len(self.document)} pages from {self.pdf_path}")
@@ -62,7 +48,15 @@ class ResearchPaperParser:
             raise
 
     def detect_columns(self, page_num: int) -> List[Tuple[float, float]]:
-        """Detect column boundaries on a page using text block positions."""
+        """
+        Detect column boundaries on a page using text block positions.
+
+        Args:
+            page_num: an integer describing the number of pages
+        Returns:
+            the list of tuples containing the coordinates of the columns
+
+        """
         if not self.document:
             self.load_pdf()
         
@@ -102,7 +96,16 @@ class ResearchPaperParser:
             return [(0, page.rect.width)]
 
     def extract_text(self, page_num: int) -> str:
-        """Extract plain text from a specific page in column order."""
+        """
+        Extracts text from a specific page of the loaded PDF document, considering column-based text layout.
+
+        Args:
+            page_num (int): The index of the page from which to extract text.
+
+        Returns:
+            str: The extracted text from the specified page, with content arranged based on detected columns.
+        """
+
         if not self.document:
             self.load_pdf()
         
@@ -124,7 +127,17 @@ class ResearchPaperParser:
             return ""
 
     def convert_page_to_image(self, page_num: int, zoom: float = 2.0) -> Image.Image:
-        """Convert a PDF page to an image with specified zoom level."""
+        """
+        Converts a specified PDF page into an image.
+
+        Args:
+            page_num (int): The index of the page to convert.
+            zoom (float, optional): Scaling factor for the image resolution. Default is 2.0.
+
+        Returns:
+            Image.Image: A PIL image of the specified PDF page.
+        """
+
         if not self.document:
             self.load_pdf()
         
@@ -138,7 +151,7 @@ class ResearchPaperParser:
             raise
 
     def detect_tables(self, image: Image.Image) -> List[Dict]:
-        """Detect tables in an image using Table Transformer."""
+
         try:
             inputs = self.table_processor(images=image, return_tensors="pt")
             with torch.no_grad():
@@ -163,60 +176,70 @@ class ResearchPaperParser:
             return []
 
     def extract_table_content(self, image: Image.Image, box: List[int], table_index: int, page_num: int) -> Tuple[str, str]:
-        """Extract content from a detected table region as text and save as image."""
+        """
+        Detects tables in an image using a deep learning-based object detection model.
+
+        Args:
+            image (Image.Image): The input image (a PIL Image) in which tables need to be detected.
+
+        Returns:
+            List[Dict]: A list of detected tables, where each dictionary contains:
+                - "confidence" (float): Confidence score of the detection.
+                - "box" (List[int]): Bounding box coordinates [x_min, y_min, x_max, y_max].
+        """
+
         try:
             table_img = image.crop(box)
             table_path = os.path.join(self.output_dir, f"table_page_{page_num}_{table_index}.png")
             table_img.save(table_path)
-            
-            # Use pytesseract to extract text from the table image
+
             table_text = pytesseract.image_to_string(table_img)
             return table_text, table_path
         except Exception as e:
             logger.error(f"Error extracting table content: {str(e)}")
             return "", ""
 
-    def detect_and_convert_math(self, image: Image.Image) -> List[Tuple[str, List[int]]]:
-        """Detect and convert mathematical equations to LaTeX using Pix2Tex."""
-        try:
-            latex_code = self.latex_ocr(image)
-            equations = [(latex_code, [0, 0, image.width, image.height])]
-            return equations
-        except Exception as e:
-            logger.error(f"Error in math detection: {str(e)}")
-            return []
+def detect_and_convert_math(self, image: Image.Image) -> List[Tuple[str, List[int]]]:
 
-    def extract_images(self, page_num: int) -> List[str]:
-        """Extract embedded images from a PDF page."""
-        if not self.document:
-            self.load_pdf()
-        
-        try:
-            page = self.document[page_num]
-            image_list = page.get_images(full=True)
-            extracted_images = []
-            
-            for img_index, img in enumerate(image_list):
-                xref = img[0]
-                base_image = self.document.extract_image(xref)
-                image_bytes = base_image["image"]
-                image_ext = base_image["ext"]
-                image_path = os.path.join(self.output_dir, f"page_{page_num}_img_{img_index}.{image_ext}")
-                
-                with open(image_path, "wb") as img_file:
-                    img_file.write(image_bytes)
-                extracted_images.append(image_path)
-            
-            return extracted_images
-        except Exception as e:
-            logger.error(f"Error extracting images from page {page_num}: {str(e)}")
-            return []
+    try:
+        latex_code = self.latex_ocr(image)
+        equations = [(latex_code, [0, 0, image.width, image.height])]
+        return equations
+    except Exception as e:
+        logger.error(f"Error in math detection: {str(e)}")
+        return []
+
+def extract_images(self, page_num: int) -> List[str]:
+
+    if not self.document:
+        self.load_pdf()
+
+    try:
+        page = self.document[page_num]
+        image_list = page.get_images(full=True)
+        extracted_images = []
+
+        for img_index, img in enumerate(image_list):
+            xref = img[0]
+            base_image = self.document.extract_image(xref)
+            image_bytes = base_image["image"]
+            image_ext = base_image["ext"]
+            image_path = os.path.join(self.output_dir, f"page_{page_num}_img_{img_index}.{image_ext}")
+
+            with open(image_path, "wb") as img_file:
+                img_file.write(image_bytes)
+            extracted_images.append(image_path)
+
+        return extracted_images
+    except Exception as e:
+        logger.error(f"Error extracting images from page {page_num}: {str(e)}")
+        return []
 
     def process_document(self) -> Dict:
-        """Process the entire document and return structured results."""
+
         if not self.document:
             self.load_pdf()
-        
+
         results = {
             "text": {},
             "tables": {},
@@ -224,13 +247,13 @@ class ResearchPaperParser:
             "images": {},
             "embedded_images": {}
         }
-        
+
         for page_num in range(len(self.document)):
             logger.info(f"Processing page {page_num + 1}")
-            
+
             results["text"][page_num] = self.extract_text(page_num)
             page_image = self.convert_page_to_image(page_num)
-            
+
             tables = self.detect_tables(page_image)
             results["tables"][page_num] = [
                 {
@@ -241,40 +264,36 @@ class ResearchPaperParser:
                 }
                 for idx, table in enumerate(tables)
             ]
-            
+
             results["equations"][page_num] = self.detect_and_convert_math(page_image)
-            
+
             image_path = os.path.join(self.output_dir, f"page_{page_num}.png")
             page_image.save(image_path)
             results["images"][page_num] = image_path
-            
+
             results["embedded_images"][page_num] = self.extract_images(page_num)
-        
+
         return results
 
     def save_results(self, results: Dict) -> None:
-        """Save the processed results to files."""
+
         try:
-            # Define file paths
             text_file = os.path.join(self.output_dir, "text_content.txt")
             tables_file = os.path.join(self.output_dir, "tables_content.txt")
             equations_file = os.path.join(self.output_dir, "equations.tex")
             summary_file = os.path.join(self.output_dir, "summary.txt")
-            
-            # Write text content
+
             with open(text_file, "w", encoding="utf-8") as f:
                 for page, text in results["text"].items():
                     f.write(f"Page {page}:\n{text}\n{'='*50}\n")
-            
-            # Write table content as text
+
             with open(tables_file, "w", encoding="utf-8") as f:
                 for page, tables in results["tables"].items():
                     for idx, table in enumerate(tables):
                         f.write(f"Page {page} - Table {idx} (Confidence: {table['confidence']}):\n")
                         f.write(f"Box: {table['box']}\n")
                         f.write(f"Text:\n{table['text']}\n{'-'*50}\n")
-            
-            # Write LaTeX equations
+
             with open(equations_file, "w", encoding="utf-8") as f:
                 f.write("\\documentclass{article}\n\\usepackage{amsmath}\n\\begin{document}\n")
                 for page, eqs in results["equations"].items():
@@ -283,8 +302,7 @@ class ResearchPaperParser:
                         f.write(f"% Position: {box}\n")
                         f.write(f"\\begin{{equation}}\n{eq}\n\\end{{equation}}\n\n")
                 f.write("\\end{document}")
-            
-            # Write summary with equations
+
             with open(summary_file, "w", encoding="utf-8") as f:
                 f.write(f"Pages processed: {len(results['text'])}\n")
                 f.write(f"Tables found: {sum(len(t) for t in results['tables'].values())}\n")
@@ -295,13 +313,12 @@ class ResearchPaperParser:
                     f.write(f"Page {page}:\n")
                     for eq, box in eqs:
                         f.write(f"  - {eq} (Position: {box})\n")
-            
+
             logger.info(f"Results saved to {self.output_dir}")
         except Exception as e:
             logger.error(f"Error saving results: {str(e)}")
 
     def zip_output_directory(self, zip_name: str = "output.zip") -> str:
-        """Zip the entire output directory."""
         try:
             zip_path = os.path.join("/kaggle/working", zip_name)
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -317,15 +334,14 @@ class ResearchPaperParser:
             raise
 
 if __name__ == "__main__":
-    # Example usage
-    # pdf_path = "/kaggle/input/research-paper-sets/A Comprehensive Survey of Retrieval-Augmented Generation (RAG) Evolution Current Landscape and Future Directions.pdf"
-    pdf_path = "/kaggle/input/research-paper-sets/Chain-of-Retrieval Augmented Generation.pdf"
-    parser = ResearchPaperParser(pdf_path, output_dir="/kaggle/working/output")
+    pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
+    parser = ResearchPaperParser(pdf_path, output_dir="output",
+                                 save=True)
     try:
         results = parser.process_document()
         parser.save_results(results)
         zip_path = parser.zip_output_directory(zip_name="output.zip")
-        
+
         print(f"Processed {len(results['text'])} pages")
         print(f"Found {sum(len(t) for t in results['tables'].values())} tables")
         print(f"Found {sum(len(e) for e in results['equations'].values())} equations")
