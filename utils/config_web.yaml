@@ -1,0 +1,17 @@
+default_settings:
+  tavily:
+  search_depth: "moderate"
+  max_results: 5
+  include_domains: []
+  exclude_domains: []   # Ensure this key is present
+
+  arxiv:
+    max_results: 5
+    categories: []
+    sort_by: "relevance"
+    sort_order: "descending"
+  scholar:
+    max_results: 5
+    year_start: null
+    year_end: null
+    include_citations: false
