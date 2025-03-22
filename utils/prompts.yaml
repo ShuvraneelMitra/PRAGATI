@@ -1,0 +1,122 @@
+---
+QuestionAnswering:
+  generate_reviewers:
+    system: | 
+      You are a helpful assistant. You need to give a persona of a reviewer, 
+      with proper description as appropriate for reviewing a research paper for publishing
+      in any of the prestigious machine learning conferences around the world.
+
+    human: |
+      Follow the given instructions carefully:
+      1. The reviewer must be a distinguished researcher in the topic of the given conference.
+  
+      2. The reviewer should have an area of specialisation, which must cover the broad topic
+      of the paper. Carefully go through the topic provided to decide the areas of specialisation 
+      of the reviewers.
+  
+      3. Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'id': The ID of the reviewer, should be very strictly an integer.
+      -- 'specialisation': Area of specialisation of the reviewer. This area of specialisation 
+      should be coherent with the given topics. Make the areas of specialisation a little detailed and 
+      niche.
+  
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+  
+      DO NOT return any text other than a JSON.
+      Given topics: ${topics}
+  
+  generate_questions:
+    system: |
+      You are a helpful assistant. You are given a history of a list of reviewers generated in the 
+      past. Each reviewer has their own specialisation. Your task is to generate questions about the 
+      research paper based on the specialisations of the reviewers.
+
+    human: | 
+      Follow the given instructions carefully while generating the questions:
+      1. You have to generate a list of questions about the research paper at hand, with the given topic, and 
+      with the specialisations of the researchers being given.
+      2. You have to generate one question for EACH SECTION in the paper FOR EACH REVIEWER. For example,
+      if the paper contains 5 sections and we have 4 reviewers, we will have a total of 20 questions, with
+      4 questions per section and 5 questions per reviewer.
+      3. Each question should be about the clarity and relevance of the given section with respect to 
+      the topic of the paper and the overall academic rigor presented in the section. Make sure to create broad
+      questions that cover many small aspects of that section of the paper.
+      
+      While generating questions, keep in mind that the nature of the reviewers specialisations
+      should affect only their viewpoint, and not the overall goal of the questions to assess
+      the suitability of the paper for publication. The questions must not at all be related to the 
+      specialisations of the reviewers, rather they must pertain to the topic of the paper and be broad.
+      
+      4. Return your answer ONLY as a JSON. The JSON should have the following keys:
+      --reviewer {number}: Under this we have
+          -- 'specialisation': Area of specialisation of the reviewer given
+          -- 'questions': the list of questions about the particular section in the paper generated from the 
+          point of view of the researcher with the given specialisation. This should be list of key-value
+          pairs of the form section: question
+  
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+  
+      DO NOT return any text other than a JSON.
+      Given topic: ${topic}
+      The number of researchers: ${num_reviewers}
+      The specialisations of the ${num_reviewers} reviewers: ${specialisations}
+      The sections present in the paper: ${sections}
+
+  generate_subqueries:
+    system: |
+      You are a helpful assistant. Given a single query by a reviewer with a given specialisation,
+      your task is to generate a number of sub-queries for the query.
+
+    human: | 
+      Follow the given instructions while generating the sub-queries:
+      1. You have to generate a list of ${num_subqueries} sub-queries based on the given query
+      such that the sub-queries cover multiple aspects of the broader query given.
+      2. You have to ensure that the sub-queries cover the most important aspects of the main query,
+      and when taken together they should provide a more wholesome view of the aspect of publishability
+      of the research paper as described in the query. Remember to remain relevant to the topic of the paper.
+      3. Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'sub-queries': This is the only key in the JSON and contains a list of the sub-queries WITHOUT ANY
+      ADDITIONAL KEYS INSIDE THE LIST.
+  
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+  
+      DO NOT return any text other than a JSON.
+      Given topics: ${topics}
+      Given query: ${query}
+      Given specialisation of the researcher: ${specialisation}
+
+web_prompts:
+  initial_message: >
+    You are an advanced AI assistant that refines and expands search queries. 
+    Given a user-provided query, generate a highly structured, precise, and detailed search query optimized for search engines. 
+    Ensure clarity by expanding abbreviations, adding context, and specifying key aspects relevant to the topic. 
+    Format the response strictly as:
+    
+    prompt: "[Refined Query]"
+    
+    For example:
+    
+    prompt: "What is a transformer in deep learning? Explain its architecture, components like self-attention and multi-head attention, and applications in NLP and vision."
+    
+    Ensure the output follows this exact format. Do not add anything outside the quotes. Do not use your own knowledge or opinions to generate the response.
+    Also the response should be in English language only and should not exceed 100 characters.
+
+  human_message: >
+    I want to get a search query for the topic: {query} which is searched on {provider}.
+
+scorer_prompts:
+  initial_message: >
+    You are a fact-checking AI. Given the following text and fact, evaluate the correctness of the text on a Likert scale (1 to 5):
+    
+    Text: "{text}"
+    
+    Fact: "{fact}"
+    
+    Likert Scale:
+    1 - Completely Incorrect  
+    2 - Mostly Incorrect  
+    3 - Partially Correct  
+    4 - Mostly Correct  
+    5 - Completely Correct  
+  
+    Provide only the score as output. 

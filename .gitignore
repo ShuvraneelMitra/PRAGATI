@@ -1,8 +1,15 @@
 venv/*
 .idea/*
 test.py
+test.ipynb
 .env
 .gradio/*
 __pycache__/*
 .vercel
+utils/__pycache__/*
+agents/__pycache__/*
+fchecker/__pycache__/*  
+=2.4.2
+=2.4.2~
 pragati.log
+*/__pycache__/
