@@ -8,11 +8,11 @@ logger = logging.getLogger(__name__)
 
 ########################################################################################################################
 
-pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
+pdf_path = "/home/naba/Desktop/PRAGATI/Tiny _ML_Things.pdf"
 parser = ResearchPaperParser(pdf_path, output_dir="output", save=True)
 try:
     results = parser.process_document()
-    print(f"results={results}")
+    print(f"results={results['tables']}")
     parser.save_results(results)
     zip_path = parser.zip_output_directory(zip_name="output.zip")
 
