@@ -91,7 +91,7 @@ class RAG:
             documents=documents,
             embedding=self.embeddings,
             collection_name=collection_name,
-            persist_directory="./chroma_db"
+            # persist_directory="./chroma_db"
         )
         logger.info(f"Successfully created vector database with {len(documents)} documents")
         return vectordb

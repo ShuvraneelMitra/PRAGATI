@@ -3,7 +3,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import AIMessage, HumanMessage
 import time
 
-def invoke_llm_langchain(messages, model="mistral-saba-24b", temperature=0.9, max_tokens=5000):
+def invoke_llm_langchain(messages, model="mistral-saba-24b", temperature=0.2, max_tokens=5000):
     """
     Invoke the LLM with the given messages
     """

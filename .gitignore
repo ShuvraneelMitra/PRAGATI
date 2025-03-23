@@ -16,3 +16,4 @@ pragati.log
 */__pycache__/
 *.pdf
 /output/*
+chroma_db/*
