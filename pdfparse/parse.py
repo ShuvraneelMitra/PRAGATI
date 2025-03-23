@@ -3,8 +3,8 @@ from PIL import Image
 import numpy as np
 from transformers import TableTransformerForObjectDetection, DetrImageProcessor
 import torch
-from pix2tex.cli import LatexOCR
 import os
+import sys
 import pandas as pd
 from typing import List, Dict, Tuple
 import logging
@@ -12,12 +12,17 @@ from pathlib import Path
 import zipfile
 import pytesseract
 
+sys.path.insert(0, "old_pkgs/timm0.5.4")
+from pix2tex.cli import LatexOCR
+sys.path.pop(0)
+
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class ResearchPaperParser:
-    def __init__(self, df, output_dir: str, save:bool = False):
+    def __init__(self, df, output_dir: str, save: bool = False):
+        self.save = save
         if isinstance(df, str):
             self.pdf_path = df
         elif isinstance(df, pd.DataFrame):
@@ -36,7 +41,7 @@ class ResearchPaperParser:
         )
 
         self.latex_ocr = LatexOCR()
-        if save:
+        if self.save:
             Path(self.output_dir).mkdir(parents=True, exist_ok=True)
 
     def load_pdf(self) -> None:
@@ -267,11 +272,11 @@ class ResearchPaperParser:
 
             results["equations"][page_num] = self.detect_and_convert_math(page_image)
 
-            image_path = os.path.join(self.output_dir, f"page_{page_num}.png")
-            page_image.save(image_path)
-            results["images"][page_num] = image_path
-
-            results["embedded_images"][page_num] = self.extract_images(page_num)
+            if self.save:
+                image_path = os.path.join(self.output_dir, f"page_{page_num}.png")
+                page_image.save(image_path)
+                results["images"][page_num] = image_path
+                results["embedded_images"][page_num] = self.extract_images(page_num)
 
         return results
 

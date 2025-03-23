@@ -17,23 +17,20 @@ from llama_index.core.schema import Document
 from llama_index.core.node_parser import SentenceSplitter
 import chromadb
 warnings.filterwarnings("ignore")
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logging.basicConfig(filename="PRAGATI.log",
+                    level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 load_dotenv()
 
 class RAG:
     def __init__(self, pdf_path):
         logger.info(f"Initializing RAG with PDF: {pdf_path}")
-        # self.parser = ResearchPaperParser(pdf_path, output_dir="output", save=False) 
-        # self.text = self.parser.process_document()['text']
-        text_file_path = "/home/naba/Desktop/PRAGATI/output/text_content.txt" #using this for dev purpose only
-        try:
-            with open(text_file_path, 'r') as file:
-                text_content = file.read()
-            self.text = text_content
-        except FileNotFoundError:
-            logger.error(f"Text file not found at {text_file_path}")
-            self.text = None
+        self.parser = ResearchPaperParser(pdf_path, output_dir="output", save=False)
+        self.text = self.parser.process_document()['text']
 
         logger.info(f"Successfully loaded document text")
         self.embed_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -71,22 +68,23 @@ class RAG:
         splitter = SentenceSplitter(chunk_size=1000, chunk_overlap=100)
         llama_nodes = []
         for doc in docs:
-            llama_doc = Document(
-                text=doc["content"],
-                metadata=doc["metadata"]
-            )
-            nodes = splitter.get_nodes_from_documents([llama_doc])
-            for i, node in enumerate(nodes):
-                node.metadata.update({
-                    "chunk_id": f"{doc['metadata']['doc_id']}-chunk-{i}",
-                    "chunk_index": i,
-                    "total_chunks": len(nodes)
-                })
-            
-            llama_nodes.extend(nodes)
-        
-        logger.info(f"Created {len(llama_nodes)} total nodes from documents")
-        return llama_nodes
+            for key, value in doc["content"].items():
+                llama_doc = Document(
+                    text=value,
+                    metadata=doc["metadata"]
+                )
+                nodes = splitter.get_nodes_from_documents([llama_doc])
+                for i, node in enumerate(nodes):
+                    node.metadata.update({
+                        "chunk_id": f"{doc['metadata']['doc_id']}-chunk-{i}",
+                        "chunk_index": i,
+                        "total_chunks": len(nodes)
+                    })
+
+                llama_nodes.extend(nodes)
+
+            logger.info(f"Created {len(llama_nodes)} total nodes from documents")
+            return llama_nodes
     
     def create_db(self):
         logger.info("Creating vector database from documents")
@@ -157,7 +155,7 @@ class RAG:
         }
 
 if __name__ == "__main__":
-    pdf_path = "/home/naba/Desktop/PRAGATI/Tiny_ML_Things.pdf"
+    pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
     logger.info(f"Starting RAG application with PDF: {pdf_path}")
     rag = RAG(pdf_path)
     index = rag.create_db()
