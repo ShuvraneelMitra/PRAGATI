@@ -3,7 +3,7 @@ from typing import Optional, Annotated, Sequence
 from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
 from operator import add
-
+from typing import Dict, Any
 from agents.schemas import TokenTracker, QAPair, Reviewer, Paper, FRPair
 
 
@@ -38,6 +38,10 @@ class QuestionState(BaseModel):
     suggestions: str = Field(None, description="The final suggestions")
     model_config = ConfigDict(validate_assignment=True)
 
+    def __hash__(self):
+        return id(self)
+    def __eq__(self, other):
+        return self is other
 
 class FactCheckerState(BaseModel):
     inputs: str = Field(None, description="Original text chunk to be fact-checked")
@@ -67,3 +71,23 @@ class FactCheckerState(BaseModel):
         0.0, description="Average score of the fact-checking process"
     )
     model_config = {"validate_assignment": True}
+    # class Config:
+    #     frozen = True
+
+
+class CombinedPaperState(BaseModel):
+    fact_checker_results: FactCheckerState = Field(
+        None, description="Results from fact checker workflow"
+    )
+    qa_results: QuestionState = Field(
+        None, description="Results from question-answering workflow"
+    )
+    overall_assessment: Optional[str] = Field(
+        None, description="Combined assessment based on both workflows"
+    )
+    is_reliable: Optional[bool] = Field(
+        None, description="Whether the paper is considered reliable"
+    )
+    model_config = ConfigDict(validate_assignment=True)
+    # class Config:
+    #     frozen = True

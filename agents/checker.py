@@ -286,6 +286,6 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    while(input("Enter q to quit: ") != 'q'):
+    while input("Enter q to quit: ") != "q":
         input_text = input("Enter text to fact check: ")
         results = fact_check(input_text)

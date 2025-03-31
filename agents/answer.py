@@ -2,7 +2,7 @@ import gradio.utils
 
 from agents.states import QuestionState
 from pdfparse.rag_llama import RAG
-
+from utils.utils import tmpl_to_prompt
 import logging
 import gradio
 from typing import Annotated, Literal, Sequence
@@ -15,6 +15,9 @@ from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.graph import StateGraph, START, END
+import os
+import yaml
+import json
 
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
@@ -121,7 +124,7 @@ def review_and_suggest(state: QuestionState) -> QuestionState:
             (
                 "human",
                 tmpl_to_prompt(
-                    prompts["QuestionAnswering"]["review_and_suggest"]["human"],
+                    -prompts["QuestionAnswering"]["review_and_suggest"]["human"],
                     {
                         "queries": f"{[(query.question, query.answer) for query in state.queries]}"
                     },

@@ -34,6 +34,8 @@ class Paper(BaseModel):
         description="A list of the sections present in the paper such as Abstract, "
         "Introduction etc.",
     )
+    # class Config:
+    #     frozen = True
 
 
 class FRPair(BaseModel):
