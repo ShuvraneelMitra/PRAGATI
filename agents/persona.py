@@ -251,6 +251,7 @@ def qgen_graph() -> CompiledStateGraph:
 
 
 if __name__ == "__main__":
+    graph = qgen_graph()
     graph_image = graph.get_graph().draw_mermaid_png(
         curve_style=CurveStyle.LINEAR,
         node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),

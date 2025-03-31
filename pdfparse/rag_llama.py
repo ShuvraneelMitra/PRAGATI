@@ -49,7 +49,7 @@ class RAG:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(current_dir)
         prompts_path = os.path.join(project_root, "utils", "prompts.yaml")
-        with open(prompts_path, "r") as file:
+        with open(prompts_path, "r", encoding="utf-8") as file:
             self.prompts = yaml.safe_load(file)["RAG_prompts"]
         logger.info(f"Loaded prompts from {prompts_path}")
 
