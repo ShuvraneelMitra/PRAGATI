@@ -20,7 +20,7 @@ import nest_asyncio
 nest_asyncio.apply()
 load_dotenv()
 
-with open("../utils/prompts.yaml", "r") as file:
+with open("utils/prompts.yaml", "r") as file:
     prompts = yaml.safe_load(file)
 
 llm = ChatGroq(
@@ -245,7 +245,7 @@ def qgen_graph() -> CompiledStateGraph:
     graph_builder.add_edge(START, "generate_reviewers")
     graph_builder.add_edge("generate_reviewers", "generate_questions")
     graph_builder.add_edge("generate_questions", "generate_subqueries")
-    graph_builder.add_edge("generate_subqueries", END)
+
     graph = graph_builder.compile()
     return graph
 

@@ -1,6 +1,6 @@
 import gradio.utils
 
-from states import QuestionState
+from agents.states import QuestionState
 from pdfparse.rag_llama import RAG
 
 import logging
@@ -14,6 +14,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langgraph.graph.state import CompiledStateGraph
+from langgraph.graph import StateGraph, START, END
 
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
@@ -29,6 +30,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 load_dotenv()
+
+llm = ChatGroq(
+    model="llama-3.1-8b-instant",
+    temperature=0.9,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    api_key=os.getenv("GROQ_API_KEY"),
+)
 
 ########################################################################################################################
 
@@ -196,6 +206,6 @@ def agen_graph() -> CompiledStateGraph:
     graph_builder.add_edge(START, "answerer")
     graph_builder.add_edge("answerer", "compiler")
     graph_builder.add_edge("compiler", "review_and_suggest")
-    graph_builder.add_edge("review_and_suggest", END)
+
     graph = graph_builder.compile()
     return graph
