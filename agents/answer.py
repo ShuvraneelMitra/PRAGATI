@@ -40,6 +40,9 @@ llm = ChatGroq(
     api_key=os.getenv("GROQ_API_KEY"),
 )
 
+with open("utils/prompts.yaml", "r") as file:
+    prompts = yaml.safe_load(file)
+
 ########################################################################################################################
 
 
