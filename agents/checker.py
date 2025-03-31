@@ -274,5 +274,6 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    sample_text = "The Great Wall of China is visible from space with the naked eye.\nGoldfish have a memory span of only three seconds.\nBananas are berries, but strawberries are not.\nHumans have more than five senses, including balance and temperature.\nSharks must keep swimming to stay alive."
-    results = fact_check(sample_text)
+    while(input("Enter q to quit: ") != 'q'):
+        input_text = input("Enter text to fact check: ")
+        results = fact_check(input_text)
