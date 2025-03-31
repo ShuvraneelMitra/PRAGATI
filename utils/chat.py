@@ -3,7 +3,10 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import AIMessage, HumanMessage
 import time
 
-def invoke_llm_langchain(messages, model="mistral-saba-24b", temperature=0.2, max_tokens=5000):
+
+def invoke_llm_langchain(
+    messages, model="mistral-saba-24b", temperature=0.2, max_tokens=5000
+):
     """
     Invoke the LLM with the given messages
     """
@@ -29,12 +32,15 @@ def invoke_llm_langchain(messages, model="mistral-saba-24b", temperature=0.2, ma
         input_tokens = net_input
         output_tokens = net_output
 
-    messages.append(AIMessage(content=content)) 
+    messages.append(AIMessage(content=content))
 
     return messages, input_tokens, output_tokens
 
+
 # sample usage
 if __name__ == "__main__":
-    messages = [HumanMessage(content="Why attention is all you need is such an epic paper?")]
+    messages = [
+        HumanMessage(content="Why attention is all you need is such an epic paper?")
+    ]
     response, _, _ = invoke_llm_langchain(messages)
-    print(response[-1].content)  
+    print(response[-1].content)

@@ -1,5 +1,6 @@
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 from langgraph.graph import StateGraph, START, END
+from langgraph.graph.state import CompiledStateGraph
 from langchain_groq import ChatGroq
 from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeStyles
 
@@ -236,48 +237,53 @@ def generate_subqueries(state: QuestionState) -> QuestionState:
     return dict(messages=messages, token_usage=state.token_usage, queries=state.queries)
 
 
-# print(generate_subqueries(QuestionState(**ex), 3))
+def qgen_graph() -> CompiledStateGraph:
+    graph_builder = StateGraph(QuestionState)
+    graph_builder.add_node("generate_reviewers", generate_reviewers)
+    graph_builder.add_node("generate_questions", generate_questions)
+    graph_builder.add_node("generate_subqueries", generate_subqueries)
+    graph_builder.add_edge(START, "generate_reviewers")
+    graph_builder.add_edge("generate_reviewers", "generate_questions")
+    graph_builder.add_edge("generate_questions", "generate_subqueries")
+    graph_builder.add_edge("generate_subqueries", END)
+    graph = graph_builder.compile()
+    return graph
 
-graph_builder = StateGraph(QuestionState)
-graph_builder.add_node("generate_reviewers", generate_reviewers)
-graph_builder.add_node("generate_questions", generate_questions)
-graph_builder.add_node("generate_subqueries", generate_subqueries)
-graph_builder.add_edge(START, "generate_reviewers")
-graph_builder.add_edge("generate_reviewers", "generate_questions")
-graph_builder.add_edge("generate_questions", "generate_subqueries")
-graph_builder.add_edge("generate_subqueries", END)
-graph = graph_builder.compile()
 
-graph_image = graph.get_graph().draw_mermaid_png(
-    curve_style=CurveStyle.LINEAR,
-    node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),
-    wrap_label_n_words=9,
-    output_file_path=None,
-    draw_method=MermaidDrawMethod.PYPPETEER,
-    background_color="white",
-    padding=10,
-)
+if __name__ == "__main__":
+    graph_image = graph.get_graph().draw_mermaid_png(
+        curve_style=CurveStyle.LINEAR,
+        node_colors=NodeStyles(first="#ffdfba", last="#baffc9", default="#fad7de"),
+        wrap_label_n_words=9,
+        output_file_path=None,
+        draw_method=MermaidDrawMethod.PYPPETEER,
+        background_color="white",
+        padding=10,
+    )
 
-if not os.path.exists("../assets"):
-    os.makedirs("../assets")
-with open("../assets/generate_subqueries.png", "wb") as f:
-    f.write(graph_image)
+    if not os.path.exists("../assets"):
+        os.makedirs("../assets")
+    with open("../assets/generate_subqueries.png", "wb") as f:
+        f.write(graph_image)
 
-show_img = input("Show generated graph? Y/n ")
-if show_img.lower() == "y":
-    img = Image.open("../assets/generate_subqueries.png")
-    img.show()
+    show_img = input("Show generated graph? Y/n ")
+    if show_img.lower().strip() == "y":
+        img = Image.open("../assets/generate_subqueries.png")
+        img.show()
 
-ex = {
-    "messages": [],
-    "paper": Paper(
-        topic="Large Language Models",
-        sections=["Introduction", "Methodology", "Conclusion"],
-    ),
-    "num_reviewers": 4,
-    "token_usage": TokenTracker(net_input_tokens=0, net_output_tokens=0, net_tokens=0),
-    "reviewers": [],
-    "queries": [],
-}
+    ex = {
+        "messages": [],
+        "paper": Paper(
+            topic="Large Language Models",
+            sections=["Introduction", "Methodology", "Conclusion"],
+        ),
+        "num_reviewers": 4,
+        "token_usage": TokenTracker(
+            net_input_tokens=0, net_output_tokens=0, net_tokens=0
+        ),
+        "reviewers": [],
+        "queries": [],
+    }
 
-final_state = graph.invoke(QuestionState(**ex))
+    final_state = graph.invoke(QuestionState(**ex))
+    pprint(final_state)
