@@ -73,6 +73,8 @@ QuestionAnswering:
       2. You have to ensure that the sub-queries cover the most important aspects of the main query,
       and when taken together they should provide a more wholesome view of the aspect of publishability
       of the research paper as described in the query. Remember to remain relevant to the topic of the paper.
+      
+      THE SUB-QUERIES SHOULD BE ANSWERABLE BY A SIMPLE YES/NO ANSWER AND NOTHING ELSE.
       3. Return your answer ONLY as a JSON. The JSON should have the following keys:
       -- 'sub-queries': This is the only key in the JSON and contains a list of the sub-queries WITHOUT ANY
       ADDITIONAL KEYS INSIDE THE LIST.
@@ -83,6 +85,42 @@ QuestionAnswering:
       Given topics: ${topics}
       Given query: ${query}
       Given specialisation of the researcher: ${specialisation}
+
+  review_and_suggest:
+    system: |
+      You are a helpful assistant. Given multiple descriptions of the sections of a research
+      paper, your job is to summarise and suggest improvements to the paper.
+
+    human: | 
+      Given the document and the questions, generate a summary of the research paper in the format shown below:
+      
+      Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'publishability': This explains whether the paper is publishable or not in the first sentence,
+      and then goes on to elaborate in a short paragraph why this is so.
+      -- 'suggestions': A list of suggestions to improve the paper.
+      
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+      
+      Given questions: ${queries}
+      
+  summary:
+    system: | 
+      You are a helpful assistant and your job is to summaries a bunch of reviews and suggestions
+      to generate a compiled review and suggestions.
+
+    human: | 
+      Given a list of reviews and a list of suggestions, you simply need to summarise the two lists,
+      keeping all the diverse perspectives in mind and incorporating all important details.
+      
+      Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'publishability': A summary of the `reviews` list.
+      -- 'suggestions': A list of compiled suggestions to improve the paper.
+      
+      reviews: ${reviews}
+      suggestions: ${suggestions}
+      
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+    
 
 web_prompts:
   initial_message: |
