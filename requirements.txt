@@ -41,3 +41,8 @@ torchtune
 torchvision
 transformers
 x-transformers
+langchain-chroma>=0.1.2
+langchain-google-vertexai
+llama-index
+llama-index-embeddings-langchain
+llama-index-vector-stores-chroma

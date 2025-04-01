@@ -1,4 +1,3 @@
----
 QuestionAnswering:
   generate_reviewers:
     system: | 
@@ -74,6 +73,8 @@ QuestionAnswering:
       2. You have to ensure that the sub-queries cover the most important aspects of the main query,
       and when taken together they should provide a more wholesome view of the aspect of publishability
       of the research paper as described in the query. Remember to remain relevant to the topic of the paper.
+      
+      THE SUB-QUERIES SHOULD BE ANSWERABLE BY A SIMPLE YES/NO ANSWER AND NOTHING ELSE.
       3. Return your answer ONLY as a JSON. The JSON should have the following keys:
       -- 'sub-queries': This is the only key in the JSON and contains a list of the sub-queries WITHOUT ANY
       ADDITIONAL KEYS INSIDE THE LIST.
@@ -85,8 +86,44 @@ QuestionAnswering:
       Given query: ${query}
       Given specialisation of the researcher: ${specialisation}
 
+  review_and_suggest:
+    system: |
+      You are a helpful assistant. Given multiple descriptions of the sections of a research
+      paper, your job is to summarise and suggest improvements to the paper.
+
+    human: | 
+      Given the document and the questions, generate a summary of the research paper in the format shown below:
+      
+      Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'publishability': This explains whether the paper is publishable or not in the first sentence,
+      and then goes on to elaborate in a short paragraph why this is so.
+      -- 'suggestions': A list of suggestions to improve the paper.
+      
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+      
+      Given questions: ${queries}
+      
+  summary:
+    system: | 
+      You are a helpful assistant and your job is to summaries a bunch of reviews and suggestions
+      to generate a compiled review and suggestions.
+
+    human: | 
+      Given a list of reviews and a list of suggestions, you simply need to summarise the two lists,
+      keeping all the diverse perspectives in mind and incorporating all important details.
+      
+      Return your answer ONLY as a JSON. The JSON should have the following keys:
+      -- 'publishability': A summary of the `reviews` list.
+      -- 'suggestions': A list of compiled suggestions to improve the paper.
+      
+      reviews: ${reviews}
+      suggestions: ${suggestions}
+      
+      There should be no extra verbiage in your answer. Only the JSON should be returned.
+    
+
 web_prompts:
-  initial_message: >
+  initial_message: |
     You are an advanced AI assistant that refines and expands search queries. 
     Given a user-provided query, generate a highly structured, precise, and detailed search query optimized for search engines. 
     Ensure clarity by expanding abbreviations, adding context, and specifying key aspects relevant to the topic. 
@@ -101,16 +138,16 @@ web_prompts:
     Ensure the output follows this exact format. Do not add anything outside the quotes. Do not use your own knowledge or opinions to generate the response.
     Also the response should be in English language only and should not exceed 100 characters.
 
-  human_message: >
-    I want to get a search query for the topic: {query} which is searched on {provider}.
+  human_message: |
+    I want to get a search query for the topic: ${query} which is searched on ${provider}.
 
 scorer_prompts:
-  initial_message: >
+  initial_message: |
     You are a fact-checking AI. Given the following text and fact, evaluate the correctness of the text on a Likert scale (1 to 5):
     
-    Text: "{text}"
+    Text: "${text}"
     
-    Fact: "{fact}"
+    Fact: "${fact}"
     
     Likert Scale:
     1 - Completely Incorrect  
@@ -120,3 +157,12 @@ scorer_prompts:
     5 - Completely Correct  
   
     Provide only the score as output. 
+
+RAG_prompts:
+  human_message: |
+        Answer the question based only on the following context information.
+        CONTEXT:
+        ${context}
+        QUESTION:
+        ${query_text}
+        ANSWER:
