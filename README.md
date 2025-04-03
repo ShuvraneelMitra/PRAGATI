@@ -11,7 +11,7 @@ This is the version 2.0 of PRAGATI. To find the earlier work, please visit branc
 5. Sync with the `requirements.txt` file inside your `venv`: `pip install -r requirements.txt`. This will install all 
    the 
    relevant packages inside your virtual environment.
-6. Install locally, an older version of timm: `pip install timm==0.5.4 -t old_pkgs/timm0.5.4` (for the latest version we provide this package as part of our repo so this step might not be needed)
+6. Install locally, an older version of timm: `pip install timm==0.5.4 -t old_pkgs/timm0.5.4` (for the latest version of PRAGATI, we provide this package as part of our repo so this step might not be needed)
 7. Run the app with `uvicorn ui:app --reload --port 8080`. You can choose any port on the localhost of your liking 
    and change it if that port turns out to be blocked.
 8. Open `http://127.0.0.1:<port-number>` to get the development server running.
