@@ -3,7 +3,7 @@ This is the version 2.0 of PRAGATI. To find the earlier work, please visit branc
 
 ## Awards
 
-Winner of **Outstanding Solution Implementation** 🎉 at the **Ready Tensor Agentic AI Innovation Challenge 2025**
+Winner of **Outstanding Solution Implementation** 🎉 at the [**Ready Tensor Agentic AI Innovation Challenge 2025**](https://app.readytensor.ai/publications/pragati-paper-review-and-guidance-for-academic-target-identification-Nkv6cLXGp3Hp)
 
 ## Installation and Running instructions
 
