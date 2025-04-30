@@ -1,6 +1,10 @@
 
 This is the version 2.0 of PRAGATI. To find the earlier work, please visit branch "PRAGATI-legacy".
 
+## Awards
+
+Winner of **Outstanding Solution Implementation** 🎉 at the **Ready Tensor Agentic AI Innovation Challenge 2025**
+
 ## Installation and Running instructions
 
 1. Clone the repository on to your local machine: `git clone https://github.com/ShuvraneelMitra/PRAGATI.git`
