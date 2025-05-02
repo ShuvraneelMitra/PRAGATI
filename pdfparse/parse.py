@@ -384,7 +384,7 @@ class ResearchPaperParser:
 
 
 if __name__ == "__main__":
-    pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
+    pdf_path = "/home/naba/Desktop/PRAGATI/satya.pdf"
     parser = ResearchPaperParser(pdf_path, output_dir="output", save=True)
     try:
         results = parser.process_document()

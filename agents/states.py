@@ -26,7 +26,7 @@ class QuestionState(BaseModel):
         3, description="Number of subqueries per broad question"
     )
     reviewers: Sequence[Reviewer] = Field(
-        None, description="Sequence of reviewers selected"
+        default_factory=list, description="Sequence of reviewers selected"
     )
     token_usage: TokenTracker = Field(
         None, description="Token usage for the question state"
