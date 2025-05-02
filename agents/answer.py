@@ -71,7 +71,7 @@ def answerer(state: QuestionState) -> QuestionState:
                 response = rag.rag_query(query_text, retriever)
                 logger.info("======================Debug======================")
                 logger.info(f"query: {qa_pair.query}")
-                logger.info("response:",response["result"])
+                logger.info(f"response: {response['result']}")
                 qa_pair.answer = response["result"].lower().strip() == "yes"
                 if state.token_usage is None:
                     state.token_usage = TokenTracker(net_input_tokens=0, net_output_tokens=0, net_tokens=0)

@@ -14,6 +14,7 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core.storage.storage_context import StorageContext
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from llama_index.core.schema import Document
+from pdfparse.parser import PDFParser
 from llama_index.core.node_parser import SentenceSplitter
 import chromadb
 
@@ -33,9 +34,8 @@ load_dotenv()
 class RAG:
     def __init__(self, pdf_path):
         logger.info(f"Initializing RAG with PDF: {pdf_path}")
-        self.parser = ResearchPaperParser(pdf_path, output_dir="output", save=False)
-        self.text = self.parser.process_document()["text"]
-
+        self.parser = PDFParser(pdf_path)
+        self.text = self.parser.parse()
         logger.info(f"Successfully loaded document text")
         self.embed_model = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
@@ -72,28 +72,26 @@ class RAG:
         return documents
 
     def process_documents(self, docs):
-
         logger.info(f"Processing {len(docs)} documents into LlamaIndex format")
 
         splitter = SentenceSplitter(chunk_size=1000, chunk_overlap=100)
         llama_nodes = []
         for doc in docs:
-            for key, value in doc["content"].items():
-                llama_doc = Document(text=value, metadata=doc["metadata"])
-                nodes = splitter.get_nodes_from_documents([llama_doc])
-                for i, node in enumerate(nodes):
-                    node.metadata.update(
-                        {
-                            "chunk_id": f"{doc['metadata']['doc_id']}-chunk-{i}",
-                            "chunk_index": i,
-                            "total_chunks": len(nodes),
-                        }
-                    )
+            llama_doc = Document(text=doc["content"], metadata=doc["metadata"])
+            nodes = splitter.get_nodes_from_documents([llama_doc])
+            for i, node in enumerate(nodes):
+                node.metadata.update(
+                    {
+                        "chunk_id": f"{doc['metadata']['doc_id']}-chunk-{i}",
+                        "chunk_index": i,
+                        "total_chunks": len(nodes),
+                    }
+                )
+            llama_nodes.extend(nodes)
 
-                llama_nodes.extend(nodes)
+        logger.info(f"Created {len(llama_nodes)} total nodes from documents")
+        return llama_nodes
 
-            logger.info(f"Created {len(llama_nodes)} total nodes from documents")
-            return llama_nodes
 
     def create_db(self):
         logger.info("Creating vector database from documents")
@@ -167,7 +165,7 @@ class RAG:
 
 
 if __name__ == "__main__":
-    pdf_path = "C:/Users/MITRA/Desktop/Books/Tiny Machine Learning.pdf"
+    pdf_path = "/home/naba/Desktop/PRAGATI/satya.pdf"
     logger.info(f"Starting RAG application with PDF: {pdf_path}")
     rag = RAG(pdf_path)
     index = rag.create_db()
@@ -176,4 +174,4 @@ if __name__ == "__main__":
         query_text = input("Enter your query: ")
         logger.info(f"User query: {query_text}")
         response = rag.rag_query(query_text, retriever)
-        print(response)
+        print(response["result"])
