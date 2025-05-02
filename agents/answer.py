@@ -14,10 +14,14 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langgraph.graph.state import CompiledStateGraph
+from agents.schemas import TokenTracker
 from langgraph.graph import StateGraph, START, END
 import os
 import yaml
 import json
+
+from agents.schemas import Paper, QAPair
+from agents.states import SingleQuery
 
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
@@ -65,7 +69,12 @@ def answerer(state: QuestionState) -> QuestionState:
                 """
                 logger.info(f"User query: {query_text}")
                 response = rag.rag_query(query_text, retriever)
+                logger.info("======================Debug======================")
+                logger.info(f"query: {qa_pair.query}")
+                logger.info(f"response: {response['result']}")
                 qa_pair.answer = response["result"].lower().strip() == "yes"
+                if state.token_usage is None:
+                    state.token_usage = TokenTracker(net_input_tokens=0, net_output_tokens=0, net_tokens=0)
 
                 state.token_usage.net_input_tokens += response["input_tokens"]
                 state.token_usage.net_output_tokens += response["output_tokens"]
@@ -73,7 +82,10 @@ def answerer(state: QuestionState) -> QuestionState:
                     state.token_usage.net_output_tokens
                     + state.token_usage.net_input_tokens
                 )
-
+                logger.info(f"query: {qa_pair.query}")
+                logger.info(f"Answer: {qa_pair.answer}")
+                logger.info(f"Answer: {qa_pair.answer}")
+                
     return dict(queries=state.queries, token_usage=state.token_usage)
 
 
@@ -87,7 +99,7 @@ def compiler(state: QuestionState) -> QuestionState:
             compiled = str()
             for qa_pair in single_query.sub_queries:
                 compiled += f"""
-                            \n {single_query.query} : {single_query.answer} \n
+                            \n {single_query.question} : {single_query.answer} \n
                             """
 
             query_text = f"""
@@ -104,14 +116,16 @@ def compiler(state: QuestionState) -> QuestionState:
             logger.info(f"User query: {single_query.question}")
             response = rag.rag_query(query_text, retriever)
             single_query.answer = response["result"]
-
+            logger.info("======================Debug======================")
+            logger.info(f"query: {single_query.question}")
+            logger.info(f"Answer: {single_query.answer}")
             state.token_usage.net_input_tokens += response["input_tokens"]
             state.token_usage.net_output_tokens += response["output_tokens"]
             state.token_usage.net_tokens = (
                 state.token_usage.net_output_tokens + state.token_usage.net_input_tokens
             )
 
-            return dict(queries=state.queries, token_usage=state.token_usage)
+    return dict(queries=state.queries, token_usage=state.token_usage)
 
 
 def review_and_suggest(state: QuestionState) -> QuestionState:
@@ -124,25 +138,37 @@ def review_and_suggest(state: QuestionState) -> QuestionState:
             (
                 "human",
                 tmpl_to_prompt(
-                    -prompts["QuestionAnswering"]["review_and_suggest"]["human"],
+                    prompts["QuestionAnswering"]["review_and_suggest"]["human"],
                     {
-                        "queries": f"{[(query.question, query.answer) for query in state.queries]}"
+                        "queries": f"{[(query[i].question, query[i].answer) for query in state.queries]}"
                     },
                 ),
             ),
         ]
 
         response = llm.invoke(messages)
+        logger.info("======================Debug======================")
+        logger.info(f"response: {response.content}")
         try:
             subq_json = json.loads(response.content)
         except json.decoder.JSONDecodeError as json_error:
-            print(
-                f"JSON Decode Error: {json_error}\n Thrown because the LLM output is {response.content}"
+            logger.info(
+                f"JSON Decode Error: {json_error}\nThrown because the LLM output is {response.content!r}"
             )
-            return dict()
+            raise RuntimeError("Could not parse LLM output as JSON") from json_error
 
-        state.reviewers[i].review = subq_json["publishability"]
-        state.reviewers[i].suggestions = subq_json["suggestions"]
+        if not isinstance(subq_json, dict):
+            raise TypeError(f"Expected JSON object (dict), got {type(subq_json).__name__}: {subq_json!r}")
+
+        required = ("publishability", "suggestions")
+        missing = [k for k in required if k not in subq_json]
+        if missing:
+            raise KeyError(f"LLM response is missing keys {missing!r} in {subq_json!r}")
+        
+        if len(state.reviewers) >0:
+            state.reviewers[i].review = subq_json["publishability"]
+            state.reviewers[i].suggestions = subq_json["suggestions"]
+
 
         state.token_usage.net_input_tokens += response.response_metadata["token_usage"][
             "prompt_tokens"
@@ -179,7 +205,7 @@ def summary(state: QuestionState) -> QuestionState:
     try:
         subq_json = json.loads(response.content)
     except json.decoder.JSONDecodeError as json_error:
-        print(
+        logger.info(
             f"JSON Decode Error: {json_error}\n Thrown because the LLM output is {response.content}"
         )
         return dict()
@@ -215,3 +241,30 @@ def agen_graph() -> CompiledStateGraph:
 
     graph = graph_builder.compile()
     return graph
+
+if __name__ == "__main__":
+    graph = agen_graph()
+    state = QuestionState(
+    paper=Paper(
+        filepath="/home/naba/Desktop/PRAGATI/satya.pdf",
+        title="Some Title",
+        topic="ML",
+        filename="satya.pdf",
+        sections=["Abstract", "Introduction", "Methodology"]
+    ),
+    queries=[
+        [
+            SingleQuery(
+                question="Is the methodology novel?",
+                answer="Yes",
+                sub_queries=[
+                    QAPair(query="Does it introduce a new technique?", answer=True),
+                    QAPair(query="Is the implementation clear?", answer=False),
+                    QAPair(query="Has it been validated experimentally?", answer=True)
+                ]
+            )
+        ]
+    ]
+)
+    result = graph.invoke(state)
+    logger.info(result)

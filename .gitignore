@@ -18,3 +18,4 @@ fchecker/__pycache__/*
 /output/*
 chroma_db/*
 old_pkgs/*
+=0.9.0
