@@ -117,7 +117,6 @@ def compiler(state: QuestionState) -> QuestionState:
             response = rag.rag_query(query_text, retriever)
             single_query.answer = response["result"]
             logger.info("======================Debug======================")
-            logger.info(f"query: {single_query.question}")
             logger.info(f"Answer: {single_query.answer}")
             state.token_usage.net_input_tokens += response["input_tokens"]
             state.token_usage.net_output_tokens += response["output_tokens"]
