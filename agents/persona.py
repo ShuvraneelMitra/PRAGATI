@@ -275,6 +275,7 @@ if __name__ == "__main__":
     ex = {
         "messages": [],
         "paper": Paper(
+            filepath="/home/naba/Desktop/PRAGATI/satya.pdf",
             topic="Large Language Models",
             sections=["Introduction", "Methodology", "Conclusion"],
         ),
