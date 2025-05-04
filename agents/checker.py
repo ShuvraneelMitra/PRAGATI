@@ -12,12 +12,21 @@ from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeSt
 from fchecker.fscorer import LikertScorer
 from agents.schemas import FRPair
 from agents.states import FactCheckerState
+from pdfparse.rag_llama import RAG
+from langchain_core.messages import AIMessage, HumanMessage
+import yaml
+from agents.schemas import Paper
+from pprint import pprint
 
 logging.basicConfig(
+    filename="PRAGATI.log",
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
+
+with open("utils/prompts.yaml", "r") as file:
+    prompts = yaml.safe_load(file)
 
 def generate_search_query(claim: str) -> str:
     """Generate a search query from a claim"""
@@ -113,6 +122,21 @@ def parse_claims(state: FactCheckerState) -> FactCheckerState:
 
     return state
 
+def retrieve_facts(state: FactCheckerState) -> FactCheckerState:
+    """Retrieve facts from the knowledge base"""
+    file = state.paper.filepath
+    if not file:
+        state.errors = "No file provided for knowledge base"
+        return state
+    logger.info(f"Starting RAG application with PDF: {file}")
+    rag = RAG(file)
+    index = rag.create_db()
+    query_text = prompts["fchecker"]["human_message"].format(paper_name=state.paper.title)
+    retriever = rag.create_retriever(index)
+    response = rag.rag_query(query_text, retriever)
+    pprint(response["result"])
+    state.inputs = response["result"]
+    return state
 
 def generate_query(state: FactCheckerState) -> FactCheckerState:
     """Generate search queries for the current claim"""
@@ -169,39 +193,45 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
     """Verify the current claim against search results"""
     if state.current_index >= len(state.pairs) or state.errors:
         return state
-
+    
     current_pair = state.pairs[state.current_index]
+    verification = None  # Initialize verification variable
+    
     try:
         logger.info(f"Verifying claim: {current_pair.claim}")
         verification = score_fact(
             claim=current_pair.claim, references=current_pair.search_results
         )
+        pprint(verification)
         current_pair.verification = verification
         state.pairs[state.current_index] = current_pair
-        # if not isinstance(state.token_usage, int):
-        #     state.token_usage = 0
-        # state.token_usage += verification.get("token", 0)
-        # print("tokens used:",verification.get("token", 0))
+        
         if verification.get("score", "N/A") == 0:
             logger.info(f"Claim is Unverified")
         else:
             logger.info(f"Verification complete: Score={verification.get('score')}")
+            
+        # Add to total score only if verification was successful
+        state.total_score += verification.get("score", 0)
+        
     except Exception as e:
         state.errors = f"Error in verification: {str(e)}"
         logger.error(f"Error in verify_claim: {e}")
-
-    state.total_score += verification.get("score", 0)
+    
+    # Always increment the index and calculate average regardless of success/failure
     state.current_index += 1
+    
     if state.current_index < state.no_claims:
         state.average_score = state.total_score / state.current_index
     else:
         state.average_score = state.total_score / state.no_claims
-        if state.average_score > 3:
-            state.is_factual = True
-        else:
-            state.is_factual = False
+        
+    if state.average_score > 3:
+        state.is_factual = True
+    else:
+        state.is_factual = False
+        
     return state
-
 
 def should_continue(state: FactCheckerState) -> str:
     """Determine whether to process the next claim or end"""
@@ -220,15 +250,16 @@ def should_continue(state: FactCheckerState) -> str:
 
 def create_fact_checker_graph() -> StateGraph:
     """Create the fact checker workflow graph"""
-    # defining the nodes
     workflow = StateGraph(FactCheckerState)
+    workflow.add_node("paper_parser", retrieve_facts)
     workflow.add_node("parse_claims", parse_claims)
     workflow.add_node("generate_query", generate_query)
     workflow.add_node("search_web", search_web)
     workflow.add_node("verify_claim", verify_claim)
 
     # Define the edges
-    workflow.add_edge(START, "parse_claims")
+    workflow.add_edge(START, "paper_parser")
+    workflow.add_edge("paper_parser", "parse_claims")
     workflow.add_edge("parse_claims", "generate_query")
     workflow.add_edge("generate_query", "search_web")
     workflow.add_edge("search_web", "verify_claim")
@@ -257,11 +288,11 @@ def create_fact_checker_graph() -> StateGraph:
     return compiled_graph
 
 
-def fact_check(text: str) -> List[FRPair]:
+def fact_check(paper: Paper) -> List[FRPair]:
     """Run the fact checking process on a text input"""
     logger.info("Starting fact checking process")
     checker = create_fact_checker_graph()
-    final_state = checker.invoke({"inputs": text})
+    final_state = checker.invoke({"paper": paper})
 
     return final_state["pairs"]
 
@@ -286,6 +317,14 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    while input("Enter q to quit: ") != "q":
-        input_text = input("Enter text to fact check: ")
-        results = fact_check(input_text)
+    # while input("Enter q to quit: ") != "q":
+    #     input_text = input("Enter text to fact check: ")
+    #     results = fact_check(input_text)
+    paper1=Paper(
+        filepath="/home/naba/Desktop/PRAGATI/satya.pdf",
+        title="Some Title",
+        topic="ML",
+        filename="satya.pdf",
+        sections=["Abstract", "Introduction", "Methodology"]
+    )
+    results = fact_check(paper1)

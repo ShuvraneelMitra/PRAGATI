@@ -166,3 +166,40 @@ RAG_prompts:
         QUESTION:
         ${query_text}
         ANSWER:
+
+fchecker:
+  initial_message: |
+    You are an expert assistant designed to identify key claims from research papers 
+    that are critical for factual verification. 
+    Your goal is to extract only the most significant statements that, if incorrect, 
+    would undermine the scientific credibility or integrity of the paper. 
+    These include novel findings, statistical results, comparisons to prior work, 
+    and any claims that are central to the paper’s contribution. 
+    Avoid boilerplate text, definitions, or non-assertive language. 
+    Format each claim as a clear, standalone sentence.
+    and don't include any additional information or context such as "from document 1 or 2"
+
+  human_message: |
+    You are an expert assistant designed to identify key claims from research papers 
+    that are critical for factual verification. 
+    Your goal is to extract only the most significant statements that, if incorrect, 
+    would undermine the scientific credibility or integrity of the paper. 
+    These include novel findings, statistical results, comparisons to prior work, 
+    and any claims that are central to the paper’s contribution. 
+    Avoid boilerplate text, definitions, or non-assertive language. 
+    Format each claim as a clear, standalone sentence.
+    and don't include any additional information or context such as "from document 1 or 2"
+    
+    Given the research paper titled ${paper_name}, extract only the most important factual claims that should be prioritized for fact-checking.
+    Focus on:
+
+    1) Novel results or discoveries,
+
+    2) Key statistics (e.g., performance metrics, p-values),
+
+    3) Comparisons with prior work,
+
+    4) Claims that, if false, would critically impact the paper’s conclusions.
+    
+    Ignore background knowledge, generic introductions, or future work suggestions. Return each important claim as a separate bullet point.
+  

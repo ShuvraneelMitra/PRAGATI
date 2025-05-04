@@ -5,7 +5,7 @@ import time
 
 
 def invoke_llm_langchain(
-    messages, model="mistral-saba-24b", temperature=0.2, max_tokens=5000
+    messages, model="llama-3.1-8b-instant", temperature=0.2, max_tokens=5000
 ):
     """
     Invoke the LLM with the given messages

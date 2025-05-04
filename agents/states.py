@@ -44,6 +44,7 @@ class QuestionState(BaseModel):
         return self is other
 
 class FactCheckerState(BaseModel):
+    paper: Paper = Field(None, description="Paper that should be fact-checked")
     inputs: str = Field(None, description="Original text chunk to be fact-checked")
     search_query: str = Field(
         None, description="Generated search query for fact-checking"
