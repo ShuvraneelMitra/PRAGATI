@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/ShuvraneelMitra/PRAGATI/blob/nabayan/orchestrator/assets/PRAGATI.png" width="400">
+  <img src="https://github.com/ShuvraneelMitra/PRAGATI/blob/main/assets/PRAGATI.png" width="400">
   <h1>PRAGATI</h1>
   <p><strong>Paper Review and Guidance for Academic Target Identification</strong></p>
 </div>
@@ -149,6 +149,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact
+## Contact
 
 For questions or feedback, please reach out to [your-email@example.com](mailto:your-email@example.com).
