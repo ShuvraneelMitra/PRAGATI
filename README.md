@@ -16,17 +16,17 @@
 
 </div>
 
-## 🏆 Awards
+## Awards
 
 Winner of **Outstanding Solution Implementation** 🎉 at the [**Ready Tensor Agentic AI Innovation Challenge 2025**](https://app.readytensor.ai/publications/pragati-paper-review-and-guidance-for-academic-target-identification-Nkv6cLXGp3Hp)
 
-## 📜 About
+## About
 
 PRAGATI automates the academic paper review process using an agentic AI workflow. It analyzes research papers, checks facts, provides critical feedback, and recommends suitable conferences for submission. This tool helps researchers improve their papers before submission, saving time and increasing chances of acceptance.
 
 > **Note**: This is version 2.0 of PRAGATI. To find the earlier work, please visit the ["PRAGATI-legacy" branch](https://github.com/ShuvraneelMitra/PRAGATI/tree/PRAGATI-legacy).
 
-## 🚀 Installation and Running Instructions
+## Installation and Running Instructions
 
 1. Clone the repository:
    ```bash
@@ -77,11 +77,11 @@ PRAGATI automates the academic paper review process using an agentic AI workflow
    http://127.0.0.1:8080
    ```
 
-## 📑 Abstract
+## Abstract
 
 The academic peer-review process can be time-consuming and inconsistent. Feedback turnaround times often take weeks, and reviewers may not give papers thorough attention due to high submission volumes. Sometimes, inexperienced reviewers may struggle to evaluate research quality effectively. PRAGATI addresses these issues by providing researchers with automated feedback about potential improvements and overlooked pitfalls before formal submission.
 
-## 🔍 Methodology
+## Methodology
 
 PRAGATI consists of five key components:
 
@@ -116,18 +116,18 @@ PRAGATI consists of five key components:
 - Analyzes responses from the critic to match papers with appropriate conferences
 - Provides targeted venue recommendations
 
-## 📊 Results
+## Results
 
 - **Dataset**: 150 research papers (both publishable and non-publishable)
 - **Publication Venues**: CVPR, ICLR, KDD, TMLR, and NeurIPS
 - **Accuracy**: 89% for conference recommendations
 
-## ⚠️ Limitations
+## Limitations
 
 - AI may struggle with nuanced aspects of research quality, such as novelty and theoretical impact
 - The system cannot evaluate radical new ideas at the same level as human reviewers
 
-## 🏭 Industry Insights
+## Industry Insights
 
 PRAGATI is revolutionizing academic peer review by:
 - Automating quality checks and fact verification
@@ -135,17 +135,17 @@ PRAGATI is revolutionizing academic peer review by:
 - Detecting fraudulent or low-quality submissions
 - Improving overall research integrity
 
-## 🔮 Future Directions
+## Future Directions
 
 - Enhancing multimodal analysis of figures, tables, and citations
 - Expanding capabilities to provide real-time feedback to authors
 - Developing real-time editing features similar to ChatGPT's canvas
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
