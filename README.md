@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://i.imgur.com/YOUR_LOGO_IMAGE_HERE.png" width="400">
+  <img src="../assets/PRAGATI.png" width="400">
   <h1>PRAGATI</h1>
   <p><strong>Paper Review and Guidance for Academic Target Identification</strong></p>
 </div>
