@@ -184,7 +184,7 @@ def retrieve_facts(state: FactCheckerState) -> FactCheckerState:
         query_text = prompts["fchecker"]["human_message"].format(paper_name=state.paper.title)
         retriever = rag.create_retriever(index)
         response = rag.rag_query(query_text, retriever)
-        pprint(response["result"])
+        # pprint(response["result"])
         state.inputs = response["result"]
     except Exception as e:
         state.errors = f"Error retrieving facts: {str(e)}"

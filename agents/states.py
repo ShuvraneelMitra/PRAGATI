@@ -95,3 +95,28 @@ class CombinedPaperState(BaseModel):
     model_config = ConfigDict(validate_assignment=True)
     # class Config:
     #     frozen = True
+
+class PaperReview(BaseModel):
+    factual: bool = Field(
+        None, description="Whether the paper is factual or not"
+    )
+    fact_checker_score: float = Field(
+        None, description="Score from the fact-checker"
+    )
+    Publishability: str = Field(
+        None, description="Publishability score from the QA"
+    )
+    Suggestions: str = Field(
+        None, description="Suggestions from the QA"
+    )
+    
+class PaperState(BaseModel):
+    fact_checker_results: FactCheckerState = Field(
+        None, description="Results from fact checker workflow"
+    )
+    qa_results: QuestionState = Field(
+        None, description="Results from question-answering workflow"
+    )
+    overall_assesment: PaperReview = Field(
+        default_factory=PaperReview, description="Combined assessment based on both workflows"
+    )
