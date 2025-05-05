@@ -1,11 +1,13 @@
 from agents.answer import agen_graph
 from agents.persona import qgen_graph
-from agents.schemas import TokenTracker, QAPair, Reviewer, Paper, FRPair
-from agents.states import QuestionState, SingleQuery
+from agents.schemas import TokenTracker, Paper
+from agents.states import QuestionState
+from langgraph.graph import StateGraph, END, START
 import logging
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
+
 logging.basicConfig(
     filename="PRAGATI.log",
     level=logging.INFO,
@@ -13,30 +15,51 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def run_combined_graph(qstate: QuestionState):
-    qgraph = qgen_graph()
-    q_output = qgraph.invoke(qstate)
 
-    agraph = agen_graph()
-    a_output = agraph.invoke(q_output)
+def run_combined_graph():
+    """
+    Creates a LangGraph where:
+    - Node 1: Generates questions (qgen_graph)
+    - Node 2: Answers the questions (agen_graph)
+    - Then ends
+    """
+    builder = StateGraph(QuestionState)
 
-    logger.info(a_output)
+    builder.add_node("generate_questions", qgen_graph())
+    builder.add_node("generate_answers", agen_graph())
+
+    builder.set_entry_point("generate_questions")
+    builder.add_edge("generate_questions", "generate_answers")
+    builder.set_finish_point("generate_answers")
+
+    graph = builder.compile()
+    return graph
+
 
 if __name__ == "__main__":
-    ex = {
-        "messages": [],
-        "paper": Paper(
-            filepath="/home/naba/Desktop/PRAGATI/mrinmoy.pdf",
-            topic="Do we really need Foundation Models for multi-step-ahead Epidemic Forecasting?",
-            sections=["Introduction", "Methodology", "Conclusion"],
-        ),
-        "num_reviewers": 1,
-        "token_usage": TokenTracker(
-            net_input_tokens=0, net_output_tokens=0, net_tokens=0
-        ),
-        "reviewers": [],
-        "queries": [],
-    }
+    paper = Paper(
+        filepath="/home/naba/Desktop/PRAGATI/mrinmoy.pdf",
+        title="Do we really need Foundation Models for multi-step-ahead Epidemic Forecasting?",
+        topic="ML and Time Series",
+        sections=["Introduction", "Methodology", "Conclusion"],
+    )
 
-    qstate = QuestionState(**ex)
-    run_combined_graph(qstate)
+    qstate = QuestionState(
+        messages=[],
+        paper=paper,
+        num_reviewers=1,
+        token_usage=TokenTracker(
+            net_input_tokens=0,
+            net_output_tokens=0,
+            net_tokens=0
+        ),
+        reviewers=[],
+        queries=[],
+    )
+    graph = run_combined_graph()
+    final_state = graph.invoke(qstate)
+
+    print("\nQA Pipeline Results:")
+    print(f"Publishability: {final_state.publishability}")
+    print(f"Suggestions: {final_state.suggestions}")
+    print(f"Q&A Pairs: {len(final_state.queries)}")

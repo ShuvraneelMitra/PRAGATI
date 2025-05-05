@@ -179,6 +179,10 @@ def review_and_suggest(state: QuestionState) -> QuestionState:
             state.token_usage.net_output_tokens + state.token_usage.net_input_tokens
         )
 
+    logger.info("======================Debug======================")
+    logger.info(f"publishability: {[reviewer.review for reviewer in state.reviewers]}")
+    logger.info(f"suggestions: {[reviewer.suggestions for reviewer in state.reviewers]}")
+    logger.info(f"token_usage: {state.token_usage}")
     return dict(reviewers=state.reviewers, token_usage=state.token_usage)
 
 
@@ -221,7 +225,10 @@ def summary(state: QuestionState) -> QuestionState:
     state.token_usage.net_tokens = (
         state.token_usage.net_output_tokens + state.token_usage.net_input_tokens
     )
-
+    logger.info("======================Debug======================")
+    logger.info(f"publishability: {state.publishability}")
+    logger.info(f"suggestions: {state.suggestions}")
+    logger.info(f"token_usage: {state.token_usage}")
     return dict(
         publishability=state.publishability,
         suggestions=state.suggestions,
