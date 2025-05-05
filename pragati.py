@@ -38,9 +38,8 @@ def fact_checker_node(state: PaperState) -> dict:
 def combine_results_node(state: PaperState) -> PaperState:
     state.overall_assesment.factual = state.fact_checker_results.is_factual
     state.overall_assesment.fact_checker_score = state.fact_checker_results.average_score
-    state.overall_assesment.Publishability = ', '.join(state.qa_results.publishability)
-    flattened = [item for sublist in state.qa_results.suggestions for item in sublist]
-    state.overall_assesment.Suggestions = ', '.join(flattened)
+    state.overall_assesment.Publishability = state.qa_results.publishability
+    state.overall_assesment.Suggestions = state.qa_results.suggestions
     return state
 
 
@@ -115,11 +114,11 @@ if __name__ == "__main__":
     logger.info("Final Overall Assessment:")
     logger.info(f"Factual: {paper_state.overall_assesment.factual}")
     logger.info(f"Fact Checker Score: {paper_state.overall_assesment.fact_checker_score}")
-    logger.info(f"Publishability: {paper_state.overall_assesment.Publishability}")
-    logger.info(f"Suggestions: {paper_state.overall_assesment.Suggestions}")
+    logger.info(f"Publishability: {state.qa_results.publishability}")
+    logger.info(f"Suggestions: {state.qa_results.suggestions}")
     
     print("\nFinal Overall Assessment:\n")
     print(f"Factual: {paper_state.overall_assesment.factual}")
     print(f"Fact Checker Score: {paper_state.overall_assesment.fact_checker_score}")
-    print(f"Publishability: {paper_state.overall_assesment.Publishability}")
-    print(f"Suggestions: {paper_state.overall_assesment.Suggestions}")
+    print(f"Publishability: {state.qa_results.publishability}")
+    print(f"Suggestions: {state.qa_results.suggestions}")
