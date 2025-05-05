@@ -17,6 +17,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import yaml
 from agents.schemas import Paper
 from pprint import pprint
+import gc  # For explicit garbage collection
 
 logging.basicConfig(
     filename="PRAGATI.log",
@@ -44,17 +45,37 @@ def generate_search_query(claim: str) -> str:
 def academic_search(query: str) -> List[Dict[str, Any]]:
     """Focus search on academic sources like ArXiv and Google Scholar"""
     results = []
+    
+    # Limited to 3 results per source to reduce memory usage
+    max_results_per_source = 3
+    
     for tool in [ArixvSearchTool(), GoogleScholarSearchTool()]:
         try:
             tool_results = tool.invoke_tool(query)
             if tool_results:
-                for result in tool_results:
-                    result["source"] = tool.__class__.__name__
-                results.extend(tool_results)
+                # Process only essential information
+                for result in tool_results[:max_results_per_source]:
+                    # Store only critical fields to reduce memory usage
+                    compact_result = {
+                        "title": result.get("title", ""),
+                        "url": result.get("url", ""),
+                        "source": tool.__class__.__name__,
+                    }
+                    
+                    # Keep only a snippet of content, not the full text
+                    if "content" in result and result["content"]:
+                        compact_result["content"] = result["content"][:500]  # Limit content size
+                    elif "snippet" in result and result["snippet"]:
+                        compact_result["snippet"] = result["snippet"][:500]  # Limit snippet size
+                        
+                    results.append(compact_result)
         except Exception as e:
             logger.warning(f"Error with {tool.__class__.__name__}: {e}")
+        
+        # Clean up after each tool to free memory
+        gc.collect()
 
-    return results[:5]
+    return results[:5]  # Return at most 5 results
 
 
 def general_search(query: str) -> List[Dict[str, Any]]:
@@ -63,21 +84,41 @@ def general_search(query: str) -> List[Dict[str, Any]]:
         tool = TavilySearchTool()
         tool_msg = tool.invoke_tool(query)
         results = json.loads(tool_msg.content)
+        
+        compact_results = []
         if results:
-            for result in results:
+            # Process only top 5 results with limited content
+            for result in results[:5]:
                 if isinstance(result, dict):
-                    result["source"] = tool.__class__.__name__
-            return results[:5]  # Return top 5 results
+                    compact_result = {
+                        "title": result.get("title", ""),
+                        "url": result.get("url", ""),
+                        "source": tool.__class__.__name__,
+                    }
+                    
+                    # Keep only a snippet of content, not the full text
+                    if "content" in result and result["content"]:
+                        compact_result["content"] = result["content"][:500]  # Limit content size
+                    elif "snippet" in result and result["snippet"]:
+                        compact_result["snippet"] = result["snippet"][:500]  # Limit snippet size
+                        
+                    compact_results.append(compact_result)
+            
+            return compact_results
         return []
     except (Exception, json.JSONDecodeError) as e:
         logger.warning(f"Error with {tool.__class__.__name__}: {e}")
         return []
+    finally:
+        # Clean up to free memory
+        gc.collect()
 
 
 def score_fact(claim: str, references: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Score the claim against references"""
     scorer = LikertScorer()
     reference_texts = []
+    
     for ref in references:
         content = ""
         if "content" in ref and ref["content"]:
@@ -112,13 +153,20 @@ def parse_claims(state: FactCheckerState) -> FactCheckerState:
             state.errors = "No valid claims found in input"
             return state
 
-        # Initialize pairs with claims
+        # Initialize pairs with claims - only store claims, not search results yet
         state.pairs = [FRPair(claim=claim) for claim in claims]
         state.no_claims = len(state.pairs)
+        
+        # Pre-allocate scores array for memory efficiency
+        state.claim_scores = [0] * state.no_claims
+        
         logger.info(f"Parsed {len(state.pairs)} claims from input")
     except Exception as e:
         state.errors = f"Error parsing claims: {str(e)}"
         logger.error(f"Error in parse_claims: {e}")
+    finally:
+        # Clean up to free memory
+        gc.collect()
 
     return state
 
@@ -128,14 +176,23 @@ def retrieve_facts(state: FactCheckerState) -> FactCheckerState:
     if not file:
         state.errors = "No file provided for knowledge base"
         return state
-    logger.info(f"Starting RAG application with PDF: {file}")
-    rag = RAG(file)
-    index = rag.create_db()
-    query_text = prompts["fchecker"]["human_message"].format(paper_name=state.paper.title)
-    retriever = rag.create_retriever(index)
-    response = rag.rag_query(query_text, retriever)
-    pprint(response["result"])
-    state.inputs = response["result"]
+    
+    try:
+        logger.info(f"Starting RAG application with PDF: {file}")
+        rag = RAG(file)
+        index = rag.create_db()
+        query_text = prompts["fchecker"]["human_message"].format(paper_name=state.paper.title)
+        retriever = rag.create_retriever(index)
+        response = rag.rag_query(query_text, retriever)
+        pprint(response["result"])
+        state.inputs = response["result"]
+    except Exception as e:
+        state.errors = f"Error retrieving facts: {str(e)}"
+        logger.error(f"Error in retrieve_facts: {e}")
+    finally:
+        # Clean up to free memory
+        gc.collect()
+    
     return state
 
 def generate_query(state: FactCheckerState) -> FactCheckerState:
@@ -143,16 +200,20 @@ def generate_query(state: FactCheckerState) -> FactCheckerState:
     if state.current_index >= len(state.pairs):
         return state
 
-    current_pair = state.pairs[state.current_index]
     try:
-        logger.info(f"Generating query for claim: {current_pair.claim}")
-        query = generate_search_query(current_pair.claim)
-        current_pair.search_query = query
-        # state.pairs[state.current_index] = current_pair
+        current_claim = state.pairs[state.current_index].claim
+        logger.info(f"Generating query for claim: {current_claim}")
+        query = generate_search_query(current_claim)
+        
+        # Store query directly in the current pair
+        state.pairs[state.current_index].search_query = query
         logger.info(f"Generated query: {query}")
     except Exception as e:
         state.errors = f"Error generating query: {str(e)}"
         logger.error(f"Error in generate_query: {e}")
+    finally:
+        # Clean up to free memory
+        gc.collect()
 
     return state
 
@@ -162,8 +223,8 @@ def search_web(state: FactCheckerState) -> FactCheckerState:
     if state.current_index >= len(state.pairs) or state.errors:
         return state
 
-    current_pair = state.pairs[state.current_index]
     try:
+        current_pair = state.pairs[state.current_index]
         if not current_pair.search_query:
             state.errors = "Missing search query"
             return state
@@ -179,12 +240,15 @@ def search_web(state: FactCheckerState) -> FactCheckerState:
         else:
             search_results = general_search(current_pair.search_query)
 
+        # Store results directly in the current pair
         current_pair.search_results = search_results
-        state.pairs[state.current_index] = current_pair
         logger.info(f"Found {len(search_results)} results")
     except Exception as e:
         state.errors = f"Error in web search: {str(e)}"
         logger.error(f"Error in search_web: {e}")
+    finally:
+        # Clean up to free memory
+        gc.collect()
 
     return state
 
@@ -194,42 +258,52 @@ def verify_claim(state: FactCheckerState) -> FactCheckerState:
     if state.current_index >= len(state.pairs) or state.errors:
         return state
     
-    current_pair = state.pairs[state.current_index]
-    verification = None  # Initialize verification variable
-    
     try:
+        current_pair = state.pairs[state.current_index]
         logger.info(f"Verifying claim: {current_pair.claim}")
-        verification = score_fact(
-            claim=current_pair.claim, references=current_pair.search_results
-        )
-        pprint(verification)
-        current_pair.verification = verification
-        state.pairs[state.current_index] = current_pair
         
-        if verification.get("score", "N/A") == 0:
+        # Score the claim
+        verification = score_fact(
+            claim=current_pair.claim, 
+            references=current_pair.search_results
+        )
+        
+        # Store only the verification score, not the full results
+        score = verification.get("score", 0)
+        state.claim_scores[state.current_index] = score
+        
+        # Store minimal verification info
+        current_pair.verification = {"score": score}
+        
+        if score == 0:
             logger.info(f"Claim is Unverified")
         else:
-            logger.info(f"Verification complete: Score={verification.get('score')}")
+            logger.info(f"Verification complete: Score={score}")
+        
+        # Memory optimization: Clear search results after verification
+        current_pair.search_results = []
             
-        # Add to total score only if verification was successful
-        state.total_score += verification.get("score", 0)
+        # Add to total score
+        state.total_score += score
         
     except Exception as e:
         state.errors = f"Error in verification: {str(e)}"
         logger.error(f"Error in verify_claim: {e}")
     
-    # Always increment the index and calculate average regardless of success/failure
+    # Always increment the index and calculate average
     state.current_index += 1
     
-    if state.current_index < state.no_claims:
+    # Calculate average score
+    if state.current_index <= state.no_claims:
         state.average_score = state.total_score / state.current_index
     else:
         state.average_score = state.total_score / state.no_claims
         
-    if state.average_score > 3:
-        state.is_factual = True
-    else:
-        state.is_factual = False
+    # Determine if the paper is factual
+    state.is_factual = state.average_score > 3
+    
+    # Force garbage collection
+    gc.collect()
         
     return state
 
@@ -264,6 +338,7 @@ def create_fact_checker_graph() -> StateGraph:
     workflow.add_edge("generate_query", "search_web")
     workflow.add_edge("search_web", "verify_claim")
     workflow.add_conditional_edges("verify_claim", should_continue)
+    
     # Compile the graph
     compiled_graph = workflow.compile()
     try:
@@ -292,7 +367,11 @@ def fact_check(paper: Paper) -> List[FRPair]:
     """Run the fact checking process on a text input"""
     logger.info("Starting fact checking process")
     checker = create_fact_checker_graph()
-    final_state = checker.invoke({"paper": paper})
+    final_state = checker.invoke({"paper": paper}, {"recursion_limit": 1000})
+
+    # Verify we have the scores
+    for i, score in enumerate(final_state["claim_scores"]):
+        final_state["pairs"][i].verification = {"score": score}
 
     return final_state["pairs"]
 
@@ -317,14 +396,11 @@ def format_results(pairs: List[FRPair]) -> str:
 
 # Example usage
 if __name__ == "__main__":
-    # while input("Enter q to quit: ") != "q":
-    #     input_text = input("Enter text to fact check: ")
-    #     results = fact_check(input_text)
-    paper1=Paper(
-        filepath="/home/naba/Desktop/PRAGATI/satya.pdf",
-        title="Some Title",
-        topic="ML",
-        filename="satya.pdf",
-        sections=["Abstract", "Introduction", "Methodology"]
+    paper1 = Paper(
+            filepath="/home/naba/Desktop/PRAGATI/satya.pdf",
+            title="SATYA",
+            topic="Agentic AI SYSTEM",
+            filename="SATYA.pdf",
+            sections=["Abstract", "Introduction", "Methodology"]
     )
     results = fact_check(paper1)

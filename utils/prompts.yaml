@@ -190,12 +190,12 @@ fchecker:
     Format each claim as a clear, standalone sentence.
     and don't include any additional information or context such as "from document 1 or 2"
     
-    Given the research paper titled ${paper_name}, extract only the most important factual claims that should be prioritized for fact-checking.
+    Given the research paper titled ${paper_name}, extract only the most important 5 factual claims that should be prioritized for fact-checking.
     Focus on:
 
     1) Novel results or discoveries,
 
-    2) Key statistics (e.g., performance metrics, p-values),
+    2) No Key statistics (e.g., performance metrics, p-values),
 
     3) Comparisons with prior work,
 
