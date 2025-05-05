@@ -58,7 +58,7 @@ if __name__ == "__main__":
     )
     graph = run_combined_graph()
     final_state = graph.invoke(qstate)
-
+    final_state = QuestionState(**final_state)
     print("\nQA Pipeline Results:")
     print(f"Publishability: {final_state.publishability}")
     print(f"Suggestions: {final_state.suggestions}")
