@@ -38,9 +38,9 @@ def fact_checker_node(state: PaperState) -> dict:
 def combine_results_node(state: PaperState) -> PaperState:
     state.overall_assesment.factual = state.fact_checker_results.is_factual
     state.overall_assesment.fact_checker_score = state.fact_checker_results.average_score
-    state.overall_assesment.Publishability = ''.join(state.qa_results.publishability)
+    state.overall_assesment.Publishability = ', '.join(state.qa_results.publishability)
     flattened = [item for sublist in state.qa_results.suggestions for item in sublist]
-    state.overall_assesment.Suggestions = ' '.join(flattened)
+    state.overall_assesment.Suggestions = ', '.join(flattened)
     return state
 
 
