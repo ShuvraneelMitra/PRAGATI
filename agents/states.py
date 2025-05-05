@@ -67,6 +67,9 @@ class FactCheckerState(BaseModel):
     errors: str = Field(None, description="Error message if any")
     current_index: int = Field(0, description="Index of the current fact pair")
     no_claims: int = Field(0, description="Number of claims made")
+    claim_scores: Sequence[int] = Field(
+        default_factory=list, description="Scores for each claim made"
+    )
     total_score: int = Field(0, description="Total score of the fact-checking process")
     average_score: float = Field(
         0.0, description="Average score of the fact-checking process"
