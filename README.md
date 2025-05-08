@@ -127,24 +127,6 @@ PRAGATI consists of five key components:
 - AI may struggle with nuanced aspects of research quality, such as novelty and theoretical impact
 - The system cannot evaluate radical new ideas at the same level as human reviewers
 
-## Industry Insights
-
-PRAGATI is revolutionizing academic peer review by:
-- Automating quality checks and fact verification
-- Reducing biases in the review process
-- Detecting fraudulent or low-quality submissions
-- Improving overall research integrity
-
-## Future Directions
-
-- Enhancing multimodal analysis of figures, tables, and citations
-- Expanding capabilities to provide real-time feedback to authors
-- Developing real-time editing features similar to ChatGPT's canvas
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
